@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-
+SECRET_KEY = '93*9#)fbp(8q%)(8&#tr%xs#r%0@zrz*ip%m4=5%)jkpp#*4(v'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'usuario',
+    'administrar',
 ]
 
 MIDDLEWARE = [
@@ -54,7 +56,7 @@ ROOT_URLCONF = 'mapp.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR + '/templates/'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -103,18 +105,43 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es-mx'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Mexico_City'
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+LANGUAGES = [
+    ('es-mx', ('Mexican Spanish')),
+]
+
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
-STATIC_URL = '/static/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'site_media', 'media')
+MEDIA_URL = '/site_media/media/'
+SITE_MEDIA_URL = '/site_media/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'site_media', 'static')
+STATIC_URL = '/site_media/static/'
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'files'),
+
+)
+
+LOGIN_URL='/login/'
+LOGIN_REDIRECT_URL='/'
+LOGOUT_REDIRECT_URL = '/'
+
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = 'xxxxx'
+EMAIL_HOST_PASSWORD = 'xxxxx'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+
+EMAIL_SALIDA = 'xxxxx@xxxxx.com'

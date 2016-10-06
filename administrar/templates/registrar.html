@@ -1,0 +1,157 @@
+ {% load static %} {% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+<!-- Ticsup -->
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE = edge">
+    <meta name="viewport" content="width = device-width, initial-scale = 1">
+    <title>Red Social | Registrarse{% block title %}{% endblock %}</title>
+    <!-- Bootstrap -->
+    <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
+    <!-- Estilos personalizados -->
+    <link href="{% static 'css/customstyles.css' %}" rel="stylesheet">
+    <!-- Selectize css -->
+    <link href="{% static 'selectize/css/selectize.css' %}" rel="stylesheet">
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src = "https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src = "https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+      <![endif]-->
+</head>
+
+<body id="loginpage">
+    <div class="container text-center">
+        <div class="row content">
+
+            <div class="col-md-4 col-md-offset-4">
+
+                <h1 class="loginpagetitle">MI SITIO</h1>
+
+            </div>
+        </div>
+        <div class="row content">
+            <div class="col-md-6 col-md-offset-3">
+                {% if registered %}
+                <p class="loginpagetext" style="padding-bottom:20px;">Gracias por registrarte.</p>
+                <p class="loginpagetext" style="padding-bottom:20px;">Se ha enviado un correo de activación a: {{ uform.email.value }}</p>
+                <p class="loginpagetext">Dar clic en el link para activar tu cuenta.</p>
+                {% endif %}
+            </div>
+
+        </div>
+
+        {% if not registered %}
+        <div class="row content">
+            <div class="col-md-4 col-md-offset-2">
+
+                <h3 class="loginpagesubtitle">Registrate</h3>
+                <form id="user_form" method="post" action="{% url 'registrar' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <input type="text" value="{{ uform.username.value|default_if_none:"" }}" class="form-control" placeholder="Usuario" name="username" id="id_username">
+                    </div>
+                    {% if uform.username.errors %}
+                    <div class="alert alert-danger">
+                        <strong>Error!</strong> {{ uform.username.errors.as_text }}
+                    </div>
+                    {% endif %}
+
+
+                    <div class="form-group">
+                        <input type="password" value="{{ uform.password.value|default_if_none:"" }}" class="form-control" placeholder="Contraseña" name="password" id="id_password">
+                    </div>
+                    {% if uform.password.errors %}
+                    <div class="alert alert-danger">
+                        <strong>Error!</strong> {{ uform.password.errors.as_text }}
+                    </div>
+                    {% endif %}
+
+                    <div class="form-group">
+                        <input type="email" value="{{ uform.email.value|default_if_none:"" }}" class="form-control" placeholder="Correo Electronico" name="email" id="id_email">
+                    </div>
+                    {% if uform.email.errors %}
+                    <div class="alert alert-danger">
+                        <strong>Error!</strong> {{ uform.email.errors.as_text }}
+                    </div>
+                    {% endif %}
+
+                    <div class="form-group">
+                        <input type="text" value="{{ uform.first_name.value|default_if_none:"" }}" class="form-control" placeholder="Nombre(s)" name="first_name" id="id_first_name">
+                    </div>
+
+                    {% if uform.first_name.errors %}
+                    <div class="alert alert-danger">
+                        <strong>Error!</strong> {{ uform.first_name.errors.as_text }}
+                    </div>
+                    {% endif %}
+
+                    <div class="form-group">
+                        <input type="text" value="{{ uform.last_name.value|default_if_none:"" }}" class="form-control" placeholder="Apellido(s)" name="last_name" id="id_last_name">
+                    </div>
+                    {% if uform.last_name.errors %}
+                    <div class="alert alert-danger">
+                        <strong>Error!</strong> {{ uform.last_name.errors.as_text }}
+                    </div>
+                    {% endif %}
+
+                    <button type="submit" name="submit" value="submit" class="btn btn-primary block full-width m-b">{% trans 'Registrarse' %}</button>
+                </form>
+
+            </div>
+            <div class="col-md-4">
+                <h3 class="loginpagesubtitle">Razones para registrarte</h3>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="pull-right">
+                            <h2 class="loginpagerafirst"><span class="glyphicon glyphicon-search"></span> Lorem Ipsum</h2>
+                            <span class="loginpagetext">Lorem ipsum dolor sit amet consectetur adipiscing elit. </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="pull-right">
+                            <h2 class="loginpagera"><span class="glyphicon glyphicon-search"></span> Lorem Ipsum</h2>
+                            <span class="loginpagetext">Lorem ipsum dolor sit amet, consectetur adipiscing elit. </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="pull-right">
+                            <h2 class="loginpagera"><span class="glyphicon glyphicon-search"></span> Lorem Ipsum</h2>
+                            <span class="loginpagetext">Lorem ipsum dolor sit amet, consectetur adipiscing elit. </span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="row content">
+
+            <div class="col-md-4 col-md-offset-4">
+
+                <p style="padding-top:20px;">¿Ya tienes una cuenta? <a href="/login/" class="loginpagelink">Inicia sesión</a></p>
+
+                <p style="padding-top:20px;">
+                    <a href="/" class="loginpagelink">
+                        << Regresar a la pagina principal</a>
+                </p>
+
+            </div>
+        </div>
+
+    </div>
+
+</body>
+
+</html>

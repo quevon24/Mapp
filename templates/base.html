@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mavalpa | {% block title %} {% endblock %}</title>
+
+    <link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet">
+    <link href="{% static "font-awesome/css/font-awesome.css" %}" rel="stylesheet">
+    <link href="{% static "css/fonts.css" %}" rel="stylesheet">
+    <link href="{% static "js/plugins/gritter/jquery.gritter.css" %}" rel="stylesheet">
+    <link href="{% static "css/animate.css" %}" rel="stylesheet">
+    <link href="{% static "css/style.css" %}" rel="stylesheet">
+    <link href="{% static "css/customstyles.css" %}" rel="stylesheet">
+    <script src="{% static "js/jquery-2.1.1.js" %}"></script>
+    <link rel='shortcut icon' type='image/x-icon' href='{% static "img/favicon.ico"%}' />
+
+</head>
+
+<body>
+    <div id="wrapper">
+        <nav class="navbar-default navbar-static-side" role="navigation">
+            <div class="sidebar-collapse">
+
+
+                <!-- Inicio elementos menu lateral-->
+                <ul class="nav" id="side-menu">
+                    <li class="nav-header">
+                        <div class="dropdown profile-element"> <span>
+                        <img alt="image" class="text-center" src="{% static "img/logo.png" %}" style="width:80px;"/><h2 style="display:inline; font-size:18px;font-weight:700;color:#ffffff;">&nbsp;Mensajes</h2>
+                           
+                             </span>
+
+                            <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                                <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">
+                            
+                            {% if user.is_authenticated %}
+    {{ user.username }}
+{% else %}
+    Usuario
+{% endif %}
+
+                            </strong>
+                             </span> <span class="text-muted text-xs block">{{user.groups.all.0}}<b class="caret"></b></span> </span>
+                            </a>
+                            <ul class="dropdown-menu animated fadeInRight m-t-xs">
+
+                                <!--   <li class="divider"></li> -->
+                                <li><a href="/logout/?next=/login/">Cerrar Sesión</a></li>
+                            </ul>
+                        </div>
+                        <div class="logo-element">
+                            <img alt="image" class="text-center" src="{% static "img/logo.png" %}" style="width:50px;" />
+                        </div>
+                    </li>
+
+
+                    <li>
+                        <a href="/"><i class="fa fa-th-large"></i> <span class="nav-label">INICIO</span> </a>
+                    </li>
+
+                    <!-- Elemento Catalogo menu lateral-->
+                    {% if user.groups.all.0.name == "Administrador" or user.groups.all.0.name == "Produccion" or user.is_superuser %}
+                    <li id="mainop">
+                        <a href="#"><i class="fa fa-arrow-circle-right"></i> <span class="nav-label">INVENTARIO</span> <span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li><a href="/administrador/insumos">Lista insumos</a></li>
+                            <li><a href="/administrador/alta">Alta insumos</a></li>
+                            <li><a href="/administrador/add_orden_compra">Alta Orden Compra</a></li>
+                            <li><a href="/administrador/lista_ordenes_compra">Lista Ordenes Compra</a></li>
+
+                        </ul>
+                    </li>
+                    {% endif %}
+                    <!-- Elemento Entrada menu lateral-->
+                    {% if user.groups.all.0.name == "Administrador" or user.groups.all.0.name == "Produccion" or user.is_superuser %}
+                    <li id="mainop2">
+                        <a href="#"><i class="fa fa fa-edit"></i> <span class="nav-label">PRODUCCIÓN</span> <span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li><a href="/administrador/alta_producto">Alta producto</a></li>
+                            <li><a href="/administrador/lista_productos">Lista de productos</a></li>
+                        </ul>
+                    </li>
+                    {% endif %}
+                    <!-- Elemento cobro menu lateral-->
+                    {% if user.groups.all.0.name == "Administrador" or user.groups.all.0.name == "Produccion" or user.groups.all.0.name == "Ventas" or user.is_superuser %}
+                    <li id="mainop3">
+                        <a href="/cobro/"><i class="fa fa-usd"></i> <span class="nav-label">ORDENES</span><span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li><a href="/administrador/lista_clientes">Lista de clientes</a></li>
+                            <li><a href="/administrador/alta_orden">Nueva orden</a></li>
+                            <li><a href="/administrador/lista_ordenes">Lista de ordenes</a></li>
+
+
+                        </ul>
+                    </li>
+                    {% endif %}
+
+
+
+                </ul>
+                <!-- Fin elementos menu lateral-->
+
+
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="gray-bg dashbard-1">
+            <div class="row border-bottom">
+                <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+                    <div class="navbar-header">
+                        <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+
+                    </div>
+                    <ul class="nav navbar-top-links navbar-right">
+                        <li>
+                            <span class="m-r-sm text-muted welcome-message">Bienvenido                             {% if user.is_authenticated %}
+    {{ user.username }}
+{% else %}
+    Usuario
+{% endif %}</span>
+                        </li>
+
+
+
+
+                        <li>
+                            <a href="/logout/?next=/login/">
+                                <i class="fa fa-sign-out"></i> Cerrar sesión
+                            </a>
+                        </li>
+                    </ul>
+
+                </nav>
+            </div>
+
+            <!-- Div para contenido-->
+
+            <!-- <div class="row  border-bottom white-bg dashboard-header"> -->
+
+            <!-- Aqui colocar col-md necesarios para contenido -->
+
+            {% block content %}
+            <!-- Contenido -->{% endblock %}
+
+
+            <!--     </div> -->
+
+
+            <!-- Footer pos absolute bottom -->
+            <div class="footer">
+                <div class="pull-right">
+
+                </div>
+                <div> <strong>Copyright</strong> Ticsup &copy; 2016
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+
+    <!-- Mainl scripts -->
+
+    <script src="{% static "js/bootstrap.min.js" %}"></script>
+    <script src="{% static "js/plugins/metisMenu/jquery.metisMenu.js" %}"></script>
+    <script src="{% static "js/plugins/slimscroll/jquery.slimscroll.min.js" %}"></script>
+
+    <!-- Custom and plugin javascript -->
+    <script src="{% static "js/inspinia.js" %}"></script>
+    <script src="{% static "js/plugins/pace/pace.min.js" %}"></script>
+
+    <!-- jQuery UI -->
+    <script src="{% static "js/plugins/jquery-ui/jquery-ui.min.js" %}"></script>
+
+    <!-- Toastr -->
+    <!--     <script src="{% static "js/plugins/toastr/toastr.min.js" %}"></script>
+ -->
+    <script>
+        jQuery(function($) {
+            var path = window.location.href;
+            $('#mainop ul a').each(function() {
+                if (this.href === path) {
+                    $(this).closest('li').addClass('active');
+                    $('#mainop ul').addClass('collapse in');
+                    $('#mainop').addClass('active');
+                }
+
+            });
+        });
+
+        jQuery(function($) {
+            var path = window.location.href;
+            $('#mainop2 ul a').each(function() {
+                if (this.href === path) {
+                    $(this).closest('li').addClass('active');
+                    $('#mainop2 ul').addClass('collapse in');
+                    $('#mainop2').addClass('active');
+                }
+
+            });
+        });
+
+        jQuery(function($) {
+            var path = window.location.href;
+            $('#mainop3 ul a').each(function() {
+                if (this.href === path) {
+                    $(this).closest('li').addClass('active');
+                    $('#mainop3 ul').addClass('collapse in');
+                    $('#mainop3').addClass('active');
+                }
+
+            });
+        });
+    </script>
+
+</body>
+
+</html>
