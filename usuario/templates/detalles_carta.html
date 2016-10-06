@@ -1,0 +1,28 @@
+ {% extends "base.html" %}{% load static %} {% block title %} Detalle de carta {% endblock %} {% block content %}
+
+<h2 class="text-center" style="padding-top: 10px; padding-bottom:10px;">Detalles de carta</h2>
+
+	<div class="row">
+		<div class="col-md-12">
+			<dl class="dl-horizontal">
+
+				<dt>Fecha:</dt>
+				<dd>{{carta.fecha}}</dd>
+				<dt>Archivo:</dt>
+				<dd><a href="{{ MEDIA_URL }}{{carta.archivo}}">{{carta.archivo}}</a></dd>
+				<dt>Contenido:</dt>
+				<dd>{{carta.contenido}}</dd>
+				<dt>Email:</dt>
+				<dd>{{carta.email}}</dd>
+				<dt>Tel 1:</dt>
+				<dd>{{carta.tel1}}</dd>
+				<dt>Tel 2:</dt>
+				<dd>{{carta.tel2}}</dd>
+
+
+			</dl>
+		</div>
+		</div>
+
+
+{% endblock %}
