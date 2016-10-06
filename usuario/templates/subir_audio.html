@@ -1,0 +1,38 @@
+ {% extends "base.html" %}{% load static %} {% block title %} Agregar audio {% endblock %} {% block content %}
+
+{% if save == True %}
+         <strong>Audio guardado correctamente.</strong>
+      {% endif %}
+
+{% if form.archivo.errors %}
+
+{{ form.archivo.errors.as_text }}
+                
+                    {% endif %}
+
+<p></p>
+                        <form action="{% url 'subir_audio' %}" method="post" enctype="multipart/form-data">{% csrf_token %}
+
+                <p>
+                    Archivo: <input id="id_archivo" type="file" class="" name="archivo">
+
+
+
+                </p>
+<p>
+Email destinatario: <input id="id_email" type="email" class="" name="email">
+                        </p>
+<p>
+Telefono 1 destinatario: <input id="id_tel1" type="text" class="" name="tel1">
+                        </p>
+<p>
+Telefono 2 destinatario: <input id="id_tel2" type="text" class="" name="tel2">
+                        </p>
+
+                <input type="submit" value="Submit" />
+            </form>
+
+
+      
+
+{% endblock %}

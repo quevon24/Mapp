@@ -18,7 +18,23 @@ class Perfilform(forms.ModelForm):
 class Usuario_cartas(forms.ModelForm):
     class Meta:
         model = Perfil_carta
-        fields = ('imagen','descripcion')
+        fields = ('contenido', 'archivo', 'email', 'tel1', 'tel2')
+        widgets = {
+        'user': forms.HiddenInput(),
+        }
+
+class Usuario_audios(forms.ModelForm):
+    class Meta:
+        model = Perfil_audio
+        fields = ('archivo', 'email', 'tel1', 'tel2')
+        widgets = {
+        'user': forms.HiddenInput(),
+        }
+
+class Usuario_videos(forms.ModelForm):
+    class Meta:
+        model = Perfil_video
+        fields = ('archivo','nombre', 'email', 'tel1', 'tel2', 'direccion', 'formato')
         widgets = {
         'user': forms.HiddenInput(),
         }

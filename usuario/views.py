@@ -74,3 +74,76 @@ def actualizar_perfil(request):
 	return render(request, 'editar_perfil.html', {
         'profile_form': profile_form
     })
+
+
+# ---------------------------------------------------------------
+# Usuario subir carta , settings.VARIABLE
+@login_required
+def upload_carta(request):
+	save = False
+	form = Usuario_cartas()
+	if request.method == 'POST':
+		form = Usuario_cartas(request.POST, request.FILES)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.archivo = form.cleaned_data['archivo']
+            post.contenido = form.cleaned_data['contenido']
+            post.email = form.cleaned_data['email']
+            post.tel1 = form.cleaned_data['tel1']
+            post.tel2 = form.cleaned_data['tel2']
+            post.user = request.user
+            post.save()
+            save = True
+            print save
+            #return redirect('home')
+	else:
+            form = Usuario_cartas()
+	return render(request, 'subir_carta.html', {'form': form, 'save':save})
+
+
+# ---------------------------------------------------------------
+# Usuario subir audio , settings.VARIABLE
+@login_required
+def upload_audio(request):
+	save = False
+	form = Usuario_audios()
+	if request.method == 'POST':
+		form = Usuario_audios(request.POST, request.FILES)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.archivo = form.cleaned_data['archivo']
+            post.email = form.cleaned_data['email']
+            post.tel1 = form.cleaned_data['tel1']
+            post.tel2 = form.cleaned_data['tel2']
+            post.user = request.user
+            post.save()
+            save = True
+            print save
+            #return redirect('home')
+
+	return render(request, 'subir_audio.html', {'form': form, 'save':save})
+
+# ---------------------------------------------------------------
+# Usuario subir video , settings.VARIABLE
+@login_required
+def upload_video(request):
+	save = False
+	form = Usuario_videos()
+	if request.method == 'POST':
+		form = Usuario_videos(request.POST, request.FILES)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.archivo = form.cleaned_data['archivo']
+            post.nombre = form.cleaned_data['nombre']
+            post.email = form.cleaned_data['email']
+            post.tel1 = form.cleaned_data['tel1']
+            post.tel2 = form.cleaned_data['tel2']
+            post.direccion = form.cleaned_data['direccion']
+            post.formato = form.cleaned_data['formato']
+            post.user = request.user
+            post.save()
+            save = True
+            print save
+            #return redirect('home')
+
+	return render(request, 'subir_video.html', {'form': form, 'save':save})

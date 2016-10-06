@@ -8,6 +8,9 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.conf import settings
 from django.utils import timezone
+from django.core import validators
+from django.core.exceptions import ValidationError
+
 
 #generar clave activacion
 import uuid
@@ -44,12 +47,19 @@ class Perfil(models.Model):
 
 	class Meta:
 		verbose_name_plural = "Perfiles"
+
+def validar_carta(value):
+  import os
+  ext = os.path.splitext(value.name)[1]
+  valid_extensions = ['.pdf','.doc','.docx']
+  if not ext in valid_extensions:
+    raise ValidationError(u'Archivo no soportado!')
 	
 class Perfil_carta(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	fecha = models.DateTimeField(default=timezone.now)
-	imagen = models.ImageField(upload_to = user_directoryfile_path, null=True, blank=True)
-	descripcion = models.CharField(max_length=100, blank=True, null=True)
+	archivo = models.FileField(upload_to = user_directoryfile_path, null=True, blank=True, validators=[validar_carta])
+	contenido = models.TextField(max_length=1000, blank=True, null=True)
 	email = models.EmailField(null=True, blank=True)
 	tel1 = models.CharField(max_length=40)
 	tel2 = models.CharField(max_length=40)
@@ -60,10 +70,17 @@ class Perfil_carta(models.Model):
 	class Meta:
 		verbose_name_plural = "Cartas"
 
+def validar_audio(value):
+  import os
+  ext = os.path.splitext(value.name)[1]
+  valid_extensions = ['.wav','.mp3','.mp4']
+  if not ext in valid_extensions:
+    raise ValidationError(u'Archivo no soportado!')
+
 class Perfil_audio(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	fecha = models.DateTimeField(default=timezone.now)
-	imagen = models.ImageField(upload_to = user_directoryfile_path, null=True, blank=True)
+	archivo = models.FileField(upload_to = user_directoryfile_path, null=True, blank=True, validators=[validar_audio])
 	email = models.EmailField(null=True, blank=True)
 	tel1 = models.CharField(max_length=40)
 	tel2 = models.CharField(max_length=40)
@@ -74,19 +91,27 @@ class Perfil_audio(models.Model):
 	class Meta:
 		verbose_name_plural = "Audios"
 
+def validar_video(value):
+  import os
+  ext = os.path.splitext(value.name)[1]
+  valid_extensions = ['.3gp','.avi','.mp4']
+  if not ext in valid_extensions:
+    raise ValidationError(u'Archivo no soportado!')
+
 class Perfil_video(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	fecha = models.DateTimeField(default=timezone.now)
-	imagen = models.ImageField(upload_to = user_directoryfile_path, null=True, blank=True)
+	archivo = models.FileField(upload_to = user_directoryfile_path, null=True, blank=True, validators=[validar_video])
 	nombre = models.CharField(max_length=100, null=True, blank=True)
 	email = models.EmailField(null=True, blank=True)
 	tel1 = models.CharField(max_length=40)
 	tel2 = models.CharField(max_length=40)
 	direccion = models.CharField(max_length=200)
 	formato_options = (
-		(1, 'USB'),
-		(2, 'CD'),
-		(3, 'DVD'),
+		(1, 'Digital'),
+		(2, 'USB'),
+		(3, 'CD'),
+		(4, 'DVD'),
 		)
 	formato = models.IntegerField(choices=formato_options, blank=True, null=True)
 
