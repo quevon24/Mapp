@@ -279,7 +279,7 @@ def video_detalle(request, pk):
 @login_required
 def configuraciones_usuario(request):
 	usuario = User.objects.get(pk=request.user.id)
-	perfil = Perfil.objects.get(pk=request.user.id)
+	perfil = Perfil.objects.get(user=request.user.id)
 
 	return render(request, 'configuracion_usuario.html', {'usuario':usuario, 'perfil':perfil})
 
