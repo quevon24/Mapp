@@ -58,31 +58,6 @@ def actualizar_cuenta(request):
     })
 
 # ---------------------------------------------------------------
-# Actualizar perfil
-@login_required
-@transaction.atomic
-def actualizar_perfil(request):
-	perfil = Perfil.objects.get(pk=request.user.id)
-	profile_form = Perfilform(request.POST, instance=perfil)
-	if request.method == 'POST':
-		profile_form = Perfilform(request.POST, instance=perfil)
-		if profile_form.is_valid():
-			profile_form.save()
-			messages.success(request, 'Perfil actualizado')
-			print 'actualizado'
-			return redirect('actualizar_perfil')
-
-		else:
-			messages.error(request, 'Hay errores.')
-	else:
-		profile_form = Perfilform(instance=perfil)
-
-	return render(request, 'editar_perfil.html', {
-        'profile_form': profile_form
-    })
-
-
-# ---------------------------------------------------------------
 # Usuario subir carta , settings.VARIABLE
 @login_required
 def upload_carta(request):
@@ -311,7 +286,7 @@ def actualizar_cuenta(request):
 @login_required
 @transaction.atomic
 def actualizar_perfil(request):
-	perfil = Perfil.objects.get(pk=request.user.id)
+	perfil = Perfil.objects.get(user=request.user.id)
 	profile_form = Perfilform(request.POST, instance=perfil)
 	if request.method == 'POST':
 		profile_form = Perfilform(request.POST, instance=perfil)
@@ -329,3 +304,4 @@ def actualizar_perfil(request):
 	return render(request, 'editar_perfil.html', {
         'profile_form': profile_form
     })
+
