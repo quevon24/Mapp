@@ -73,7 +73,7 @@ def registrar(request):
         else:
                 uform = Registrar()
 
-        return render_to_response('registrar.html', {'uform': uform, 'registered': registered }, context)
+        return render(request, 'registrar.html', {'uform': uform, 'registered': registered }, context)
 
 
 
