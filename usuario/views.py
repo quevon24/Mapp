@@ -116,7 +116,7 @@ class listar_cartas(ListView):
 	paginate_by = 10 # Elementos por pagina
 
 	@method_decorator(login_required)
-	@method_decorator(group_required('Administrador', 'Entrada'))
+	@method_decorator(group_required('Administrador', 'Pendiente'))
 	def dispatch(self, *args, **kwargs):
 		return super(listar_cartas, self).dispatch(*args, **kwargs)
 
@@ -141,7 +141,7 @@ class listar_cartas(ListView):
 # Ver a detalles carta
 
 @login_required
-@group_required('Administrador', 'Entrada')
+@group_required('Administrador', 'Pendiente')
 def carta_detalle(request, pk):
 	carta = get_object_or_404(Perfil_carta, pk = pk)
 	return render(request, 'detalles_carta.html', {'carta': carta})
@@ -179,7 +179,7 @@ class listar_audio(ListView):
 	paginate_by = 10 # Elementos por pagina
 
 	@method_decorator(login_required)
-	@method_decorator(group_required('Administrador', 'Entrada'))
+	@method_decorator(group_required('Administrador', 'Pendiente'))
 	def dispatch(self, *args, **kwargs):
 		return super(listar_audio, self).dispatch(*args, **kwargs)
 
@@ -204,7 +204,7 @@ class listar_audio(ListView):
 # Ver a detalles audio
 
 @login_required
-@group_required('Administrador', 'Entrada')
+@group_required('Administrador', 'Pendiente')
 def audio_detalle(request, pk):
 	audio = get_object_or_404(Perfil_audio, pk = pk)
 	return render(request, 'detalles_audio.html', {'audio': audio})
@@ -243,7 +243,7 @@ class listar_video(ListView):
 	paginate_by = 10 # Elementos por pagina
 
 	@method_decorator(login_required)
-	@method_decorator(group_required('Administrador', 'Entrada'))
+	@method_decorator(group_required('Administrador', 'Pendiente'))
 	def dispatch(self, *args, **kwargs):
 		return super(listar_video, self).dispatch(*args, **kwargs)
 
@@ -268,7 +268,7 @@ class listar_video(ListView):
 # Ver a detalles video
 
 @login_required
-@group_required('Administrador', 'Entrada')
+@group_required('Administrador', 'Pendiente')
 def video_detalle(request, pk):
 	video = get_object_or_404(Perfil_video, pk = pk)
 	return render(request, 'detalles_video.html', {'video': video})
