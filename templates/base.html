@@ -69,7 +69,7 @@
                     </li>
 
                     <!-- Elemento Catalogo menu lateral-->
-                    {% if user.groups.all.0.name == "Administrador" or user.groups.all.0.name == "Usuario" or user.groups.all.0.name == None or user.is_superuser %}
+                    {% if user.groups.all.0.name == "Administrador" or user.groups.all.0.name == "Usuario" or user.groups.all.0.name == Pendiente or user.is_superuser %}
                     <li id="mainop">
                         <a href="#"><i class="fa fa-envelope-o"></i> <span class="nav-label">CARTAS</span> <span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
@@ -80,7 +80,7 @@
                     </li>
                     {% endif %}
                     <!-- Elemento Entrada menu lateral-->
-                    {% if user.groups.all.0.name == "Administrador" or user.groups.all.0.name == "Usuario" or user.groups.all.0.name == None or user.is_superuser %}
+                    {% if user.groups.all.0.name == "Administrador" or user.groups.all.0.name == "Usuario" or user.groups.all.0.name == Pendiente or user.is_superuser %}
                     <li id="mainop2">
                         <a href="#"><i class="fa fa fa-headphones"></i> <span class="nav-label">AUDIO</span> <span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
@@ -90,7 +90,7 @@
                     </li>
                     {% endif %}
                     <!-- Elemento cobro menu lateral-->
-                    {% if user.groups.all.0.name == "Administrador" or user.groups.all.0.name == "Usuario" or user.groups.all.0.name == None or user.is_superuser %}
+                    {% if user.groups.all.0.name == "Administrador" or user.groups.all.0.name == "Usuario" or user.groups.all.0.name == Pendiente or user.is_superuser %}
                     <li id="mainop3">
                         <a href="#"><i class="fa fa-video-camera"></i> <span class="nav-label">VIDEO</span><span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
@@ -102,7 +102,7 @@
                     </li>
                     {% endif %}
                     <!-- Elemento cobro menu lateral-->
-                    {% if user.groups.all.0.name == "Administrador" or user.groups.all.0.name == "Usuario" or user.groups.all.0.name == None or user.is_superuser %}
+                    {% if user.groups.all.0.name == "Administrador" or user.groups.all.0.name == "Usuario" or user.groups.all.0.name == Pendiente or user.is_superuser %}
                     <li id="mainop4">
                         <a href="#"><i class="fa fa-user"></i> <span class="nav-label">CUENTA</span><span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">

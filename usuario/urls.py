@@ -19,7 +19,7 @@ urlpatterns = [
         name='password_reset'),
     url(r'^usuario/password/reset/hecho/$', password_reset_done, {'template_name': 'registration/password_reset_done.html'},
         name='password_reset_done'),
-    url(r'^usuario/password/reset/confirmar/$', password_reset_confirm, {'template_name': 'registration/password_reset_confirm.html'},
+    url(r'^usuario/password/reset/confirmar/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/$', password_reset_confirm, {'template_name': 'registration/password_reset_confirm.html'},
         name='password_reset_confirm'),
     url(r'^usuario/password/reset/completo/$', password_reset_complete, {'template_name': 'registration/password_reset_complete.html'},
         name='password_reset_complete'),
