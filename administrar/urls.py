@@ -12,4 +12,5 @@ urlpatterns = [
     url(r'^login/$',login, {'template_name': 'loginform.html'}),
     url(r'^logout/$',logout, {'next_page': '/'}),
     url(r'^registrar/$',views.registrar, name='registrar'),
+    url(r'^prohibido/$', views.prohibido, name='prohibido'),
 ]
