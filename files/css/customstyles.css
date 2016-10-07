@@ -298,3 +298,14 @@ a {
 .button280 {
     width: 280px !important;
 }
+
+legend {
+    padding-bottom: 10px;
+
+}
+
+.form-horizontal label {
+    padding-top: 7px;
+    margin-bottom: 0;
+    text-align: right;
+}

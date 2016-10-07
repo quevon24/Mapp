@@ -1,0 +1,104 @@
+{% extends "base.html" %} {% block title %} Editar perfil {% endblock %} {% block content %}
+
+
+
+<div class="row wrapper border-bottom white-bg page-heading">
+                <div class="col-md-10">
+                    <h2>Editar perfil de: {{ user.username }}</h2>
+                    <ol class="breadcrumb">
+                        <li>
+                            <a href="#">Mi cuenta</a>
+                        </li>
+                        <li class="active">
+                            <strong>Editar perfil</strong>
+                        </li>
+                    </ol>
+                </div>
+                <div class="col-md-2">
+
+                </div>
+            </div>
+            <br>
+
+<div class="wrapper wrapper-content animated fadeInRight white-bg">
+    <div class="row">
+        <div class="col-md-12">
+
+<form method="post" action="{% url 'actualizar_perfil' %}" enctype="multipart/form-data" class="form-horizontal"> 
+  {% csrf_token %}
+
+
+
+<fieldset>
+
+<!-- Form Name -->
+<legend><i class="fa fa-gear"></i>&nbsp;Actualizar información de perfil</legend>
+
+<!-- Edad-->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="textinput">Edad</label>  
+  <div class="col-md-4">
+  <input id="id_edad" name="edad" type="number" value="{{ profile_form.edad.value|default_if_none:"" }}" placeholder="Edad" class="form-control input-md">
+  </div>
+</div>
+<!-- Telefono-->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="textinput">Telefono</label>  
+  <div class="col-md-4">
+  <input id="id_telefono" name="telefono" type="text" value="{{ profile_form.telefono.value|default_if_none:"" }}" placeholder="Telefono" class="form-control input-md">
+  </div>
+</div>
+<!-- celular-->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="textinput">Celular</label>  
+  <div class="col-md-4">
+  <input id="id_celular" name="celular" type="text" value="{{ profile_form.celular.value|default_if_none:"" }}" placeholder="Celular" class="form-control input-md">
+  </div>
+</div>
+<!-- Sexo -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="selectbasic">Sexo</label>
+  <div class="col-md-4">
+    {{profile_form.sexo}}
+  </div>
+</div>
+<!-- Dirección -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="textarea">Dirección</label>
+  <div class="col-md-4">                     
+    <textarea class="form-control" id="id_direccion" name="direccion">{{ profile_form.direccion.value|default_if_none:"" }}</textarea>
+
+  </div>
+</div>
+<!-- Descripcion -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="textarea">Descripción</label>
+  <div class="col-md-4">                     
+    <textarea class="form-control" id="id_descripcion" name="descripcion">{{ profile_form.descripcion.value|default_if_none:"" }}</textarea>
+  </div>
+</div>
+<!-- boton enviar -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="selectbasic"></label>
+  <div class="col-md-4">
+      <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;Guardar Cambios</button>
+      <a href="javascript:history.back();">
+<button class="btn btn-w-m btn-danger" type="submit"> <i class="fa fa-arrow-left"></i>
+  Regresar
+</button>
+</a>
+
+  </div>
+</div>
+
+</fieldset>
+
+
+</form>
+
+
+</div>
+</div>
+</div>
+
+{% endblock %}

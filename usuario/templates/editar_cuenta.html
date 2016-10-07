@@ -1,0 +1,85 @@
+{% extends "base.html" %} {% block title %} Editar datos de cuenta{% endblock %} {% block content %}
+
+
+<div class="row wrapper border-bottom white-bg page-heading">
+                <div class="col-md-10">
+                    <h2>Editar cuenta de: {{ user.username }}</h2>
+                    <ol class="breadcrumb">
+                        <li>
+                            <a href="#">Mi cuenta</a>
+                        </li>
+                        <li class="active">
+                            <strong>Editar perfil</strong>
+                        </li>
+                    </ol>
+                </div>
+                <div class="col-md-2">
+
+                </div>
+            </div>
+            <br>
+
+<div class="wrapper wrapper-content animated fadeInRight white-bg">
+    <div class="row">
+        <div class="col-md-12">
+
+<form method="post" enctype="multipart/form-data" class="form-horizontal"> 
+  {% csrf_token %}
+
+
+
+<fieldset>
+
+<!-- Form Name -->
+<legend><i class="fa fa-gear"></i>&nbsp; Actualizar información de cuenta</legend>
+
+<!-- Nombre -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="textinput">Nombre(s):</label>  
+  <div class="col-md-4">
+  <input id="id_first_name" name="first_name" type="text" value="{{ user_form.first_name.value|default_if_none:"" }}" placeholder="Nombre(s)" class="form-control input-md">
+  </div>
+</div>
+<!-- Apellido -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="textinput">Apellido(s):</label>  
+  <div class="col-md-4">
+  <input id="id_last_name" name="last_name" type="text" value="{{ user_form.last_name.value|default_if_none:"" }}" placeholder="Nombre" class="form-control input-md">
+  </div>
+</div>
+<!-- Email -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="textinput">Correo Electronico:</label>  
+  <div class="col-md-4">
+  <input id="id_email" name="email" type="email" value="{{ user_form.email.value|default_if_none:"" }}" placeholder="Nombre" class="form-control input-md">
+  </div>
+</div>
+
+<!-- boton enviar -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="selectbasic"></label>
+  <div class="col-md-4">
+      <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;Guardar Cambios</button>
+      <a href="javascript:history.back();">
+<button class="btn btn-w-m btn-danger" type="submit"> <i class="fa fa-arrow-left"></i>
+  Regresar
+</button>
+</a>
+
+  </div>
+</div>
+
+</fieldset>
+
+
+</form>
+
+
+</div>
+</div>
+</div>
+
+
+
+
+{% endblock %}

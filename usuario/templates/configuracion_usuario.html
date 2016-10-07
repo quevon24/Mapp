@@ -1,0 +1,70 @@
+{% extends "base.html" %} {% block title %} Configuración de cuenta {% endblock %} {% block content %}
+
+
+<div class="row wrapper border-bottom white-bg page-heading">
+                <div class="col-md-10">
+                    <h2>Cuenta de: {{ user.username }}</h2>
+                    <ol class="breadcrumb">
+                        <li>
+                            <a href="#">Mi cuenta</a>
+                        </li>
+                        <li class="active">
+                            <strong>Configuración</strong>
+                        </li>
+                    </ol>
+                </div>
+                <div class="col-md-2">
+
+                </div>
+            </div>
+            <br>
+
+<div class="wrapper wrapper-content animated fadeInRight white-bg">
+    <div class="row">
+        <div class="col-md-12">
+
+<legend><i class="fa fa-gear"></i>&nbsp; Información general de cuenta</legend>
+<br>
+
+
+<div class="panel panel-default">
+  <div class="panel-heading">Datos de cuenta:</div>
+  <div class="panel-body">
+  <dl>
+<dt>Nombre completo:</dt> <dd>{{usuario.get_full_name}}</dd>
+<dt>Email:</dt><dd> {{usuario.email}}</dd>
+
+<p></p>
+<a href="{% url 'actualizar_cuenta' %}"><button type="button" class="btn btn-primary">Editar datos de cuenta</button></a>
+<a href="{% url 'password_change' %}"><button type="button" class="btn btn-success">Cambiar contraseña</button></a>
+<a href="#"><button type="button" class="btn btn-danger">Cerrar cuenta</button></a>
+
+  </dl>
+  </div>
+</div>
+
+
+<div class="panel panel-default">
+  <div class="panel-heading">Resumen datos de perfil:</div>
+  <div class="panel-body">
+  <dl>
+<dt>Edad:</dt> <dd>{{perfil.edad|default:"----"}}</dd>
+<dt>Telefono:</dt> <dd>{{perfil.telefono|default:"----"}}</dd>
+<dt>Celular:</dt> <dd>{{perfil.celular|default:"----"}}</dd>
+<dt>Sexo:</dt> <dd>{{perfil.get_sexo_display|default_if_none:"----"}}</dd>
+<dt>Dirección:</dt> <dd>{{perfil.direccion|default_if_none:"----"}}</dd>
+<dt>Descripción:</dt> <dd>{{perfil.descripcion|default_if_none:"----"}}</dd>
+
+<p></p>
+<a href="{% url 'actualizar_perfil' %}"><button type="button" class="btn btn-primary">Editar información de perfil</button></a>
+
+  </dl>
+  </div>
+</div>
+
+
+</div>
+</div>
+</div>
+
+{% endblock %}

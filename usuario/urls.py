@@ -8,9 +8,9 @@ from usuario.views import listar_cartas, listar_audio, listar_video
 
 urlpatterns = [
     url(r'^$', views.home, name='home'),
-    #url(r'^usuario/modificar_perfil/$', views.actualizar_perfil, name='actualizar_perfil'),
-    #url(r'^usuario/modificar_cuenta/$', views.actualizar_cuenta, name='actualizar_cuenta'),
-    #url(r'^usuario/configuracion/$', views.configuraciones_usuario, name='configuraciones_usuario'),
+    url(r'^usuario/modificar_perfil/$', views.actualizar_perfil, name='actualizar_perfil'),
+    url(r'^usuario/modificar_cuenta/$', views.actualizar_cuenta, name='actualizar_cuenta'),
+    url(r'^usuario/configuracion/$', views.configuraciones_usuario, name='configuraciones_usuario'),
     url(r'^usuario/password/cambiar/$', password_change, {'template_name': 'registration/password_change_form.html'}, 
         name='password_change'),
     url(r'^usuario/password/cambiar/hecho/$', password_change_done, {'template_name': 'registration/password_change_done.html'},
@@ -28,6 +28,8 @@ urlpatterns = [
     url(r'^mensaje/agregar_video/$', views.upload_video, name='subir_video'),
     url(r'^mensaje/lista_video/$', listar_video.as_view(), name='lista_video'),
     url(r'^mensaje/detalle_video/(?P<pk>[0-9]+)/$', views.video_detalle, name='detalles_video'),
+
+    url(r'^usuario/configuracion/$', views.configuraciones_usuario, name='configuraciones_usuario'),
 
     #url(r'^perfil/(?P<username>\w+)/fotos/$', views.ver_imagenes_usuario, name='ver_imagenes_usuario'),
     url(r'^usuario/activar/(?P<codigo>\w+)/(?P<email>\w+|[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4})/', administrar.views.activarcuenta, name='activacion'),
