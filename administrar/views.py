@@ -85,13 +85,16 @@ def activarcuenta(request, codigo, email):
         activar = Activar_cuenta.objects.get(clave=codigo, email=email)
         try:
             usuario = Perfil.objects.get(user=activar.user)
+            usuario1 = User.objects.get(username=activar.user)
         except Perfil.DoesNotExist:
             activar = None
             usuario = None
+            usuario1 = None
             exito = False
     except Activar_cuenta.DoesNotExist:
         activar = None
         usuario = None
+        usuario1 = None
         exito = False
 
     
@@ -105,7 +108,7 @@ def activarcuenta(request, codigo, email):
 		except Group.DoesNotExist:
 			g = None
 		else:
-			g.user_set.add(usuario)
+			g.user_set.add(usuario1)
 		exito = True
 
-    return render(request, 'activacion.html', {'usuario': usuario, 'activar':activar, 'exito':exito})
+    return render(request, 'activacion.html', {'usuario': usuario, 'usuario1':usuario1, 'activar':activar, 'exito':exito})
