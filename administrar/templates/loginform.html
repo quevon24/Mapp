@@ -7,7 +7,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE = edge">
     <meta name="viewport" content="width = device-width, initial-scale = 1">
-    <title>Red Social | Iniciar Sesión{% block title %}{% endblock %}</title>
+    <title>Mensajes | Iniciar Sesión{% block title %}{% endblock %}</title>
     <!-- Bootstrap -->
     <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
     <!-- Estilos personalizados -->
@@ -54,7 +54,7 @@
                         <input type="password" class="form-control" placeholder="Password" name="password" id="id_password">
                     </div>
                     <div class="form-group">
-                        <a href="#" class="loginpagelink">{% trans 'Olvide mi contraseña' %}</a>
+                        <a href="{% url 'password_reset' %}" class="loginpagelink">{% trans 'Olvide mi contraseña' %}</a>
                     </div>
 
                     <button type="submit" class="btn btn-primary block full-width m-b">{% trans 'Iniciar Sesión' %}</button>
@@ -64,6 +64,7 @@
                 <p style="margin-top:20px;">
                     ¿No tienes una cuenta? <a href="/registrar/" class="loginpagelink">Registrate ahora!</a>
                 </p>
+
 
                 <p style="padding-top:20px;">
                     <a href="/" class="loginpagelink">
