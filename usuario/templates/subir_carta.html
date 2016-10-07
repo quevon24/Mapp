@@ -1,40 +1,79 @@
  {% extends "base.html" %}{% load static %} {% block title %} Agregar carta {% endblock %} {% block content %}
-
-{% if save == True %}
-         <strong>Carta guardada correctamente.</strong>
-      {% endif %}
-
-{% if form.archivo.errors %}
-
-{{ form.archivo.errors.as_text }}
-                
-                    {% endif %}
-
-<p></p>
-                        <form action="{% url 'subir_carta' %}" method="post" enctype="multipart/form-data">{% csrf_token %}
-                        <p>
-Contenido: <input id="id_contenido" type="text" class="" name="contenido">
-                        </p>
-                <p>
-                    Archivo: <input id="id_archivo" type="file" class="" name="archivo">
-
-
-
-                </p>
-<p>
-Email destinatario: <input id="id_email" type="email" class="" name="email">
-                        </p>
-<p>
-Telefono 1 destinatario: <input id="id_tel1" type="text" class="" name="tel1">
-                        </p>
-<p>
-Telefono 2 destinatario: <input id="id_tel2" type="text" class="" name="tel2">
-                        </p>
-
-                <input type="submit" value="Submit" />
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-md-10">
+        <h2>Agregar carta</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="#">Cartas</a>
+            </li>
+            <li class="active">
+                <strong>Nueva carta</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-md-2">
+    </div>
+</div>
+<br>
+<div class="wrapper wrapper-content animated fadeInRight white-bg">
+    <div class="row">
+        <div class="col-md-12">
+            {% if save == True %}
+            <div class="alert alert-success">
+                Carta guardado correctamente. <a class="alert-link" href="{% url 'lista_cartas' %}"> Ver cartas</a>.
+            </div>
+            {% endif %} {% if form.archivo.errors %} {{ form.archivo.errors.as_text }} {% endif %}
+            <p></p>
+            <form action="{% url 'subir_carta' %}" method="post" enctype="multipart/form-data" class="form-horizontal">{% csrf_token %}
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        Contenido:
+                    </label>
+                    <div class="col-sm-6">
+                    <textarea class="form-control" id="id_contenido" name="contenido"></textarea>
+                        
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        Archivo:
+                    </label>
+                    <div class="col-sm-6">
+                        <input id="id_archivo" type="file" class="form-control" name="archivo">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        Email destinatario:
+                    </label>
+                    <div class="col-sm-6">
+                        <input id="id_email" type="email" class="form-control" name="email">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        Telefono 1 destinatario:
+                    </label>
+                    <div class="col-sm-6">
+                        <input id="id_tel1" type="text" class="form-control" name="tel1">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        Telefono 2 destinatario:
+                    </label>
+                    <div class="col-sm-6">
+                        <input id="id_tel2" type="text" class="form-control" name="tel2">
+                    </div>
+                </div>
+                <br>
+                <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;Guardar Carta</button>
+                <a href="javascript:history.back();">
+                    <button class="btn btn-w-m btn-danger" type="submit"> <i class="fa fa-arrow-left"></i> Cancelar
+                    </button>
+                </a>
             </form>
-
-
-      
-
+        </div>
+    </div>
+</div>
 {% endblock %}

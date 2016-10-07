@@ -1,32 +1,51 @@
  {% extends "base.html" %}{% load static %} {% block title %} Detalle de mensaje de video{% endblock %} {% block content %}
-
-<h2 class="text-center" style="padding-top: 10px; padding-bottom:10px;">Detalles de mensaje de video</h2>
-
-	<div class="row">
-		<div class="col-md-12">
-			<dl class="dl-horizontal">
-
-				<dt>Fecha:</dt>
-				<dd>{{video.fecha}}</dd>
-				<dt>Archivo:</dt>
-				<dd><a href="{{ MEDIA_URL }}{{video.archivo}}">{{video.archivo}}</a></dd>
-				<dt>Email:</dt>
-				<dd>{{video.email}}</dd>
-				<dt>Tel 1:</dt>
-				<dd>{{video.tel1}}</dd>
-				<dt>Tel 2:</dt>
-				<dd>{{video.tel2}}</dd>
-				<dt>Nombre:</dt>
-				<dd>{{video.nombre}}</dd>
-				<dt>Formato</dt>
-				<dd>{{video.get_formato_display}}</dd>
-				<dt>Direccion</dt>
-				<dd>{{video.direccion}}</dd>
-
-
-			</dl>
-		</div>
-		</div>
-
-
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-md-10">
+        <h2>Detalles video</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="#">Video</a>
+            </li>
+            <li class="active">
+                <strong>Detalles video</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-md-2">
+    </div>
+</div>
+<br>
+<div class="wrapper wrapper-content animated fadeInRight white-bg">
+    <div class="row">
+        <div class="col-md-12">
+            <h2 class="text-center" style="padding-top: 10px; padding-bottom:10px;">Detalles de mensaje de video:</h2>
+            <div class="row">
+                <div class="col-md-12">
+                    <dl class="dl-horizontal">
+                        <dt>Fecha:</dt>
+                        <dd>{{video.fecha}}</dd>
+                        <dt>Archivo:</dt>
+                        <dd><a href="javascript:window.open('{{ MEDIA_URL }}{{video.archivo.url}}','Video','width=600,height=400')">{{video.archivo}}</a></dd>
+                        <dt>Email:</dt>
+                        <dd>{{video.email}}</dd>
+                        <dt>Tel 1:</dt>
+                        <dd>{{video.tel1}}</dd>
+                        <dt>Tel 2:</dt>
+                        <dd>{{video.tel2}}</dd>
+                        <dt>Nombre:</dt>
+                        <dd>{{video.nombre}}</dd>
+                        <dt>Formato:</dt>
+                        <dd>{{video.get_formato_display|default_if_none:"----"}}</dd>
+                        <dt>Dirección:</dt>
+                        <dd>{{video.direccion}}</dd>
+                    </dl>
+                    <a href="javascript:history.back();">
+                        <button class="btn btn-w-m btn-danger" type="submit"> <i class="fa fa-arrow-left"></i> Regresar
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

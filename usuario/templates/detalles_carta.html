@@ -1,5 +1,29 @@
  {% extends "base.html" %}{% load static %} {% block title %} Detalle de carta {% endblock %} {% block content %}
 
+<div class="row wrapper border-bottom white-bg page-heading">
+                <div class="col-md-10">
+                    <h2>Detalles carta</h2>
+                    <ol class="breadcrumb">
+                        <li>
+                            <a href="#">Cartas</a>
+                        </li>
+                        <li class="active">
+                            <strong>Detalles carta</strong>
+                        </li>
+                    </ol>
+                </div>
+                <div class="col-md-2">
+
+                </div>
+            </div>
+            <br>
+
+<div class="wrapper wrapper-content animated fadeInRight white-bg">
+    <div class="row">
+        <div class="col-md-12">
+
+
+
 <h2 class="text-center" style="padding-top: 10px; padding-bottom:10px;">Detalles de carta</h2>
 
 	<div class="row">
@@ -9,7 +33,7 @@
 				<dt>Fecha:</dt>
 				<dd>{{carta.fecha}}</dd>
 				<dt>Archivo:</dt>
-				<dd><a href="{{ MEDIA_URL }}{{carta.archivo}}">{{carta.archivo}}</a></dd>
+				<dd>{% if carta.archivo %}<a href="{{ MEDIA_URL }}{{carta.archivo.url}}">{{carta.archivo}}</a>{% else %} Ninguno {% endif %}</dd>
 				<dt>Contenido:</dt>
 				<dd>{{carta.contenido}}</dd>
 				<dt>Email:</dt>
@@ -21,8 +45,17 @@
 
 
 			</dl>
+<a href="javascript:history.back();">
+<button class="btn btn-w-m btn-danger" type="submit"> <i class="fa fa-arrow-left"></i>
+  Regresar
+</button>
+</a>
+			
 		</div>
 		</div>
 
+</div>
+</div>
+</div>
 
 {% endblock %}

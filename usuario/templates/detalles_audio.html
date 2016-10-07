@@ -1,5 +1,33 @@
  {% extends "base.html" %}{% load static %} {% block title %} Detalle de mensaje de audio {% endblock %} {% block content %}
 
+
+<div class="row wrapper border-bottom white-bg page-heading">
+                <div class="col-md-10">
+                    <h2>Detalles video</h2>
+                    <ol class="breadcrumb">
+                        <li>
+                            <a href="#">Video</a>
+                        </li>
+                        <li class="active">
+                            <strong>Detalles video</strong>
+                        </li>
+                    </ol>
+                </div>
+                <div class="col-md-2">
+
+                </div>
+            </div>
+            <br>
+
+<div class="wrapper wrapper-content animated fadeInRight white-bg">
+    <div class="row">
+        <div class="col-md-12">
+
+
+
+
+
+
 <h2 class="text-center" style="padding-top: 10px; padding-bottom:10px;">Detalles de mensaje de audio</h2>
 
 	<div class="row">
@@ -9,7 +37,7 @@
 				<dt>Fecha:</dt>
 				<dd>{{audio.fecha}}</dd>
 				<dt>Archivo:</dt>
-				<dd><a href="{{ MEDIA_URL }}{{audio.archivo}}">{{audio.archivo}}</a></dd>
+				<dd><a href="javascript:window.open('{{ MEDIA_URL }}{{audio.archivo.url}}','Audio','width=600,height=400')">{{audio.archivo}}</a></dd>
 				<dt>Email:</dt>
 				<dd>{{audio.email}}</dd>
 				<dt>Tel 1:</dt>
@@ -19,8 +47,18 @@
 
 
 			</dl>
+<a href="javascript:history.back();">
+<button class="btn btn-w-m btn-danger" type="submit"> <i class="fa fa-arrow-left"></i>
+  Regresar
+</button>
+</a>
+
 		</div>
 		</div>
 
+
+</div>
+</div>
+</div>
 
 {% endblock %}
