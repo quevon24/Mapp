@@ -35,7 +35,7 @@
 				<dt>Archivo:</dt>
 				<dd>{% if carta.archivo %}<a href="{{ MEDIA_URL }}{{carta.archivo.url}}">{{carta.archivo}}</a>{% else %} Ninguno {% endif %}</dd>
 				<dt>Contenido:</dt>
-				<dd>{{carta.contenido}}</dd>
+				<dd class="htmlbox">{% autoescape off %} {{carta.contenido}} {% endautoescape %}</dd>
 				<dt>Email:</dt>
 				<dd>{{carta.email}}</dd>
 				<dt>Tel 1:</dt>
@@ -48,6 +48,13 @@
 <a href="javascript:history.back();">
 <button class="btn btn-w-m btn-danger" type="submit"> <i class="fa fa-arrow-left"></i>
   Regresar
+</button>
+</a>
+
+<a href="{% url 'editar_carta' pk=carta.pk %}">
+<button class="btn btn-info btn-w-m" type="button">
+	<i class="fa fa-pencil"></i>
+	Editar
 </button>
 </a>
 			

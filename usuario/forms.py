@@ -2,6 +2,8 @@
 from django.contrib.auth.models import User
 from models import *
 from django import forms
+from ckeditor.widgets import CKEditorWidget
+
 
 
 class Usuarioform(forms.ModelForm):
@@ -16,6 +18,7 @@ class Perfilform(forms.ModelForm):
         'direccion', 'descripcion')
 
 class Usuario_cartas(forms.ModelForm):
+    contenido = forms.CharField(widget=CKEditorWidget())
     class Meta:
         model = Perfil_carta
         fields = ('contenido', 'archivo', 'email', 'tel1', 'tel2')

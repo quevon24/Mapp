@@ -72,6 +72,7 @@ def upload_carta(request):
             post.email = form.cleaned_data['email']
             post.tel1 = form.cleaned_data['tel1']
             post.tel2 = form.cleaned_data['tel2']
+            post.terminado = True
             post.user = request.user
             post.save()
             save = True
@@ -80,6 +81,33 @@ def upload_carta(request):
 	else:
             form = Usuario_cartas()
 	return render(request, 'subir_carta.html', {'form': form, 'save':save})
+
+
+# ---------------------------------------------------------------
+# Usuario editar carta
+@login_required
+def editar_carta(request, pk):
+	post = get_object_or_404(Perfil_carta, pk=pk)
+	save = False
+	form = Usuario_cartas(instance=post)
+	if request.method == 'POST':
+		form = Usuario_cartas(request.POST, request.FILES, instance=post)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.archivo = form.cleaned_data['archivo']
+            # post.contenido = form.cleaned_data['contenido']
+            # post.email = form.cleaned_data['email']
+            # post.tel1 = form.cleaned_data['tel1']
+            # post.tel2 = form.cleaned_data['tel2']
+            post.terminado = True
+            post.user = request.user
+            post.save()
+            save = True
+            print save
+            #return redirect('home')
+	else:
+            form = Usuario_cartas(instance=post)
+	return render(request, 'editar_carta.html', {'form': form, 'save':save})
 
 
 # ---------------------------------------------------------------
@@ -137,6 +165,7 @@ def upload_audio(request):
             post.tel1 = form.cleaned_data['tel1']
             post.tel2 = form.cleaned_data['tel2']
             post.user = request.user
+            post.terminado = True
             post.save()
             save = True
             print save
@@ -202,6 +231,7 @@ def upload_video(request):
             post.direccion = form.cleaned_data['direccion']
             post.formato = form.cleaned_data['formato']
             post.user = request.user
+            post.terminado = True
             post.save()
             save = True
             print save

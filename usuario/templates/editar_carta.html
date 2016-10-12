@@ -1,0 +1,95 @@
+ {% extends "base.html" %}{% load static %} {% block title %} Editar carta {% endblock %} 
+
+{% load staticfiles %}
+<script type="text/javascript" src="{% static "ckeditor/ckeditor/ckeditor.js" %}"></script>
+<script type="text/javascript" src="{% static "ckeditor/ckeditor-init.js" %}"></script>
+
+
+ {% block content %}
+
+
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-md-10">
+        <h2>Editar carta</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="#">Cartas</a>
+            </li>
+            <li class="active">
+                <strong>Editar carta</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-md-2">
+    </div>
+</div>
+<br>
+<div class="wrapper wrapper-content animated fadeInRight white-bg">
+    <div class="row">
+        <div class="col-md-12">
+            {% if save == True %}
+            <div class="alert alert-success">
+                Carta editada correctamente. <a class="alert-link" href="{% url 'lista_cartas' %}"> Ver cartas</a>.
+            </div>
+            {% endif %} {% if form.archivo.errors %} {{ form.archivo.errors.as_text }} {% endif %}
+            <p></p>
+            <form method="post" enctype="multipart/form-data" class="form-horizontal">{% csrf_token %}
+            {{ form.media }}
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        Contenido:
+                    </label>
+                    <div class="col-sm-6">
+                    
+                        {{form.contenido}}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        Archivo:
+                    </label>
+                    <div class="col-sm-6">
+                       <!--  <input id="id_archivo" type="file" class="form-control" name="archivo"> -->
+Archivo adjuntado:
+<br>
+{% if form.archivo %}<a href="{{ MEDIA_URL }}{{form.archivo.url}}">{{form.archivo}}</a>{% else %} Ninguno {% endif %}
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        Email destinatario:
+                    </label>
+                    <div class="col-sm-6">
+                        <input id="id_email" type="email" class="form-control" name="email" value="{{form.email.value}}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        Telefono 1 destinatario:
+                    </label>
+                    <div class="col-sm-6">
+                        <input id="id_tel1" type="text" class="form-control" name="tel1" value="{{form.tel1.value}}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        Telefono 2 destinatario:
+                    </label>
+                    <div class="col-sm-6">
+                        <input id="id_tel2" type="text" class="form-control" name="tel2" 
+                        value="{{form.tel2.value}}">
+                    </div>
+                </div>
+                <br>
+                <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;Guardar Carta</button>
+                <a href="javascript:history.back();">
+                    <button class="btn btn-w-m btn-danger" type="submit"> <i class="fa fa-arrow-left"></i> Cancelar
+                    </button>
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

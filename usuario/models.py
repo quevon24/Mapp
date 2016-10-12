@@ -63,6 +63,7 @@ class Perfil_carta(models.Model):
 	email = models.EmailField(null=True, blank=True)
 	tel1 = models.CharField(max_length=40)
 	tel2 = models.CharField(max_length=40)
+	terminado = models.BooleanField(default=False) # poner true cuando se guarda
 
 	def __unicode__(self):
 		return '%s - %s' % (self.user, self.fecha)
@@ -84,6 +85,7 @@ class Perfil_audio(models.Model):
 	email = models.EmailField(null=True, blank=True)
 	tel1 = models.CharField(max_length=40)
 	tel2 = models.CharField(max_length=40)
+	terminado = models.BooleanField(default=False) # poner true cuando se guarda
 
 	def __unicode__(self):
 		return '%s - %s' % (self.user, self.fecha)
@@ -114,6 +116,7 @@ class Perfil_video(models.Model):
 		(4, 'DVD'),
 		)
 	formato = models.IntegerField(choices=formato_options, blank=True, null=True)
+	terminado = models.BooleanField(default=False) # poner true cuando se guarda
 
 	def __unicode__(self):
 		return '%s - %s' % (self.user, self.fecha)
@@ -126,6 +129,16 @@ class Activar_cuenta(models.Model):
 	clave = models.CharField(max_length=40, null=True, blank=True)
 	uso = models.BooleanField(default=False)
 	email = models.EmailField(null=True, blank=True)
+
+class conteo_mensajes(models.Model):
+	user = models.OneToOneField(User, on_delete=models.CASCADE)
+	carta = models.IntegerField(default=0)
+	audio = models.IntegerField(default=0)
+	video = models.IntegerField(default=0)
+	carta_extra = models.IntegerField(default=0)
+	audio_extra = models.IntegerField(default=0)
+	video_extra = models.IntegerField(default=0)
+
 
 
 # ------------------------------------------------------

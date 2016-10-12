@@ -28,6 +28,7 @@ urlpatterns = [
     url(r'^mensaje/agregar_carta/$', views.upload_carta, name='subir_carta'),
     url(r'^mensaje/lista_cartas/$', listar_cartas.as_view(), name='lista_cartas'),
     url(r'^mensaje/detalle_carta/(?P<pk>[0-9]+)/$', views.carta_detalle, name='detalles_carta'),
+    url(r'^mensaje/editar_carta/(?P<pk>[0-9]+)/$', views.editar_carta, name='editar_carta'),
 
     url(r'^mensaje/agregar_audio/$', views.upload_audio, name='subir_audio'),
     url(r'^mensaje/lista_audio/$', listar_audio.as_view(), name='lista_audio'),
