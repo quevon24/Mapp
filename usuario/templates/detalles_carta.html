@@ -33,7 +33,15 @@
 				<dt>Fecha:</dt>
 				<dd>{{carta.fecha}}</dd>
 				<dt>Archivo:</dt>
-				<dd>{% if carta.archivo %}<a href="{{ MEDIA_URL }}{{carta.archivo.url}}">{{carta.archivo}}</a>{% else %} Ninguno {% endif %}</dd>
+				<dd>
+				{% if archivos %}
+				{% for archivo in archivos %}
+				<a href="{{archivo.archivo.url}}">{{archivo.archivo}}</a>
+				{% endfor %}
+				{% else %}
+				------------
+				{% endif %}
+				</dd>
 				<dt>Contenido:</dt>
 				<dd class="htmlbox">{% autoescape off %} {{carta.contenido}} {% endautoescape %}</dd>
 				<dt>Email:</dt>

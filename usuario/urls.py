@@ -1,9 +1,10 @@
 from django.conf.urls import url, include
 from django.contrib.auth.views import password_reset, password_reset_done, password_reset_confirm, password_reset_complete, password_change, password_change_done
+from django.views.generic import CreateView, DeleteView, ListView
 
 import administrar.views
 from usuario import views
-from usuario.views import listar_cartas, listar_audio, listar_video
+from usuario.views import listar_cartas, listar_audio, listar_video, PictureCreateView, PictureDeleteView1
 
 
 urlpatterns = [
@@ -25,10 +26,13 @@ urlpatterns = [
         name='password_reset_complete'),
     #url(r'^umedia/', include('user_media.urls')),
     #url(r'^usuario/actualizar_foto/$', views.upload_pic, name='subir_foto'),
-    url(r'^mensaje/agregar_carta/$', views.upload_carta, name='subir_carta'),
-    url(r'^mensaje/lista_cartas/$', listar_cartas.as_view(), name='lista_cartas'),
-    url(r'^mensaje/detalle_carta/(?P<pk>[0-9]+)/$', views.carta_detalle, name='detalles_carta'),
-    url(r'^mensaje/editar_carta/(?P<pk>[0-9]+)/$', views.editar_carta, name='editar_carta'),
+    url(r'^mensaje/agregar-carta/$', views.crear_carta, name='crear_carta'),
+    url(r'^mensaje/lista-cartas/$', listar_cartas.as_view(), name='lista_cartas'),
+    url(r'^mensaje/detalle-carta/(?P<pk>[0-9]+)/$', views.carta_detalle, name='detalles_carta'),
+    url(r'^mensaje/editar-carta/(?P<pk>[0-9]+)/$', views.editar_carta, name='editar_carta'),
+    url(r'^mensaje/subir-carta/$', PictureCreateView.as_view(), name='upload_carta'),
+    url(r'^borrar-archivo-carta/(?P<pk>\d+)/$', views.borrar_archivo_carta, name='borrar_archivo_carta'),
+    url(r'^obtener-archivos-cartas/(?P<cartaid>[0-9]+)/$', views.obtener_archivos_cartas, name='obtener_archivos_cartas'),
 
     url(r'^mensaje/agregar_audio/$', views.upload_audio, name='subir_audio'),
     url(r'^mensaje/lista_audio/$', listar_audio.as_view(), name='lista_audio'),

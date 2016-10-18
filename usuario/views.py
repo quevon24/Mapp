@@ -8,12 +8,18 @@ from django.db import transaction
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
 from django.conf import settings
-from django.views.generic import ListView, DeleteView
+from django.views.generic import ListView, DeleteView, CreateView
+from django.core.urlresolvers import reverse
+import json
 
 # Paginacion
 from django.core.paginator import Paginator
 from django.core.paginator import EmptyPage
 from django.core.paginator import PageNotAnInteger
+
+# jquery file upload
+from fileupload.response import JSONResponse, response_mimetype
+from fileupload.serialize import serialize
 
 # Permisos
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -57,17 +63,46 @@ def actualizar_cuenta(request):
         'user_form': user_form,
     })
 
+
+# ---------------------------------------------------------------
+# Usuario crear carta
+
+def crear_carta(request):
+	nueva = Perfil_carta.objects.create(user=request.user)
+	return HttpResponseRedirect(reverse('editar_carta', args=(nueva.id,)))
+
+
+
 # ---------------------------------------------------------------
 # Usuario subir carta , settings.VARIABLE
+
+class PictureCreateView(CreateView):
+    model = Perfil_carta_archivo
+    fields = "__all__"
+    #template_name = "perfil_carta_archivo_.html"
+
+    def form_valid(self, form):
+        self.object = form.save()
+        files = [serialize(self.object)]
+        data = {'files': files}
+        response = JSONResponse(data, mimetype=response_mimetype(self.request))
+        print response
+        response['Content-Disposition'] = 'inline; filename=files.json'
+        return response
+
+    def form_invalid(self, form):
+        data = json.dumps(form.errors)
+        print data
+        return HttpResponse(content=data, status=400, content_type='application/json')
+
 @login_required
 def upload_carta(request):
 	save = False
 	form = Usuario_cartas()
 	if request.method == 'POST':
-		form = Usuario_cartas(request.POST, request.FILES)
+		form = Usuario_cartas(request.POST)
         if form.is_valid():
             post = form.save(commit=False)
-            post.archivo = form.cleaned_data['archivo']
             post.contenido = form.cleaned_data['contenido']
             post.email = form.cleaned_data['email']
             post.tel1 = form.cleaned_data['tel1']
@@ -80,21 +115,88 @@ def upload_carta(request):
             #return redirect('home')
 	else:
             form = Usuario_cartas()
-	return render(request, 'subir_carta.html', {'form': form, 'save':save})
+
+	if 'savefile' in request.POST:
+		#objs = dict(request.POST.iterlists()) #pass submit form fields in a dict
+		
+		#namefield = objs['name'] #get name section from form
+		#namefield=namefield[0].encode('utf8') #encode to utf8 to avoid errors in latin characters
+		form = Usuario_cartas(request.POST) 
+		if form.is_valid():
+			form.carta = 0
+			form.save()
+
+	return render(request, 'subir_carta.html', {'form': form, 'save':save}, locals())
 
 
 # ---------------------------------------------------------------
 # Usuario editar carta
+
+def obtener_archivos_cartas(request, cartaid):
+	try:
+		archivos = Perfil_carta_archivo.objects.filter(carta=cartaid).values('pk' ,'user','carta','archivo')
+		lista_archivos = list(archivos)
+	except:
+		archivos = None
+		lista_archivos = list(archivos)
+	else:
+		response = JSONResponse(lista_archivos)
+        print response
+        response['Content-Disposition'] = 'inline; filename=files.json'
+        return response
+
+
+class PictureCreateView(CreateView):
+    model = Perfil_carta_archivo
+    fields = "__all__"
+    #template_name = "perfil_carta_archivo_.html"
+
+    def form_valid(self, form):
+        self.object = form.save()
+        files = [serialize(self.object)]
+        data = {'files': files}
+        response = JSONResponse(data, mimetype=response_mimetype(self.request))
+        print response
+        response['Content-Disposition'] = 'inline; filename=files.json'
+        return response
+
+    def form_invalid(self, form):
+        data = json.dumps(form.errors)
+        print data
+        return HttpResponse(content=data, status=400, content_type='application/json')
+
+
+class PictureDeleteView1(DeleteView):
+    model = Perfil_carta_archivo
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.delete()
+        response = JSONResponse(True, mimetype=response_mimetype(request))
+        response['Content-Disposition'] = 'inline; filename=files.json'
+        return response
+
+def borrar_archivo_carta(request, pk):
+	archivo = Perfil_carta_archivo.objects.get(pk=pk)
+	archivo.delete()
+	print 'archivo borrado'
+	response = JSONResponse(True, mimetype=response_mimetype(request))
+	response['Content-Disposition'] = 'inline; filename=files.json'
+	return response
+
+
 @login_required
 def editar_carta(request, pk):
 	post = get_object_or_404(Perfil_carta, pk=pk)
+	obj_id = pk 
 	save = False
 	form = Usuario_cartas(instance=post)
+	archivos = Perfil_carta_archivo.objects.filter(user=request.user)
+	num_archivos = archivos.count()
 	if request.method == 'POST':
 		form = Usuario_cartas(request.POST, request.FILES, instance=post)
         if form.is_valid():
             post = form.save(commit=False)
-            post.archivo = form.cleaned_data['archivo']
             # post.contenido = form.cleaned_data['contenido']
             # post.email = form.cleaned_data['email']
             # post.tel1 = form.cleaned_data['tel1']
@@ -107,7 +209,7 @@ def editar_carta(request, pk):
             #return redirect('home')
 	else:
             form = Usuario_cartas(instance=post)
-	return render(request, 'editar_carta.html', {'form': form, 'save':save})
+	return render(request, 'editar_carta.html', {'form': form, 'save':save, 'obj_pk':obj_id, 'archivos':archivos , 'num_archivos':num_archivos})
 
 
 # ---------------------------------------------------------------
@@ -146,8 +248,9 @@ class listar_cartas(ListView):
 @login_required
 @group_required('Administrador', 'Pendiente')
 def carta_detalle(request, pk):
+	archivos = Perfil_carta_archivo.objects.filter(carta=pk)
 	carta = get_object_or_404(Perfil_carta, pk = pk)
-	return render(request, 'detalles_carta.html', {'carta': carta})
+	return render(request, 'detalles_carta.html', {'carta': carta, 'archivos':archivos})
 
 
 # ---------------------------------------------------------------

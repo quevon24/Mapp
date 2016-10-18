@@ -20,12 +20,12 @@ from django.core.mail import send_mail, EmailMessage
 from django.contrib.auth.models import User, Permission, Group
 
 def user_directory_path(instance, filename):
-    # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
-    return 'user_{0}/{1}'.format(instance.user.id, filename)
+	# file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
+	return 'user_{0}/{1}'.format(instance.user.id, filename)
 
 def user_directoryfile_path(instance, filename):
-    # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
-    return 'user_{0}/files/{1}'.format(instance.user.id, filename)
+	# file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
+	return 'user_{0}/files/{1}'.format(instance.user.id, filename)
 
 class Perfil(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -51,18 +51,17 @@ class Perfil(models.Model):
 def validar_carta(value):
   import os
   ext = os.path.splitext(value.name)[1]
-  valid_extensions = ['.pdf','.doc','.docx']
+  valid_extensions = ['.pdf','.doc','.docx','.jpg']
   if not ext in valid_extensions:
-    raise ValidationError(u'Archivo no soportado!')
+	raise ValidationError(u'Archivo no soportado!')
 	
 class Perfil_carta(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	fecha = models.DateTimeField(default=timezone.now)
-	archivo = models.FileField(upload_to = user_directoryfile_path, null=True, blank=True, validators=[validar_carta])
 	contenido = models.TextField(max_length=1000, blank=True, null=True)
 	email = models.EmailField(null=True, blank=True)
-	tel1 = models.CharField(max_length=40)
-	tel2 = models.CharField(max_length=40)
+	tel1 = models.CharField(max_length=40, null=True, blank=True)
+	tel2 = models.CharField(max_length=40, null=True, blank=True)
 	terminado = models.BooleanField(default=False) # poner true cuando se guarda
 
 	def __unicode__(self):
@@ -71,12 +70,36 @@ class Perfil_carta(models.Model):
 	class Meta:
 		verbose_name_plural = "Cartas"
 
+class Perfil_carta_archivo(models.Model):
+	user = models.ForeignKey(User, models.SET_NULL, blank=True, null=True,)
+	carta = models.ForeignKey(Perfil_carta, blank=True, null=True)
+	slug = models.SlugField(max_length=500, blank=True, null=True)
+	archivo = models.FileField(upload_to = user_directoryfile_path, null=True, blank=True)
+
+	def __unicode__(self):
+		return self.archivo.name
+
+	@models.permalink
+	def get_absolute_url(self):
+		return ('editar_carta', )
+
+	def save(self, *args, **kwargs):
+		self.slug = self.archivo.name
+		super(Perfil_carta_archivo, self).save(*args, **kwargs)
+
+	def delete(self, *args, **kwargs):
+		#"""delete -- Remove to leave file."""
+		self.archivo.delete(False)
+		super(Perfil_carta_archivo, self).delete(*args, **kwargs)
+
+
+
 def validar_audio(value):
   import os
   ext = os.path.splitext(value.name)[1]
   valid_extensions = ['.wav','.mp3','.mp4']
   if not ext in valid_extensions:
-    raise ValidationError(u'Archivo no soportado!')
+	raise ValidationError(u'Archivo no soportado!')
 
 class Perfil_audio(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -98,7 +121,7 @@ def validar_video(value):
   ext = os.path.splitext(value.name)[1]
   valid_extensions = ['.3gp','.avi','.mp4']
   if not ext in valid_extensions:
-    raise ValidationError(u'Archivo no soportado!')
+	raise ValidationError(u'Archivo no soportado!')
 
 class Perfil_video(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)

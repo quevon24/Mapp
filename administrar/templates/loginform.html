@@ -57,6 +57,8 @@
                         <a href="{% url 'password_reset' %}" class="loginpagelink">{% trans 'Olvide mi contraseña' %}</a>
                     </div>
 
+                    <input type="hidden" name="next" value="{{ next }}" />
+
                     <button type="submit" class="btn btn-primary block full-width m-b">{% trans 'Iniciar Sesión' %}</button>
 
                 </form>

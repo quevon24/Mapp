@@ -34,7 +34,7 @@
             </div>
             {% endif %} {% if form.archivo.errors %} {{ form.archivo.errors.as_text }} {% endif %}
             <p></p>
-            <form method="post" enctype="multipart/form-data" class="form-horizontal">{% csrf_token %}
+            <form method="post" id="mainform" enctype="multipart/form-data" class="form-horizontal">{% csrf_token %}
             {{ form.media }}
                 <div class="form-group">
                     <label class="col-sm-2 control-label">
@@ -47,22 +47,10 @@
                 </div>
                 <div class="form-group">
                     <label class="col-sm-2 control-label">
-                        Archivo:
-                    </label>
-                    <div class="col-sm-6">
-                       <!--  <input id="id_archivo" type="file" class="form-control" name="archivo"> -->
-Archivo adjuntado:
-<br>
-{% if form.archivo %}<a href="{{ MEDIA_URL }}{{form.archivo.url}}">{{form.archivo}}</a>{% else %} Ninguno {% endif %}
-
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">
                         Email destinatario:
                     </label>
                     <div class="col-sm-6">
-                        <input id="id_email" type="email" class="form-control" name="email" value="{{form.email.value}}">
+                        <input id="id_email" type="email" class="form-control" name="email" value="{{form.email.value|default_if_none:"" }}">
                     </div>
                 </div>
                 <div class="form-group">
@@ -70,7 +58,7 @@ Archivo adjuntado:
                         Telefono 1 destinatario:
                     </label>
                     <div class="col-sm-6">
-                        <input id="id_tel1" type="text" class="form-control" name="tel1" value="{{form.tel1.value}}">
+                        <input id="id_tel1" type="text" class="form-control" name="tel1" value="{{form.tel1.value |default_if_none:"" }}">
                     </div>
                 </div>
                 <div class="form-group">
@@ -79,11 +67,76 @@ Archivo adjuntado:
                     </label>
                     <div class="col-sm-6">
                         <input id="id_tel2" type="text" class="form-control" name="tel2" 
-                        value="{{form.tel2.value}}">
+                        value="{{form.tel2.value|default_if_none:""}}">
                     </div>
                 </div>
+
+<div class="form-group">
+    <label class="col-sm-2 control-label">
+        Archivo:
+    </label>
+    <div class="col-sm-6">
+
+<div class="maxfiles">
+Numero maximo de archivos: 1
+<br> Borra un archivo para habilitar esta opcion
+</div>
+
+<div class="form-ok">
+        <form name="fileform" id='formulario' method='POST' enctype='multipart/form-data'>
+            {% csrf_token %}
+            <ul>
+            </ul>
+            <span class="btn btn-success fileinput-button">
+        <i class="glyphicon glyphicon-plus"></i>
+        <span>Seleccionar Archivos...</span>
+            <!-- The file input field used as target for the file upload widget -->
+            <input class="fileupload" type="file" name="archivo" id="id_archivo">
+
+             <input type="hidden" name="user" id="id_user" value="{{ request.user.pk }}">
+             <input type="hidden" name="carta" id="id_carta" value="{{ obj_pk }}">
+
+            </span>
+            
+<!--             <p>
+                <input type='submit' name="savefile" value='Guardar' class="btn btn-w-m btn-primary" />
+            </p> -->
+        </form>
+</div>
+
+
+        <!-- The global progress bar -->
+        <div id="progress" class="progress">
+            <div class="progress-bar progress-bar-success"></div>
+        </div>
+        <div id="guardara"></div>
+        <!-- The container for the uploaded files -->
+        <div class="files"></div>
+        <br>
+
+        <div class="pm_attachments">
+          <span><h3>Archivo Adjunto:</h3></span>
+     
+     
+ <div id="lista_archivos">
+
+
+ </div>
+     
+
+     
+
+
+
+        </div>
+
+    </div>
+</div>
+
+
+
                 <br>
-                <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;Guardar Carta</button>
+                <button onclick="enviar()" type="submit" name="guardar" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;Guardar Carta</button>
                 <a href="javascript:history.back();">
                     <button class="btn btn-w-m btn-danger" type="submit"> <i class="fa fa-arrow-left"></i> Cancelar
                     </button>
@@ -92,4 +145,197 @@ Archivo adjuntado:
         </div>
     </div>
 </div>
+
+
+{% block extrascripts %}
+
+
+
+
+
+<!-- The jQuery UI widget factory, can be omitted if jQuery UI is already included -->
+<script src="{% static "js/vendor/jquery.ui.widget.js" %}"></script>
+<!-- The Load Image plugin is included for the preview images and image resizing functionality -->
+<script src="{% static "js/load-image.min.js" %}"></script>
+<!-- The Canvas to Blob plugin is included for image resizing functionality -->
+<script src="{% static "js/canvas-to-blob.min.js" %}"></script>
+<!-- Bootstrap JS is not required, but included for the responsive demo navigation -->
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
+<script src="{% static "js/jquery.iframe-transport.js" %}"></script>
+<!-- The basic File Upload plugin -->
+<script src="{% static "js/jquery.fileupload.js" %}"></script>
+<!-- The File Upload processing plugin -->
+<script src="{% static "js/jquery.fileupload-process.js" %}"></script>
+<!-- The File Upload image preview & resize plugin -->
+<script src="{% static "js/jquery.fileupload-image.js" %}"></script>
+<!-- The File Upload audio preview plugin -->
+<script src="{% static "js/jquery.fileupload-audio.js" %}"></script>
+<!-- The File Upload video preview plugin -->
+<script src="{% static "js/jquery.fileupload-video.js" %}"></script>
+<!-- The File Upload validation plugin -->
+<script src="{% static "js/jquery.fileupload-validate.js" %}"></script>
+<script src="{% static "js/jquery.cookie.js" %}"></script>
+
+
+<script>
+
+/*Enviar form*/
+
+function enviar() {
+document.getElementById("mainform").submit();
+}
+
+/*Obtener archivos de carta*/
+var cartaid = "{{ obj_pk }}";
+var url = "/obtener-archivos-cartas/" + cartaid;
+
+function fetch() {
+
+$.getJSON(url, function(data) {
+    var items = [];
+
+    if (data.length == 0) {
+        items.push("No has agregado un archivo para esta carta");
+        $(".form-ok").show();
+        $(".maxfiles").hide();
+        console.log(data.length);
+    }
+
+    $.each(data, function(key, val) {
+
+        val.archivo1 = "/site_media/media/" + val.archivo;
+        val.pk1 = "/borrar-archivo-carta/" + val.pk
+
+        var pkfile = val.pk 
+
+        items.push("<div class=row><i class='fa fa-file-o'></i><a target=_blank href='" + val.archivo1 + "'> " + val.archivo + "</a></div>  <div class=row> <br><a class='btn btn-w-m btn-danger' onclick='borrar("+ val.pk +")'><i class='fa fa-trash-o'></i> Borrar archivo</a> </div><hr>" );
+
+    });
+
+    if (data.length >= 1) {
+        $(".form-ok").hide();
+        $(".maxfiles").show();
+        console.log(data.length);
+
+    }
+
+    $('#lista_archivos').empty();
+    $("<div/>", {
+        "class": "my-new-list",
+        html: items.join("")
+    }).appendTo("#lista_archivos");
+});
+
+}
+
+fetch();
+
+
+/*Borrar archivos de carta*/
+function borrar(pkarchivo) {
+var urldelete = "/borrar-archivo-carta/" + pkarchivo;
+$.ajax({
+        url : urldelete,
+        type : "GET",
+        data : {
+            'pk': pkarchivo,
+            csrfmiddlewaretoken: '{{ csrf_token }}' 
+        },
+
+        success: function(response){
+                                    var json = JSON.parse(response);
+                                    console.log(json);
+                                    $('#guardara').empty();
+                                    $('<div class="help-block alert alert-warning"></div>').text('Archivo borrado con exito.').appendTo('#guardara');
+                                    $(".form-ok").show();
+                                    $(".maxfiles").hide();
+                                    $(".progress").empty();
+                                    $("#lista_archivos").empty();
+                                    fetch();
+                                    
+                                 }
+
+    });
+}
+
+/* ----------- Uploader va aqui -------------------*/
+
+/*jslint unparam: true */
+/*global window, $ */
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+var upload_ids = [];
+
+$(function() {
+    'use strict';
+    // Change this to the location of your server-side upload handler:
+    var url = '/mensaje/subir-carta/';
+    var csrftoken = $.cookie('csrftoken');
+
+    $('.fileupload').each(function() {
+            $(this).fileupload({
+                maxNumberOfFiles: 1,
+
+                url: url,
+                crossDomain: false,
+                beforeSend: function(xhr, settings) {
+                    if (!csrfSafeMethod(settings.type)) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                },
+                dataType: 'json',
+                done: function(e, data) {
+                    //console.log('Upload complete');
+                    $.each(data.result.files, function(index, file) {
+                        upload_ids.push(file.id);
+                        console.log(file.id);
+                        console.log(upload_ids.join(','));
+                        $('.id_file_ids').val(upload_ids.join(','));
+                        //$('<p/>').text(file.name).appendTo('.files');
+                        //$('<p/>').text(file.url).appendTo('.files');
+                        //$('<p/>').text(file.deleteUrl).appendTo('.files');
+                        //$('#guardara').empty();
+                        
+
+
+                        fetch();
+                        $('<div class="help-block alert alert-success"></div>').text('Archivo subido con exito.').appendTo('#guardara');
+
+
+                    });
+
+                },
+                progressall: function(e, data) {
+                    var progress = parseInt(data.loaded / data.total * 100, 10);
+                    $('#progress .progress-bar').css(
+                        'width',
+                        progress + '%'
+                    );
+                    $('#progress .progress-bar').text(progress +"%");
+                },
+                dropZone: $(this)
+            });
+        }).prop('disabled', !$.support.fileInput)
+        .parent().addClass($.support.fileInput ? undefined : 'disabled');
+});
+</script>
+<script>
+// Warning before leaving the page (back button, or outgoinglink)
+window.onbeforeunload = function() {
+    return "Do you really want to leave our brilliant application?";
+    //if we return nothing here (just calling return;) then there will be no pop-up question at all
+    //return;
+};
+</script>
+
+
+
+
+{% endblock %}
+
+
+
 {% endblock %}

@@ -15,7 +15,8 @@
     <link href="{% static "css/animate.css" %}" rel="stylesheet">
     <link href="{% static "css/style.css" %}" rel="stylesheet">
     <link href="{% static "css/customstyles.css" %}" rel="stylesheet">
-    <script src="{% static "js/jquery-2.1.1.js" %}"></script>
+    <link rel="stylesheet" href="{% static "css/jquery.fileupload-ui.css" %}">
+    
     <link rel='shortcut icon' type='image/x-icon' href='{% static "img/favicon.ico"%}' />
 
 </head>
@@ -74,7 +75,7 @@
                         <a href="#"><i class="fa fa-envelope-o"></i> <span class="nav-label">CARTAS</span> <span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             <li><a href="{% url 'lista_cartas' %}">Ver Cartas</a></li>
-                            <li><a href="{% url 'subir_carta' %}">Agregar Carta</a></li>
+                            <li><a href="{% url 'crear_carta' %}">Agregar Carta</a></li>
 
                         </ul>
                     </li>
@@ -107,6 +108,22 @@
                         <a href="#"><i class="fa fa-user"></i> <span class="nav-label">CUENTA</span><span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             <li><a href="{% url 'configuraciones_usuario' %}">Mi cuenta</a></li>
+                        </ul>
+                    </li>
+                    {% endif %}
+
+                     <!-- Elemento cobro menu lateral-->
+                    {% if user.groups.all.0.name == "Administrador" or user.groups.all.0.name == "Usuario" or user.groups.all.0.name == "Pendiente" or user.is_superuser %}
+                    <li id="mainop4">
+                        <a href="#"><i class="fa fa-user"></i> <span class="nav-label">ADMINISTRAR</span><span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li><a href="{% url 'configuraciones_usuario' %}">Ver usuarios</a></li>
+                        </ul>
+                        <ul class="nav nav-second-level">
+                            <li><a href="{% url 'configuraciones_usuario' %}">Lista 1</a></li>
+                        </ul>
+                        <ul class="nav nav-second-level">
+                            <li><a href="{% url 'configuraciones_usuario' %}">Lista 2</a></li>
                         </ul>
                     </li>
                     {% endif %}
@@ -185,7 +202,7 @@
 
 
     <!-- Mainl scripts -->
-
+    <script src="{% static "js/jquery-2.1.1.js" %}"></script>
     <script src="{% static "js/bootstrap.min.js" %}"></script>
     <script src="{% static "js/plugins/metisMenu/jquery.metisMenu.js" %}"></script>
     <script src="{% static "js/plugins/slimscroll/jquery.slimscroll.min.js" %}"></script>
@@ -200,6 +217,9 @@
     <!-- Toastr -->
     <!--     <script src="{% static "js/plugins/toastr/toastr.min.js" %}"></script>
  -->
+{% block extrascripts %}
+{% endblock %}
+
     <script>
         jQuery(function($) {
             var path = window.location.href;
@@ -249,6 +269,9 @@
             });
         });
     </script>
+
+    
+
 
 </body>
 

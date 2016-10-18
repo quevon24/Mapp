@@ -20,6 +20,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'', include ('usuario.urls')),
     url(r'', include ('administrar.urls')),
+    url(r'^upload/', include('fileupload.urls')),
 ]
 
 from django.conf import settings
