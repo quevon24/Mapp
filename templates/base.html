@@ -69,6 +69,18 @@
                         <a href="/"><i class="fa fa-th-large"></i> <span class="nav-label">INICIO</span> </a>
                     </li>
 
+                      <!-- Elemento -->
+                    {% if user.groups.all.0.name == "Administrador" or user.groups.all.0.name == "Usuario" or user.groups.all.0.name == "Pendiente" or user.is_superuser %}
+                    <li id="mainop0">
+                        <a href="#"><i class="fa fa-envelope-o"></i> <span class="nav-label">AGENDA</span> <span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li><a href="#">Ver Contactos</a></li>
+                            <li><a href="{% url 'agregar-contacto' %}">Agregar Contacto</a></li>
+
+                        </ul>
+                    </li>
+                    {% endif %}
+
                     <!-- Elemento Catalogo menu lateral-->
                     {% if user.groups.all.0.name == "Administrador" or user.groups.all.0.name == "Usuario" or user.groups.all.0.name == "Pendiente" or user.is_superuser %}
                     <li id="mainop">
@@ -107,7 +119,7 @@
                     <li id="mainop4">
                         <a href="#"><i class="fa fa-user"></i> <span class="nav-label">CUENTA</span><span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
-                            <li><a href="{% url 'configuraciones_usuario' %}">Mi cuenta</a></li>
+                            <li><a href="#">Mi cuenta</a></li>
                         </ul>
                     </li>
                     {% endif %}
@@ -117,13 +129,13 @@
                     <li id="mainop4">
                         <a href="#"><i class="fa fa-user"></i> <span class="nav-label">ADMINISTRAR</span><span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
-                            <li><a href="{% url 'configuraciones_usuario' %}">Ver usuarios</a></li>
+                            <li><a href="#">Ver usuarios</a></li>
                         </ul>
                         <ul class="nav nav-second-level">
-                            <li><a href="{% url 'configuraciones_usuario' %}">Lista 1</a></li>
+                            <li><a href="#">Lista 1</a></li>
                         </ul>
                         <ul class="nav nav-second-level">
-                            <li><a href="{% url 'configuraciones_usuario' %}">Lista 2</a></li>
+                            <li><a href="#">Lista 2</a></li>
                         </ul>
                     </li>
                     {% endif %}
@@ -221,6 +233,19 @@
 {% endblock %}
 
     <script>
+jQuery(function($) {
+            var path = window.location.href;
+            $('#mainop0 ul a').each(function() {
+                if (this.href === path) {
+                    $(this).closest('li').addClass('active');
+                    $('#mainop0 ul').addClass('collapse in');
+                    $('#mainop0').addClass('active');
+                }
+
+            });
+        });
+
+
         jQuery(function($) {
             var path = window.location.href;
             $('#mainop ul a').each(function() {
