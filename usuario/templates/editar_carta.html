@@ -6,6 +6,9 @@
 
 
  {% block content %}
+<link href="{% static "selectize/css/selectize.default.css" %}" rel="stylesheet">
+<script type="text/javascript" src="{% static "selectize/jquery.min.js"%}"></script>
+
 
 
 
@@ -43,6 +46,14 @@
                     <div class="col-sm-6">
                     
                         {{form.contenido}}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        Contacto:
+                    </label>
+                    <div class="col-sm-6">
+                        {{form.contacto}}
                     </div>
                 </div>
                 <div class="form-group">
@@ -142,9 +153,16 @@ Numero maximo de archivos: 1
                     </button>
                 </a>
             </form>
+<p></p>
+<div class="info-contacto">
+
+</div>
+
         </div>
     </div>
 </div>
+
+
 
 
 {% block extrascripts %}
@@ -176,6 +194,8 @@ Numero maximo de archivos: 1
 <!-- The File Upload validation plugin -->
 <script src="{% static "js/jquery.fileupload-validate.js" %}"></script>
 <script src="{% static "js/jquery.cookie.js" %}"></script>
+
+<script type="text/javascript" src="{% static "selectize/selectize.min.js"%}"></script>
 
 
 <script>
@@ -287,6 +307,8 @@ $(function() {
                     }
                 },
                 dataType: 'json',
+                acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+                maxFileSize: 5000000, // 5 MB
                 done: function(e, data) {
                     //console.log('Upload complete');
                     $.each(data.result.files, function(index, file) {
@@ -308,6 +330,9 @@ $(function() {
                     });
 
                 },
+                fail: function(e, data){
+                    console.log(data.jqXHR.responseText);
+                },
                 progressall: function(e, data) {
                     var progress = parseInt(data.loaded / data.total * 100, 10);
                     $('#progress .progress-bar').css(
@@ -316,6 +341,21 @@ $(function() {
                     );
                     $('#progress .progress-bar').text(progress +"%");
                 },
+                add: function(e, data) {
+        var uploadErrors = [];
+        var acceptFileTypes = /^image\/(gif|jpe?g|png)$/i;
+        if(data.originalFiles[0]['type'].length && !acceptFileTypes.test(data.originalFiles[0]['type'])) {
+            uploadErrors.push('Not an accepted file type');
+        }
+        if(data.originalFiles[0]['size'].length && data.originalFiles[0]['size'] > 5000000) {
+            uploadErrors.push('Filesize is too big');
+        }
+        if(uploadErrors.length > 0) {
+            alert(uploadErrors.join("\n"));
+        } else {
+            data.submit();
+        }
+},
                 dropZone: $(this)
             });
         }).prop('disabled', !$.support.fileInput)
@@ -332,7 +372,45 @@ window.onbeforeunload = function() {
 </script>
 
 
+<script>
+$('#id_contacto').on('change', function(e) {
+    var optionSelected = $("option:selected", this);
+    var valueSelected = this.value;
+    var urlcontacto = '/obtener-datos-contacto/' + valueSelected + '/';
 
+    function datoscontacto() {
+
+        $.getJSON(urlcontacto, function(data) {
+
+
+            var htmlText = '';
+
+                htmlText += '<div class="div-conatiner">';
+                htmlText += '<p class="p-name"> Nombre: ' + data.nombre + '</p>';
+                htmlText += '<p class="p-loc"> Tel1: ' + data.tel1 + '</p>';
+                htmlText += '<p class="p-desc"> Tel2: ' + data.tel2 + '</p>';
+                htmlText += '<p class="p-created"> Email: ' + data.email1 + '</p>';
+                htmlText += '<p class="p-uname"> Direccion: ' + data.direccion + '</p>';
+                htmlText += '</div>';
+            
+
+            $('.info-contacto').append(htmlText);
+
+            console.log(data);
+        });
+
+    };
+
+
+    datoscontacto();
+});
+</script>
+
+
+<script>
+$('#id_contacto').selectize();
+
+</script>
 
 {% endblock %}
 

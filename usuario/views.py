@@ -42,6 +42,7 @@ def group_required(*group_names):
 	return user_passes_test(check, login_url='/prohibido/')
 
 # ---------------------------------------------------------------
+# ---------------------------------------------------------------
 # Actualizar cuenta
 @login_required
 @transaction.atomic
@@ -63,7 +64,7 @@ def actualizar_cuenta(request):
         'user_form': user_form,
     })
 
-
+# ---------------------------------------------------------------
 # ---------------------------------------------------------------
 # Usuario crear carta
 
@@ -72,7 +73,7 @@ def crear_carta(request):
 	return HttpResponseRedirect(reverse('editar_carta', args=(nueva.id,)))
 
 
-
+# ---------------------------------------------------------------
 # ---------------------------------------------------------------
 # Usuario subir carta , settings.VARIABLE
 
@@ -129,6 +130,7 @@ def upload_carta(request):
 	return render(request, 'subir_carta.html', {'form': form, 'save':save}, locals())
 
 
+# ---------------------------------------------------------------
 # ---------------------------------------------------------------
 # Usuario editar carta
 
@@ -213,6 +215,7 @@ def editar_carta(request, pk):
 
 
 # ---------------------------------------------------------------
+# ---------------------------------------------------------------
 # Listar cartas
 
 class listar_cartas(ListView):
@@ -243,6 +246,7 @@ class listar_cartas(ListView):
 		return context
 
 # ---------------------------------------------------------------
+# ---------------------------------------------------------------
 # Ver a detalles carta
 
 @login_required
@@ -253,6 +257,7 @@ def carta_detalle(request, pk):
 	return render(request, 'detalles_carta.html', {'carta': carta, 'archivos':archivos})
 
 
+# ---------------------------------------------------------------
 # ---------------------------------------------------------------
 # Usuario subir audio , settings.VARIABLE
 @login_required
@@ -277,6 +282,7 @@ def upload_audio(request):
 	return render(request, 'subir_audio.html', {'form': form, 'save':save})
 
 
+# ---------------------------------------------------------------
 # ---------------------------------------------------------------
 # Listar mensajes audio
 
@@ -308,6 +314,7 @@ class listar_audio(ListView):
 		return context
 
 # ---------------------------------------------------------------
+# ---------------------------------------------------------------
 # Ver a detalles audio
 
 @login_required
@@ -316,6 +323,7 @@ def audio_detalle(request, pk):
 	audio = get_object_or_404(Perfil_audio, pk = pk)
 	return render(request, 'detalles_audio.html', {'audio': audio})
 
+# ---------------------------------------------------------------
 # ---------------------------------------------------------------
 # Usuario subir video , settings.VARIABLE
 @login_required
@@ -342,6 +350,7 @@ def upload_video(request):
 
 	return render(request, 'subir_video.html', {'form': form, 'save':save})
 
+# ---------------------------------------------------------------
 # ---------------------------------------------------------------
 # Listar mensajes video
 
@@ -373,6 +382,7 @@ class listar_video(ListView):
 		return context
 
 # ---------------------------------------------------------------
+# ---------------------------------------------------------------
 # Ver a detalles video
 
 @login_required
@@ -381,6 +391,7 @@ def video_detalle(request, pk):
 	video = get_object_or_404(Perfil_video, pk = pk)
 	return render(request, 'detalles_video.html', {'video': video})
 
+# ---------------------------------------------------------------
 # ---------------------------------------------------------------
 # Configuraciones usuario
 
@@ -391,6 +402,7 @@ def configuraciones_usuario(request):
 
 	return render(request, 'configuracion_usuario.html', {'usuario':usuario, 'perfil':perfil})
 
+# ---------------------------------------------------------------
 # ---------------------------------------------------------------
 # Actualizar cuenta
 @login_required
@@ -413,7 +425,7 @@ def actualizar_cuenta(request):
         'user_form': user_form,
     })
 
-
+# ---------------------------------------------------------------
 # ---------------------------------------------------------------
 # Actualizar perfil
 @login_required
@@ -438,3 +450,35 @@ def actualizar_perfil(request):
         'profile_form': profile_form
     })
 
+
+# ---------------------------------------------------------------
+# ---------------------------------------------------------------
+# Agregar contacto
+@login_required
+def agregar_contacto(request):
+    form = form_agregar_contacto()
+    if request.method == 'POST':
+        form = form_agregar_contacto(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.user = request.user
+            post.terminado = True
+            post.save()
+            #return redirect('home')
+
+    return render(request, 'agregar_contacto.html', {'form': form})
+
+# Obtener datos contacto
+
+@login_required
+def ajax_datos_contacto(request, contactoid):
+    try:
+        contacto = Contactos.objects.get(pk=contactoid)
+        contacto_datos = {'nombre': contacto.nombre, 'email1': contacto.email1, 'tel1': contacto.tel1, 'tel2':contacto.tel2, 'direccion':contacto.direccion}
+    except:
+        contacto_datos = {'nombre': 'Ninguno', 'email1': 'Ninguno', 'tel1': 'Ninguno', 'tel2':'Ninguno', 'direccion':'Ninguno'}
+
+    response = JSONResponse(contacto_datos)
+    print response
+    response['Content-Disposition'] = 'inline; filename=files.json'
+    return response

@@ -1,0 +1,42 @@
+ {% extends "base.html" %}{% load static %} {% block title %} Detalle de carta {% endblock %} {% block content %}
+
+
+<div class="row wrapper border-bottom white-bg page-heading">
+                <div class="col-md-10">
+                    <h2>Agenda</h2>
+                    <ol class="breadcrumb">
+                        <li>
+                            <a href="#">Contactos</a>
+                        </li>
+                        <li class="active">
+                            <strong>Agregar contacto</strong>
+                        </li>
+                    </ol>
+                </div>
+                <div class="col-md-2">
+
+                </div>
+            </div>
+            <br>
+
+<div class="wrapper wrapper-content animated fadeInRight white-bg">
+    <div class="row">
+        <div class="col-md-12">
+
+
+<h2 class="text-center" style="padding-top: 10px; padding-bottom:10px;">Agregar nuevo contacto</h2>
+
+<form method="post" enctype="multipart/form-data" class="form-horizontal">
+{% csrf_token %}
+{{form.as_ul}}
+
+ <br>
+                <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;Guardar Contacto</button>
+
+</form>
+
+</div>
+</div>
+</div>
+
+{% endblock %}

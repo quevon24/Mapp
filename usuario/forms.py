@@ -22,10 +22,15 @@ class Usuario_cartas(forms.ModelForm):
     contenido = forms.CharField(widget=CKEditorWidget())
     class Meta:
         model = Perfil_carta
-        fields = ('contenido', 'email', 'tel1', 'tel2', 'file_ids')
+        fields = ('contenido', 'email', 'tel1', 'tel2', 'file_ids', 'contacto')
         widgets = {
         'user': forms.HiddenInput(),
         }
+
+    def __init__(self, *args, **kwargs):
+        super(Usuario_cartas, self).__init__(*args, **kwargs)
+        self.fields['contacto'].queryset = Contactos.objects.filter(
+                                        user_id=self.instance.user)
 
     def save(self, commit=True):
         media = super(Usuario_cartas, self).save(commit=False)
@@ -60,3 +65,8 @@ class Usuario_videos(forms.ModelForm):
         widgets = {
         'user': forms.HiddenInput(),
         }
+
+class form_agregar_contacto(forms.ModelForm):
+    class Meta:
+        model = Contactos
+        fields = ('nombre', 'email1', 'tel1', 'tel2', 'direccion')

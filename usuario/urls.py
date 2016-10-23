@@ -9,6 +9,7 @@ from usuario.views import listar_cartas, listar_audio, listar_video, PictureCrea
 
 urlpatterns = [
     url(r'^$', views.home, name='home'),
+    url(r'^chaining/', include('smart_selects.urls')),
     url(r'^usuario/modificar_perfil/$', views.actualizar_perfil, name='actualizar_perfil'),
     url(r'^usuario/modificar_cuenta/$', views.actualizar_cuenta, name='actualizar_cuenta'),
     url(r'^usuario/configuracion/$', views.configuraciones_usuario, name='configuraciones_usuario'),
@@ -46,4 +47,9 @@ urlpatterns = [
 
     #url(r'^perfil/(?P<username>\w+)/fotos/$', views.ver_imagenes_usuario, name='ver_imagenes_usuario'),
     url(r'^usuario/activar/(?P<codigo>\w+)/(?P<email>\w+|[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4})/', administrar.views.activarcuenta, name='activacion'),
-]
+
+    url(r'^mensaje/agregar-contacto/$', views.agregar_contacto, name='agregar-contacto'),
+    
+    url(r'^obtener-datos-contacto/(?P<contactoid>[0-9]+)/$', views.ajax_datos_contacto, name='obtener-datos-contacto'),
+
+       ]

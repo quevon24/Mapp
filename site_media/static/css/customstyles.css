@@ -309,3 +309,13 @@ legend {
     margin-bottom: 0;
     text-align: right;
 }
+
+
+/* DETALLES CARTA*/
+
+.htmlbox {
+    border: solid 1px #afafaf;
+    padding: 19px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}

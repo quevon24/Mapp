@@ -10,6 +10,7 @@ from django.conf import settings
 from django.utils import timezone
 from django.core import validators
 from django.core.exceptions import ValidationError
+from smart_selects.db_fields import ChainedForeignKey 
 
 
 #generar clave activacion
@@ -26,6 +27,19 @@ def user_directory_path(instance, filename):
 def user_directoryfile_path(instance, filename):
 	# file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
 	return 'user_{0}/files/{1}'.format(instance.user.id, filename)
+
+
+class Contactos(models.Model):
+	user = models.ForeignKey(User, on_delete=models.CASCADE)
+	fecha = models.DateTimeField(default=timezone.now)
+	nombre = models.CharField(max_length=100, null=True, blank=True)
+	email1 = models.EmailField(null=True, blank=True)
+	tel1 = models.CharField(max_length=40)
+	tel2 = models.CharField(max_length=40)
+	direccion = models.CharField(max_length=200)
+
+	def __unicode__(self):
+		return '%s' % (self.nombre)
 
 class Perfil(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -59,6 +73,17 @@ class Perfil_carta(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	fecha = models.DateTimeField(default=timezone.now)
 	contenido = models.TextField(max_length=1000, blank=True, null=True)
+	# contacto = ChainedForeignKey(
+ #         Contactos, 
+ #         chained_field="user",
+ #         chained_model_field="user", 
+ #         show_all=False, 
+ #         auto_choose=True,
+ #         blank=True, null=True
+ #   )
+	contacto = models.ForeignKey(Contactos, blank=True, null=True )
+
+
 	email = models.EmailField(null=True, blank=True)
 	tel1 = models.CharField(max_length=40, null=True, blank=True)
 	tel2 = models.CharField(max_length=40, null=True, blank=True)
@@ -161,7 +186,6 @@ class conteo_mensajes(models.Model):
 	carta_extra = models.IntegerField(default=0)
 	audio_extra = models.IntegerField(default=0)
 	video_extra = models.IntegerField(default=0)
-
 
 
 # ------------------------------------------------------
