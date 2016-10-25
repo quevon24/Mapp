@@ -1,5 +1,5 @@
  {% extends "base.html" %}{% load static %} {% block title %} Detalle de carta {% endblock %} {% block content %}
-
+{% load addcss %}
 
 <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-md-10">
@@ -26,12 +26,72 @@
 
 <h2 class="text-center" style="padding-top: 10px; padding-bottom:10px;">Agregar nuevo contacto</h2>
 
+<div class="alert alert-success alert-dismissable">
+                                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                                Llena los datos a continuación para agregar un nuevo contacto.
+                            </div>
+
 <form method="post" enctype="multipart/form-data" class="form-horizontal">
 {% csrf_token %}
-{{form.as_ul}}
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        Nombre:
+                    </label>
+                    <div class="col-sm-6">
+                    
+                        {{form.nombre|addcss:"form-control"}}
+                    </div>
+                </div>
 
- <br>
+                 <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        Email 1:
+                    </label>
+                    <div class="col-sm-6">
+                    
+                        {{form.email1|addcss:"form-control"}}
+                    </div>
+                </div>
+
+                 <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        Telefono 1:
+                    </label>
+                    <div class="col-sm-6">
+                    
+                        {{form.tel1|addcss:"form-control"}}
+                    </div>
+                </div>
+
+                 <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        Telefono 2:
+                    </label>
+                    <div class="col-sm-6">
+                    
+                        {{form.tel2|addcss:"form-control"}}
+                    </div>
+                </div>
+
+                 <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        Dirección:
+                    </label>
+                    <div class="col-sm-6">
+                    
+                        {{form.direccion|addcss:"form-control"}}
+
+                         <br>
                 <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;Guardar Contacto</button>
+                    </div>
+                </div>
+
+
+
+
+
+
+
 
 </form>
 

@@ -72,9 +72,9 @@
                       <!-- Elemento -->
                     {% if user.groups.all.0.name == "Administrador" or user.groups.all.0.name == "Usuario" or user.groups.all.0.name == "Pendiente" or user.is_superuser %}
                     <li id="mainop0">
-                        <a href="#"><i class="fa fa-envelope-o"></i> <span class="nav-label">AGENDA</span> <span class="fa arrow"></span></a>
+                        <a href="#"><i class="fa fa-group"></i> <span class="nav-label">AGENDA</span> <span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
-                            <li><a href="#">Ver Contactos</a></li>
+                            <li><a href="{% url 'lista_contactos' %}">Ver Contactos</a></li>
                             <li><a href="{% url 'agregar-contacto' %}">Agregar Contacto</a></li>
 
                         </ul>

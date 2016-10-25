@@ -4,7 +4,7 @@ from django.views.generic import CreateView, DeleteView, ListView
 
 import administrar.views
 from usuario import views
-from usuario.views import listar_cartas, listar_audio, listar_video, PictureCreateView, PictureDeleteView1
+from usuario.views import listar_cartas, listar_audio, listar_video, PictureCreateView, PictureDeleteView1, listar_contactos
 
 
 urlpatterns = [
@@ -51,5 +51,6 @@ urlpatterns = [
     url(r'^mensaje/agregar-contacto/$', views.agregar_contacto, name='agregar-contacto'),
     
     url(r'^obtener-datos-contacto/(?P<contactoid>[0-9]+)/$', views.ajax_datos_contacto, name='obtener-datos-contacto'),
+    url(r'^mensaje/lista-contactos/$', listar_contactos.as_view(), name='lista_contactos'),
 
        ]

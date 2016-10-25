@@ -482,3 +482,35 @@ def ajax_datos_contacto(request, contactoid):
     print response
     response['Content-Disposition'] = 'inline; filename=files.json'
     return response
+
+
+# ---------------------------------------------------------------
+# ---------------------------------------------------------------
+# Lista de contactos
+
+class listar_contactos(ListView):
+    model = Contactos
+    template_name = 'lista_contactos.html'
+    paginate_by = 10 # Elementos por pagina
+
+    @method_decorator(login_required)
+    @method_decorator(group_required('Administrador', 'Pendiente'))
+    def dispatch(self, *args, **kwargs):
+        return super(listar_contactos, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(ListView, self).get_context_data(**kwargs) 
+        clist = Contactos.objects.filter(user=self.request.user)
+        paginator = Paginator(clist, self.paginate_by)
+
+        page = self.request.GET.get('page')
+
+        try:
+            file = paginator.page(page)
+        except PageNotAnInteger:
+            file = paginator.page(1)
+        except EmptyPage:
+            file = paginator.page(paginator.num_pages)
+
+        context['clist'] = file
+        return context

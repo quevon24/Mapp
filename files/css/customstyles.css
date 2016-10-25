@@ -319,3 +319,18 @@ legend {
     margin-top: 10px;
     margin-bottom: 10px;
 }
+
+/* Contacto */
+
+.contactid {
+    font-size: 30px;
+    width: 100px;
+    height: 100px;
+    border-radius: 100%;
+    background: #FF5722;
+    line-height: 100px;
+}
+
+.contactidstyle {
+    color: #ffffff;
+}
