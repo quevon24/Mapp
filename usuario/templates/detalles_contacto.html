@@ -1,4 +1,4 @@
- {% extends "base.html" %}{% load static %} {% block title %} Detalle de carta {% endblock %} {% block content %}
+ {% extends "base.html" %}{% load static %} {% block title %} Detalles de contacto {% endblock %} {% block content %}
 
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -24,11 +24,138 @@
         <div class="col-md-12">
 
 
-<h2 class="text-center" style="padding-top: 10px; padding-bottom:10px;">Detalles contacto</h2>
+<h2 class="text-center" style="padding-top: 10px; padding-bottom:10px;">Detalles de contacto</h2>
+<p></p>
+<hr>
+{% if respuesta == False %}
+No existe
+
+{% else %}
+<div class="row">
+
+
+<div class="col-md-12">
+<div class="contactid"><span class="contactidstyle">{{contacto.pk}}</span>
+                                    </div>
+
+                                    <p></p>
+</div>
+</div>
+
+<div class="row">
+    <div class="col-lg-4">
+        <div class="contact-box animated pulse">
+            
+                <div class="col-sm-2">
+                    <i class="fa fa-user icon-m"></i>
+                </div>
+                <div class="col-sm-10">
+                    <strong>Nombre:</strong>
+                    <br> {{contacto.nombre}}
+                </div>
+                <div class="clearfix"></div>
+            
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="contact-box animated pulse">
+            
+                <div class="col-sm-2">
+                    <i class="fa fa-phone icon-m"></i>
+                </div>
+                <div class="col-sm-10">
+                    <strong>Teléfono 1:</strong>
+                    <br> {{contacto.tel1}}
+                </div>
+                <div class="clearfix"></div>
+                   </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="contact-box animated pulse">
+            
+                <div class="col-sm-2">
+                    <i class="fa fa-phone icon-m"></i>
+                </div>
+                <div class="col-sm-10">
+                    <strong>Teléfono 2:</strong>
+                    <br> {{contacto.tel2}}
+                </div>
+                <div class="clearfix"></div>
+            
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="contact-box animated pulse">
+            
+                <div class="col-sm-2">
+                    <i class="fa fa-envelope icon-m"></i>
+                </div>
+                <div class="col-sm-10">
+                    <strong>E-mail:</strong>
+                    <br> {{contacto.email1}}
+                </div>
+                <div class="clearfix"></div>
+            
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="contact-box animated pulse">
+         
+                <div class="col-sm-2">
+                    <i class="fa fa-location-arrow icon-m"></i>
+                </div>
+                <div class="col-sm-10">
+                    <strong>Dirección:</strong>
+                    <br> {{contacto.direccion}}
+                </div>
+                <div class="clearfix"></div>
+        
+        </div>
+    </div>
+
+</div>
+
+<div class="row">
+
+
+<div class="col-md-12">
+<div class="button-container">
+<h3><strong>Acciones:</strong></h3>
+<a href="{% url 'editar_contacto' pk=contacto.pk %}">
+                                    <button class="btn btn-info btn-m" type="button"><i class="fa fa-pencil"></i> Editar</button>
+                                </a>
+                                <a href="{% url 'lista_contactos' %}">
+<button class="btn btn-w-m btn-danger" type="submit"> <i class="fa fa-arrow-left"></i>
+    Regresar
+</button>
+</a>
+</div>
+</div>
+</div>
+
+
+
+{% endif %}
 
 
 </div>
 </div>
 </div>
+
+{% endblock %}
+
+{% block extrascripts %}
+
+<script>
+$(document).ready(function() {
+    $('.contact-box').each(function() {
+        animationHover(this, 'pulse');
+    });
+});
+</script>
 
 {% endblock %}

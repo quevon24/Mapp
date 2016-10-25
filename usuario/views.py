@@ -514,3 +514,42 @@ class listar_contactos(ListView):
 
         context['clist'] = file
         return context
+
+
+# ---------------------------------------------------------------
+# ---------------------------------------------------------------
+# Ver a detalles contacto
+
+@login_required
+@group_required('Administrador', 'Pendiente')
+def contacto_detalle(request, pk):
+
+    try:
+        contacto = Contactos.objects.get(pk = pk)
+        respuesta = True
+    except:
+        contacto = None
+        respuesta = False
+
+    return render(request, 'detalles_contacto.html', {'contacto': contacto, 'respuesta':respuesta})
+
+
+# ---------------------------------------------------------------
+# ---------------------------------------------------------------
+# Editar contacto
+
+@login_required
+@group_required('Administrador')
+def editar_contacto(request, pk):
+    post = get_object_or_404(Contactos, pk=pk)
+    if request.method == "POST":
+            form = form_agregar_contacto(request.POST, instance=post)
+            if form.is_valid():
+                post = form.save(commit=False)
+                post.author = request.user
+                post.usuario = request.user
+                post.save()
+                return redirect('detalles_contacto', pk=pk)
+    else:
+            form = form_agregar_contacto(instance=post)
+    return render(request, 'editar_contacto.html', {'form': form})

@@ -310,6 +310,24 @@ legend {
     text-align: right;
 }
 
+.dl-horizontal1 dd {
+    margin-left: 180px;
+}
+
+.dl-horizontal1 dt {
+    float: left;
+    width: 160px;
+    overflow: hidden;
+    clear: left;
+    text-align: right;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+.icon-m {
+    font-size: 38px;
+}
 
 /* DETALLES CARTA*/
 
@@ -329,8 +347,15 @@ legend {
     border-radius: 100%;
     background: #FF5722;
     line-height: 100px;
+    text-align: center;
+    margin: 0 auto;
 }
 
 .contactidstyle {
     color: #ffffff;
+}
+
+
+.button-container {
+    text-align: center;
 }

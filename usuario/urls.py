@@ -48,9 +48,10 @@ urlpatterns = [
     #url(r'^perfil/(?P<username>\w+)/fotos/$', views.ver_imagenes_usuario, name='ver_imagenes_usuario'),
     url(r'^usuario/activar/(?P<codigo>\w+)/(?P<email>\w+|[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4})/', administrar.views.activarcuenta, name='activacion'),
 
-    url(r'^mensaje/agregar-contacto/$', views.agregar_contacto, name='agregar-contacto'),
-    
+    # Contacto
+    url(r'^contactos/agregar-contacto/$', views.agregar_contacto, name='agregar-contacto'),
     url(r'^obtener-datos-contacto/(?P<contactoid>[0-9]+)/$', views.ajax_datos_contacto, name='obtener-datos-contacto'),
-    url(r'^mensaje/lista-contactos/$', listar_contactos.as_view(), name='lista_contactos'),
-
+    url(r'^contactos/lista-contactos/$', listar_contactos.as_view(), name='lista_contactos'),
+    url(r'^contactos/detalle-contacto/(?P<pk>[0-9]+)/$', views.contacto_detalle, name='detalles_contacto'),
+    url(r'^contactos/editar-contacto/(?P<pk>[0-9]+)/$', views.editar_contacto, name='editar_contacto'),
        ]

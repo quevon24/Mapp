@@ -18,95 +18,85 @@
 <div class="wrapper wrapper-content animated fadeInRight white-bg">
     <div class="row">
         <div class="col-md-12">
-            <h2 class="text-center" style="padding-top: 10px; padding-bottom:10px;">Lista de contacto</h2> 
-            <br>
-            {% if object_list %}
-
-
-<div class="row">
-{% for contacto in object_list %}
-
-
-<div class="col-lg-4">
-                <div class="contact-box animated pulse">
-                    <a href="#">
-                    <div class="col-sm-4">
-                        <div class="text-center">
-                            <div class="contactid"><span class="contactidstyle">{{contacto.pk}}</span>
-                            <br>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-8">
-                        <h3><strong>{{contacto.nombre}}</strong></h3>
-                        <p><i class="fa fa-map-marker"></i> {{contacto.email1}}</p>
-                        <address>
-                            <strong><abbr title="Telefono 1">Tel 1:</abbr></strong> {{contacto.tel1}}<br>
-                            <strong><abbr title="Telefono 1">Tel 2:</abbr></strong> {{contacto.tel2}}<br>
-                            
-                            
-                        </address>
+            <h2 class="text-center" style="padding-top: 10px; padding-bottom:10px;">Lista de contacto</h2>
+            <br> {% if object_list %}
+            <div class="row">
+                {% for contacto in object_list %}
+                <div class="col-lg-4">
+                    <div class="contact-box animated pulse">
                         <a href="#">
-                                <button class="btn btn-warning btn-sm" type="button"><i class="fa fa-paste"></i> Detalles </button>
-                            </a>
-
-                            <a href="#">
-                                <button class="btn btn-info btn-sm" type="button"><i class="fa fa-pencil"></i> Editar</button>
-                            </a>
-                    </div>
-                    <div class="clearfix"></div>
+                            <div class="col-sm-4">
+                                <div class="text-center">
+                                    <div class="contactid"><span class="contactidstyle">{{contacto.pk}}</span>
+                                        <br>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-8">
+                                <h3><strong>{{contacto.nombre}}</strong></h3>
+                                <p><i class="fa fa-map-marker"></i> {{contacto.email1}}</p>
+                                <address>
+                                    <strong><abbr title="Telefono 1">Tel 1:</abbr></strong> {{contacto.tel1}}
+                                    <br>
+                                    <strong><abbr title="Telefono 1">Tel 2:</abbr></strong> {{contacto.tel2}}
+                                    <br>
+                                </address>
+                                <a href="{% url 'detalles_contacto' pk=contacto.pk %}">
+                                    <button class="btn btn-warning btn-sm" type="button"><i class="fa fa-paste"></i> Detalles </button>
+                                </a>
+                                <a href="{% url 'editar_contacto' pk=contacto.pk %}">
+                                    <button class="btn btn-info btn-sm" type="button"><i class="fa fa-pencil"></i> Editar</button>
+                                </a>
+                            </div>
+                            <div class="clearfix"></div>
                         </a>
+                    </div>
                 </div>
+                {% endfor %}
             </div>
-
-
-{% endfor %}
-</div>
-
             {% else %}
             <h3>No has agregado cartas</h3> {% endif %}
-
-                <div class="paginationbox">
-                    <ul class="pagination">
-                        {% if page_obj.has_previous %}
-                        <li>
-                            <span>
+            <div class="paginationbox">
+                <ul class="pagination">
+                    {% if page_obj.has_previous %}
+                    <li>
+                        <span>
                                 <a href="?page=1"> << Primera pagina</a>
                             </span>
-                        </li>
-                        <li>
-                            <span><a href="?page={{ page_obj.previous_page_number }}">Anterior</a></span>
-                        </li>
-                        {% endif %}
-                        <li class="">
-                            <span>Pagina {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.</span>
-                        </li>
-                        {% if page_obj.has_next %}
-                        <li>
-                            <span><a href="?page={{ page_obj.next_page_number }}">Siguiente</a></span>
-                        </li>
-                            <li>
-                            <span>
+                    </li>
+                    <li>
+                        <span><a href="?page={{ page_obj.previous_page_number }}">Anterior</a></span>
+                    </li>
+                    {% endif %}
+                    <li class="">
+                        <span>Pagina {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.</span>
+                    </li>
+                    {% if page_obj.has_next %}
+                    <li>
+                        <span><a href="?page={{ page_obj.next_page_number }}">Siguiente</a></span>
+                    </li>
+                    <li>
+                        <span>
                                 <a href="?page={{ page_obj.paginator.num_pages }}">Ultima pagina >></a>
                             </span>
-                        </li>
-                        {% endif %}
-                    </ul>
-                </div>
-
-
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
         </div>
     </div>
 </div>
+
 {% endblock %}
 
 {% block extrascripts %}
 
 <script>
-        $(document).ready(function(){
-            $('.contact-box').each(function() {
-                animationHover(this, 'pulse');
-            });
-        });
-    </script>
+$(document).ready(function() {
+    $('.contact-box').each(function() {
+        animationHover(this, 'pulse');
+    });
+});
+</script>
+
 {% endblock %}
