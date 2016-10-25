@@ -27,7 +27,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.models import User, Permission, Group
 
 def home(request):
-    return render(request, 'inicio.html', {'ent': True})
+	return render(request, 'inicio.html', {'ent': True})
 
 # ---------------------------------------------------------
 # ---------------------------------------------------------
@@ -61,8 +61,8 @@ def actualizar_cuenta(request):
 		user_form = Usuarioform(instance=request.user)
 
 	return render(request, 'editar_cuenta.html', {
-        'user_form': user_form,
-    })
+		'user_form': user_form,
+	})
 
 # ---------------------------------------------------------------
 # ---------------------------------------------------------------
@@ -78,23 +78,23 @@ def crear_carta(request):
 # Usuario subir carta , settings.VARIABLE
 
 class PictureCreateView(CreateView):
-    model = Perfil_carta_archivo
-    fields = "__all__"
-    #template_name = "perfil_carta_archivo_.html"
+	model = Perfil_carta_archivo
+	fields = "__all__"
+	#template_name = "perfil_carta_archivo_.html"
 
-    def form_valid(self, form):
-        self.object = form.save()
-        files = [serialize(self.object)]
-        data = {'files': files}
-        response = JSONResponse(data, mimetype=response_mimetype(self.request))
-        print response
-        response['Content-Disposition'] = 'inline; filename=files.json'
-        return response
+	def form_valid(self, form):
+		self.object = form.save()
+		files = [serialize(self.object)]
+		data = {'files': files}
+		response = JSONResponse(data, mimetype=response_mimetype(self.request))
+		print response
+		response['Content-Disposition'] = 'inline; filename=files.json'
+		return response
 
-    def form_invalid(self, form):
-        data = json.dumps(form.errors)
-        print data
-        return HttpResponse(content=data, status=400, content_type='application/json')
+	def form_invalid(self, form):
+		data = json.dumps(form.errors)
+		print data
+		return HttpResponse(content=data, status=400, content_type='application/json')
 
 @login_required
 def upload_carta(request):
@@ -102,20 +102,20 @@ def upload_carta(request):
 	form = Usuario_cartas()
 	if request.method == 'POST':
 		form = Usuario_cartas(request.POST)
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.contenido = form.cleaned_data['contenido']
-            post.email = form.cleaned_data['email']
-            post.tel1 = form.cleaned_data['tel1']
-            post.tel2 = form.cleaned_data['tel2']
-            post.terminado = True
-            post.user = request.user
-            post.save()
-            save = True
-            print save
-            #return redirect('home')
+		if form.is_valid():
+			post = form.save(commit=False)
+			post.contenido = form.cleaned_data['contenido']
+			post.email = form.cleaned_data['email']
+			post.tel1 = form.cleaned_data['tel1']
+			post.tel2 = form.cleaned_data['tel2']
+			post.terminado = True
+			post.user = request.user
+			post.save()
+			save = True
+			print save
+			#return redirect('home')
 	else:
-            form = Usuario_cartas()
+			form = Usuario_cartas()
 
 	if 'savefile' in request.POST:
 		#objs = dict(request.POST.iterlists()) #pass submit form fields in a dict
@@ -143,40 +143,40 @@ def obtener_archivos_cartas(request, cartaid):
 		lista_archivos = list(archivos)
 	else:
 		response = JSONResponse(lista_archivos)
-        print response
-        response['Content-Disposition'] = 'inline; filename=files.json'
-        return response
+		print response
+		response['Content-Disposition'] = 'inline; filename=files.json'
+		return response
 
 
 class PictureCreateView(CreateView):
-    model = Perfil_carta_archivo
-    fields = "__all__"
-    #template_name = "perfil_carta_archivo_.html"
+	model = Perfil_carta_archivo
+	fields = "__all__"
+	#template_name = "perfil_carta_archivo_.html"
 
-    def form_valid(self, form):
-        self.object = form.save()
-        files = [serialize(self.object)]
-        data = {'files': files}
-        response = JSONResponse(data, mimetype=response_mimetype(self.request))
-        print response
-        response['Content-Disposition'] = 'inline; filename=files.json'
-        return response
+	def form_valid(self, form):
+		self.object = form.save()
+		files = [serialize(self.object)]
+		data = {'files': files}
+		response = JSONResponse(data, mimetype=response_mimetype(self.request))
+		print response
+		response['Content-Disposition'] = 'inline; filename=files.json'
+		return response
 
-    def form_invalid(self, form):
-        data = json.dumps(form.errors)
-        print data
-        return HttpResponse(content=data, status=400, content_type='application/json')
+	def form_invalid(self, form):
+		data = json.dumps(form.errors)
+		print data
+		return HttpResponse(content=data, status=400, content_type='application/json')
 
 
 class PictureDeleteView1(DeleteView):
-    model = Perfil_carta_archivo
+	model = Perfil_carta_archivo
 
-    def delete(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        self.object.delete()
-        response = JSONResponse(True, mimetype=response_mimetype(request))
-        response['Content-Disposition'] = 'inline; filename=files.json'
-        return response
+	def delete(self, request, *args, **kwargs):
+		self.object = self.get_object()
+		self.object.delete()
+		response = JSONResponse(True, mimetype=response_mimetype(request))
+		response['Content-Disposition'] = 'inline; filename=files.json'
+		return response
 
 def borrar_archivo_carta(request, pk):
 	archivo = Perfil_carta_archivo.objects.get(pk=pk)
@@ -197,20 +197,20 @@ def editar_carta(request, pk):
 	num_archivos = archivos.count()
 	if request.method == 'POST':
 		form = Usuario_cartas(request.POST, request.FILES, instance=post)
-        if form.is_valid():
-            post = form.save(commit=False)
-            # post.contenido = form.cleaned_data['contenido']
-            # post.email = form.cleaned_data['email']
-            # post.tel1 = form.cleaned_data['tel1']
-            # post.tel2 = form.cleaned_data['tel2']
-            post.terminado = True
-            post.user = request.user
-            post.save()
-            save = True
-            print save
-            #return redirect('home')
+		if form.is_valid():
+			post = form.save(commit=False)
+			# post.contenido = form.cleaned_data['contenido']
+			# post.email = form.cleaned_data['email']
+			# post.tel1 = form.cleaned_data['tel1']
+			# post.tel2 = form.cleaned_data['tel2']
+			post.terminado = True
+			post.user = request.user
+			post.save()
+			save = True
+			print save
+			#return redirect('home')
 	else:
-            form = Usuario_cartas(instance=post)
+			form = Usuario_cartas(instance=post)
 	return render(request, 'editar_carta.html', {'form': form, 'save':save, 'obj_pk':obj_id, 'archivos':archivos , 'num_archivos':num_archivos})
 
 
@@ -228,9 +228,13 @@ class listar_cartas(ListView):
 	def dispatch(self, *args, **kwargs):
 		return super(listar_cartas, self).dispatch(*args, **kwargs)
 
+	def get_queryset(self):
+		new_context = Perfil_carta.objects.filter(user=self.request.user.id)
+		return new_context
+
 	def get_context_data(self, **kwargs):
 		context = super(ListView, self).get_context_data(**kwargs) 
-		clist = Perfil_carta.objects.filter(user=self.request.user)
+		clist = Perfil_carta.objects.filter(user=self.request.user.id)
 		paginator = Paginator(clist, self.paginate_by)
 
 		page = self.request.GET.get('page')
@@ -243,6 +247,9 @@ class listar_cartas(ListView):
 			file = paginator.page(paginator.num_pages)
 
 		context['clist'] = file
+
+		
+
 		return context
 
 # ---------------------------------------------------------------
@@ -254,7 +261,8 @@ class listar_cartas(ListView):
 def carta_detalle(request, pk):
 	archivos = Perfil_carta_archivo.objects.filter(carta=pk)
 	carta = get_object_or_404(Perfil_carta, pk = pk)
-	return render(request, 'detalles_carta.html', {'carta': carta, 'archivos':archivos})
+	contacto = Contactos.objects.get(pk=carta.contacto.pk)
+	return render(request, 'detalles_carta.html', {'carta': carta, 'archivos':archivos, 'contacto':contacto})
 
 
 # ---------------------------------------------------------------
@@ -266,18 +274,18 @@ def upload_audio(request):
 	form = Usuario_audios()
 	if request.method == 'POST':
 		form = Usuario_audios(request.POST, request.FILES)
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.archivo = form.cleaned_data['archivo']
-            post.email = form.cleaned_data['email']
-            post.tel1 = form.cleaned_data['tel1']
-            post.tel2 = form.cleaned_data['tel2']
-            post.user = request.user
-            post.terminado = True
-            post.save()
-            save = True
-            print save
-            #return redirect('home')
+		if form.is_valid():
+			post = form.save(commit=False)
+			post.archivo = form.cleaned_data['archivo']
+			post.email = form.cleaned_data['email']
+			post.tel1 = form.cleaned_data['tel1']
+			post.tel2 = form.cleaned_data['tel2']
+			post.user = request.user
+			post.terminado = True
+			post.save()
+			save = True
+			print save
+			#return redirect('home')
 
 	return render(request, 'subir_audio.html', {'form': form, 'save':save})
 
@@ -332,21 +340,21 @@ def upload_video(request):
 	form = Usuario_videos()
 	if request.method == 'POST':
 		form = Usuario_videos(request.POST, request.FILES)
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.archivo = form.cleaned_data['archivo']
-            post.nombre = form.cleaned_data['nombre']
-            post.email = form.cleaned_data['email']
-            post.tel1 = form.cleaned_data['tel1']
-            post.tel2 = form.cleaned_data['tel2']
-            post.direccion = form.cleaned_data['direccion']
-            post.formato = form.cleaned_data['formato']
-            post.user = request.user
-            post.terminado = True
-            post.save()
-            save = True
-            print save
-            #return redirect('home')
+		if form.is_valid():
+			post = form.save(commit=False)
+			post.archivo = form.cleaned_data['archivo']
+			post.nombre = form.cleaned_data['nombre']
+			post.email = form.cleaned_data['email']
+			post.tel1 = form.cleaned_data['tel1']
+			post.tel2 = form.cleaned_data['tel2']
+			post.direccion = form.cleaned_data['direccion']
+			post.formato = form.cleaned_data['formato']
+			post.user = request.user
+			post.terminado = True
+			post.save()
+			save = True
+			print save
+			#return redirect('home')
 
 	return render(request, 'subir_video.html', {'form': form, 'save':save})
 
@@ -422,8 +430,8 @@ def actualizar_cuenta(request):
 		user_form = Usuarioform(instance=request.user)
 
 	return render(request, 'editar_cuenta.html', {
-        'user_form': user_form,
-    })
+		'user_form': user_form,
+	})
 
 # ---------------------------------------------------------------
 # ---------------------------------------------------------------
@@ -447,8 +455,8 @@ def actualizar_perfil(request):
 		profile_form = Perfilform(instance=perfil)
 
 	return render(request, 'editar_perfil.html', {
-        'profile_form': profile_form
-    })
+		'profile_form': profile_form
+	})
 
 
 # ---------------------------------------------------------------
@@ -456,32 +464,32 @@ def actualizar_perfil(request):
 # Agregar contacto
 @login_required
 def agregar_contacto(request):
-    form = form_agregar_contacto()
-    if request.method == 'POST':
-        form = form_agregar_contacto(request.POST)
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.user = request.user
-            post.terminado = True
-            post.save()
-            return redirect('lista_contactos')
+	form = form_agregar_contacto()
+	if request.method == 'POST':
+		form = form_agregar_contacto(request.POST)
+		if form.is_valid():
+			post = form.save(commit=False)
+			post.user = request.user
+			post.terminado = True
+			post.save()
+			return redirect('lista_contactos')
 
-    return render(request, 'agregar_contacto.html', {'form': form})
+	return render(request, 'agregar_contacto.html', {'form': form})
 
 # Obtener datos contacto
 
 @login_required
 def ajax_datos_contacto(request, contactoid):
-    try:
-        contacto = Contactos.objects.get(pk=contactoid)
-        contacto_datos = {'nombre': contacto.nombre, 'email1': contacto.email1, 'tel1': contacto.tel1, 'tel2':contacto.tel2, 'direccion':contacto.direccion}
-    except:
-        contacto_datos = {'nombre': 'Ninguno', 'email1': 'Ninguno', 'tel1': 'Ninguno', 'tel2':'Ninguno', 'direccion':'Ninguno'}
+	try:
+		contacto = Contactos.objects.get(pk=contactoid)
+		contacto_datos = {'nombre': contacto.nombre, 'email1': contacto.email1, 'tel1': contacto.tel1, 'tel2':contacto.tel2, 'direccion':contacto.direccion}
+	except:
+		contacto_datos = {'nombre': 'Ninguno', 'email1': 'Ninguno', 'tel1': 'Ninguno', 'tel2':'Ninguno', 'direccion':'Ninguno'}
 
-    response = JSONResponse(contacto_datos)
-    print response
-    response['Content-Disposition'] = 'inline; filename=files.json'
-    return response
+	response = JSONResponse(contacto_datos)
+	print response
+	response['Content-Disposition'] = 'inline; filename=files.json'
+	return response
 
 
 # ---------------------------------------------------------------
@@ -489,37 +497,37 @@ def ajax_datos_contacto(request, contactoid):
 # Lista de contactos
 
 class listar_contactos(ListView):
-    model = Contactos
-    template_name = 'lista_contactos.html'
-    paginate_by = 10 # Elementos por pagina
+	model = Contactos
+	template_name = 'lista_contactos.html'
+	paginate_by = 10 # Elementos por pagina
 
-    @method_decorator(login_required)
-    @method_decorator(group_required('Administrador', 'Pendiente'))
-    def dispatch(self, *args, **kwargs):
-        return super(listar_contactos, self).dispatch(*args, **kwargs)
+	@method_decorator(login_required)
+	@method_decorator(group_required('Administrador', 'Pendiente'))
+	def dispatch(self, *args, **kwargs):
+		return super(listar_contactos, self).dispatch(*args, **kwargs)
 
-    def get_queryset(self):
-        new_context = Contactos.objects.filter(user=self.request.user.id)
-        return new_context
+	def get_queryset(self):
+		new_context = Contactos.objects.filter(user=self.request.user.id)
+		return new_context
 
-    def get_context_data(self, **kwargs):
-        context = super(ListView, self).get_context_data(**kwargs) 
-        clist = Contactos.objects.filter(user=self.request.user.id)
-        print clist
-        print self.request.user.id
-        paginator = Paginator(clist, self.paginate_by)
+	def get_context_data(self, **kwargs):
+		context = super(ListView, self).get_context_data(**kwargs) 
+		clist = Contactos.objects.filter(user=self.request.user.id)
+		print clist
+		print self.request.user.id
+		paginator = Paginator(clist, self.paginate_by)
 
-        page = self.request.GET.get('page')
+		page = self.request.GET.get('page')
 
-        try:
-            file = paginator.page(page)
-        except PageNotAnInteger:
-            file = paginator.page(1)
-        except EmptyPage:
-            file = paginator.page(paginator.num_pages)
+		try:
+			file = paginator.page(page)
+		except PageNotAnInteger:
+			file = paginator.page(1)
+		except EmptyPage:
+			file = paginator.page(paginator.num_pages)
 
-        context['clist'] = file
-        return context
+		context['clist'] = file
+		return context
 
 
 # ---------------------------------------------------------------
@@ -530,14 +538,14 @@ class listar_contactos(ListView):
 @group_required('Administrador', 'Pendiente')
 def contacto_detalle(request, pk):
 
-    try:
-        contacto = Contactos.objects.get(pk = pk)
-        respuesta = True
-    except:
-        contacto = None
-        respuesta = False
+	try:
+		contacto = Contactos.objects.get(pk = pk)
+		respuesta = True
+	except:
+		contacto = None
+		respuesta = False
 
-    return render(request, 'detalles_contacto.html', {'contacto': contacto, 'respuesta':respuesta})
+	return render(request, 'detalles_contacto.html', {'contacto': contacto, 'respuesta':respuesta})
 
 
 # ---------------------------------------------------------------
@@ -547,15 +555,15 @@ def contacto_detalle(request, pk):
 @login_required
 @group_required('Administrador')
 def editar_contacto(request, pk):
-    post = get_object_or_404(Contactos, pk=pk)
-    if request.method == "POST":
-            form = form_agregar_contacto(request.POST, instance=post)
-            if form.is_valid():
-                post = form.save(commit=False)
-                post.author = request.user
-                post.usuario = request.user
-                post.save()
-                return redirect('detalles_contacto', pk=pk)
-    else:
-            form = form_agregar_contacto(instance=post)
-    return render(request, 'editar_contacto.html', {'form': form})
+	post = get_object_or_404(Contactos, pk=pk)
+	if request.method == "POST":
+			form = form_agregar_contacto(request.POST, instance=post)
+			if form.is_valid():
+				post = form.save(commit=False)
+				post.author = request.user
+				post.usuario = request.user
+				post.save()
+				return redirect('detalles_contacto', pk=pk)
+	else:
+			form = form_agregar_contacto(instance=post)
+	return render(request, 'editar_contacto.html', {'form': form})
