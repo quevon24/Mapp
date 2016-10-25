@@ -55,7 +55,25 @@
                     <div class="col-sm-6">
                         {{form.contacto}}
                     </div>
+
                 </div>
+
+                 <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        Datos de Contacto:
+                    </label>
+                    <div class="col-sm-6">
+                        <div class="info-contacto">
+
+</div>
+                    </div>
+
+                </div>
+
+
+                
+                    
+
                 <div class="form-group">
                     <label class="col-sm-2 control-label">
                         Email destinatario:
@@ -154,9 +172,7 @@ Numero maximo de archivos: 1
                 </a>
             </form>
 <p></p>
-<div class="info-contacto">
 
-</div>
 
         </div>
     </div>
@@ -373,16 +389,32 @@ window.onbeforeunload = function() {
 
 
 <script>
+
+
+
+$(document).ready(function() { 
+    var valueSelected = $('#id_contacto').val();
+    var urlcontacto = '/obtener-datos-contacto/' + valueSelected + '/';
+    datoscontacto(urlcontacto);
+});
+
 $('#id_contacto').on('change', function(e) {
     var optionSelected = $("option:selected", this);
     var valueSelected = this.value;
     var urlcontacto = '/obtener-datos-contacto/' + valueSelected + '/';
 
-    function datoscontacto() {
+    
+
+
+    datoscontacto(urlcontacto);
+});
+
+function datoscontacto(urlcontacto) {
+
 
         $.getJSON(urlcontacto, function(data) {
 
-
+            $('.info-contacto').empty();
             var htmlText = '';
 
                 htmlText += '<div class="div-conatiner">';
@@ -400,10 +432,6 @@ $('#id_contacto').on('change', function(e) {
         });
 
     };
-
-
-    datoscontacto();
-});
 </script>
 
 
