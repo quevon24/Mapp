@@ -464,7 +464,7 @@ def agregar_contacto(request):
             post.user = request.user
             post.terminado = True
             post.save()
-            #return redirect('home')
+            return redirect('lista_contactos')
 
     return render(request, 'agregar_contacto.html', {'form': form})
 
@@ -498,9 +498,15 @@ class listar_contactos(ListView):
     def dispatch(self, *args, **kwargs):
         return super(listar_contactos, self).dispatch(*args, **kwargs)
 
+    def get_queryset(self):
+        new_context = Contactos.objects.filter(user=self.request.user.id)
+        return new_context
+
     def get_context_data(self, **kwargs):
         context = super(ListView, self).get_context_data(**kwargs) 
-        clist = Contactos.objects.filter(user=self.request.user)
+        clist = Contactos.objects.filter(user=self.request.user.id)
+        print clist
+        print self.request.user.id
         paginator = Paginator(clist, self.paginate_by)
 
         page = self.request.GET.get('page')
