@@ -116,10 +116,10 @@
                     {% endif %}
                     <!-- Elemento cobro menu lateral-->
                     {% if user.groups.all.0.name == "Administrador" or user.groups.all.0.name == "Usuario" or user.groups.all.0.name == "Pendiente" or user.is_superuser %}
-                    <li id="mainop4">
+                    <li id="mainop5">
                         <a href="#"><i class="fa fa-user"></i> <span class="nav-label">CUENTA</span><span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
-                            <li><a href="#">Mi cuenta</a></li>
+                            <li><a href="{% url 'configuraciones_usuario' %}">Mi cuenta</a></li>
                         </ul>
                     </li>
                     {% endif %}
@@ -289,6 +289,18 @@ jQuery(function($) {
                     $(this).closest('li').addClass('active');
                     $('#mainop4 ul').addClass('collapse in');
                     $('#mainop4').addClass('active');
+                }
+
+            });
+        });
+
+        jQuery(function($) {
+            var path = window.location.href;
+            $('#mainop5 ul a').each(function() {
+                if (this.href === path) {
+                    $(this).closest('li').addClass('active');
+                    $('#mainop5 ul').addClass('collapse in');
+                    $('#mainop5').addClass('active');
                 }
 
             });
