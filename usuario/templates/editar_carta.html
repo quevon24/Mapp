@@ -1,5 +1,5 @@
  {% extends "base.html" %}{% load static %} {% block title %} Editar carta {% endblock %} 
-
+{% load addcss %}
 {% load staticfiles %}
 <script type="text/javascript" src="{% static "ckeditor/ckeditor/ckeditor.js" %}"></script>
 <script type="text/javascript" src="{% static "ckeditor/ckeditor-init.js" %}"></script>
@@ -54,7 +54,14 @@
                     </label>
                     <div class="col-sm-6">
                         {{form.contacto}}
+
+                        <div id="results">
+</div>
                     </div>
+
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal2">
+                                Agregar contacto
+                            </button>
 
                 </div>
 
@@ -66,39 +73,10 @@
                         <div class="info-contacto">
 
 </div>
+
                     </div>
 
                 </div>
-
-
-                
-                    
-
-<!--                 <div class="form-group">
-                    <label class="col-sm-2 control-label">
-                        Email destinatario:
-                    </label>
-                    <div class="col-sm-6">
-                        <input id="id_email" type="email" class="form-control" name="email" value="{{form.email.value|default_if_none:"" }}">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">
-                        Telefono 1 destinatario:
-                    </label>
-                    <div class="col-sm-6">
-                        <input id="id_tel1" type="text" class="form-control" name="tel1" value="{{form.tel1.value |default_if_none:"" }}">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">
-                        Telefono 2 destinatario:
-                    </label>
-                    <div class="col-sm-6">
-                        <input id="id_tel2" type="text" class="form-control" name="tel2" 
-                        value="{{form.tel2.value|default_if_none:""}}">
-                    </div>
-                </div> -->
 
 <div class="form-group">
     <label class="col-sm-2 control-label">
@@ -147,21 +125,13 @@ Numero maximo de archivos: 1
           <span><h3>Archivo Adjunto:</h3></span>
      
      
- <div id="lista_archivos">
-
-
- </div>
+ <div id="lista_archivos"></div>
      
-
-     
-
-
 
         </div>
 
     </div>
 </div>
-
 
 
                 <br>
@@ -180,11 +150,10 @@ Numero maximo de archivos: 1
 
 
 
+{% include 'modals.html' %}
+
 
 {% block extrascripts %}
-
-
-
 
 
 <!-- The jQuery UI widget factory, can be omitted if jQuery UI is already included -->
@@ -402,6 +371,64 @@ $('#id_contacto').on('change', function(e) {
     datoscontacto(urlcontacto);
 });
 
+
+// nuevo
+
+$('#contactoform').on('submit', function(event){
+    event.preventDefault();
+    console.log("form enviado!")
+    crear_contacto();
+});
+
+function crear_contacto() {
+    console.log("funcion crear contacto!") // sanity check
+    $.ajax({
+        url : "/contactos/agregar_ajax/", // the endpoint
+        type : "POST", // http method
+        data : { 
+        nombre : $('#id_nombre').val(),
+        email1 : $('#id_email1').val(),
+        tel1 : $('#id_tel1').val(),
+        tel2 : $('#id_tel2').val(),
+        direccion : $('#id_direccion').val(),
+        csrfmiddlewaretoken: '{{ csrf_token }}',
+
+        }, // data sent with the post request
+
+        // handle a successful response
+        success : function(json) {
+
+            $('#myModal2').modal('hide');
+            $(".modal-backdrop").remove();
+            $('#contactoform').trigger("reset");
+
+            $('#results').empty();
+            var htmlText = '';
+            htmlText += '<div class="help-block alert alert-success">';
+            htmlText += 'Contacto: <strong>' + json.nombre + '</strong> agregado con exito';
+            htmlText += '</div>';
+            $('#results').append(htmlText);
+            
+
+           // $('#post-text').val(''); // remove the value from the input
+            console.log(json); // log the returned json to the console
+            console.log("success"); // another sanity check
+        },
+
+        // handle a non-successful response
+        error : function(xhr,errmsg,err) {
+            $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+                " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+        }
+    });
+};
+
+// nuevo
+
+
+
+
 function datoscontacto(urlcontacto) {
 
 
@@ -434,6 +461,9 @@ $('#id_contacto').selectize();
 </script>
 
 {% endblock %}
+
+
+
 
 
 

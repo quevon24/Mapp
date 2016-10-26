@@ -54,4 +54,5 @@ urlpatterns = [
     url(r'^contactos/lista-contactos/$', listar_contactos.as_view(), name='lista_contactos'),
     url(r'^contactos/detalle-contacto/(?P<pk>[0-9]+)/$', views.contacto_detalle, name='detalles_contacto'),
     url(r'^contactos/editar-contacto/(?P<pk>[0-9]+)/$', views.editar_contacto, name='editar_contacto'),
+    url(r'^contactos/agregar_ajax/$', views.agregar_contacto_ajax, name='agregar_contacto_ajax'),
        ]
