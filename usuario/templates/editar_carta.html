@@ -37,6 +37,11 @@
             </div>
             {% endif %} {% if form.archivo.errors %} {{ form.archivo.errors.as_text }} {% endif %}
             <p></p>
+
+            <div class="alert alert-danger" id="mensajecontacto">
+                                Para llenar una carta necesitas seleccionar o agregar un contacto.
+                            </div>
+
             <form method="post" id="mainform" enctype="multipart/form-data" class="form-horizontal">{% csrf_token %}
             {{ form.media }}
                 <div class="form-group">
@@ -135,7 +140,7 @@ Numero maximo de archivos: 1
 
 
                 <br>
-                <button onclick="enviar()" type="submit" name="guardar" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;Guardar Carta</button>
+                <button onclick="enviar()" type="submit" name="guardar" id="botonguardar" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;Guardar Carta</button>
                 <a href="javascript:history.back();">
                     <button class="btn btn-w-m btn-danger" type="submit"> <i class="fa fa-arrow-left"></i> Cancelar
                     </button>
@@ -192,8 +197,13 @@ document.getElementById("mainform").submit();
 }
 
 /*Obtener archivos de carta*/
+
+
+
 var cartaid = "{{ obj_pk }}";
 var url = "/obtener-archivos-cartas/" + cartaid;
+
+
 
 function fetch() {
 
@@ -354,18 +364,57 @@ $(function() {
 
 
 
-$(document).ready(function() { 
-    var valueSelected = $('#id_contacto').val();
-    var urlcontacto = '/obtener-datos-contacto/' + valueSelected + '/';
-    datoscontacto(urlcontacto);
+$(document).ready(function() {
+
+    if ($("#id_contacto").val() === "") {
+
+        $("#id_contenido").prop("disabled", true);
+        $("#id_archivo").prop("disabled", true);
+        $("#botonguardar").prop("disabled", true);
+        $("#mensajecontacto").css("display", "block");
+        $('.info-contacto').empty();
+
+    } else {
+
+        //$("#id_contenido").prop("disabled", false);
+        $("#id_contenido").removeProp("disabled");
+        $("#id_archivo").prop("disabled", false);
+        $("#botonguardar").prop("disabled", false);
+        $("#mensajecontacto").css("display", "none");
+
+        var valueSelected = $('#id_contacto').val();
+        var urlcontacto = '/obtener-datos-contacto/' + valueSelected + '/';
+        datoscontacto(urlcontacto);
+
+    }
 });
 
 $('#id_contacto').on('change', function(e) {
-    var optionSelected = $("option:selected", this);
-    var valueSelected = this.value;
-    var urlcontacto = '/obtener-datos-contacto/' + valueSelected + '/';
 
-    
+
+    if ($("#id_contacto").val() === "") {
+
+        $("#id_contenido").prop("disabled", true);
+        $("#id_archivo").prop("disabled", true);
+        $("#botonguardar").prop("disabled", true);
+        $("#mensajecontacto").css("display", "block");
+        $('.info-contacto').empty();
+
+    } else {
+        //$("#id_contenido").prop("disabled", false);
+        $("#id_contenido").removeProp("disabled");
+        $("#id_archivo").prop("disabled", false);
+        $("#botonguardar").prop("disabled", false);
+        $("#mensajecontacto").css("display", "none");
+
+        var optionSelected = $("option:selected", this);
+        var valueSelected = this.value;
+        var urlcontacto = '/obtener-datos-contacto/' + valueSelected + '/';
+
+
+    }
+
+
 
 
     datoscontacto(urlcontacto);
@@ -376,12 +425,13 @@ $('#id_contacto').on('change', function(e) {
 
 $('#contactoform').on('submit', function(event){
     event.preventDefault();
-    console.log("form enviado!")
+    event.stopImmediatePropagation();
+    console.log("form enviado!");
     crear_contacto();
 });
 
 function crear_contacto() {
-    console.log("funcion crear contacto!") // sanity check
+    console.log("funcion crear contacto!"); // sanity check
     $.ajax({
         url : "/contactos/agregar_ajax/", // the endpoint
         type : "POST", // http method
