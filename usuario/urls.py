@@ -51,7 +51,9 @@ urlpatterns = [
     # Contacto
     url(r'^contactos/agregar-contacto/$', views.agregar_contacto, name='agregar-contacto'),
     url(r'^obtener-datos-contacto/(?P<contactoid>[0-9]+)/$', views.ajax_datos_contacto, name='obtener-datos-contacto'),
+    url(r'^obtener-contactos-usuario/(?P<pk>[0-9]+)/$', views.obtener_contactos_ajax, name='obtener-contactos-usuario'),
     url(r'^contactos/lista-contactos/$', listar_contactos.as_view(), name='lista_contactos'),
     url(r'^contactos/detalle-contacto/(?P<pk>[0-9]+)/$', views.contacto_detalle, name='detalles_contacto'),
     url(r'^contactos/editar-contacto/(?P<pk>[0-9]+)/$', views.editar_contacto, name='editar_contacto'),
+    url(r'^contactos/agregar_ajax/$', views.agregar_contacto_ajax, name='agregar_contacto_ajax'),
        ]

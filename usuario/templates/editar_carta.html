@@ -1,5 +1,5 @@
  {% extends "base.html" %}{% load static %} {% block title %} Editar carta {% endblock %} 
-
+{% load addcss %}
 {% load staticfiles %}
 <script type="text/javascript" src="{% static "ckeditor/ckeditor/ckeditor.js" %}"></script>
 <script type="text/javascript" src="{% static "ckeditor/ckeditor-init.js" %}"></script>
@@ -37,6 +37,11 @@
             </div>
             {% endif %} {% if form.archivo.errors %} {{ form.archivo.errors.as_text }} {% endif %}
             <p></p>
+
+            <div class="alert alert-danger" id="mensajecontacto">
+                                Para llenar una carta necesitas seleccionar o agregar un contacto.
+                            </div>
+
             <form method="post" id="mainform" enctype="multipart/form-data" class="form-horizontal">{% csrf_token %}
             {{ form.media }}
                 <div class="form-group">
@@ -45,6 +50,8 @@
                     </label>
                     <div class="col-sm-6">
                     
+
+
                         {{form.contenido}}
                     </div>
                 </div>
@@ -53,8 +60,24 @@
                         Contacto:
                     </label>
                     <div class="col-sm-6">
-                        {{form.contacto}}
+                     
+
+                        <select id="id_contacto" name="contacto" class="form-control"></select>
+
+                        <div id="results">
+</div>
+
+<div id="no-user">
+<div class="alert alert-danger" id="mensajecontacto" style="display: block;">
+                                No has agregado contactos.
+                            </div>
+</div>
+
                     </div>
+
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal2">
+                                Agregar contacto
+                            </button>
 
                 </div>
 
@@ -66,39 +89,10 @@
                         <div class="info-contacto">
 
 </div>
+
                     </div>
 
                 </div>
-
-
-                
-                    
-
-<!--                 <div class="form-group">
-                    <label class="col-sm-2 control-label">
-                        Email destinatario:
-                    </label>
-                    <div class="col-sm-6">
-                        <input id="id_email" type="email" class="form-control" name="email" value="{{form.email.value|default_if_none:"" }}">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">
-                        Telefono 1 destinatario:
-                    </label>
-                    <div class="col-sm-6">
-                        <input id="id_tel1" type="text" class="form-control" name="tel1" value="{{form.tel1.value |default_if_none:"" }}">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">
-                        Telefono 2 destinatario:
-                    </label>
-                    <div class="col-sm-6">
-                        <input id="id_tel2" type="text" class="form-control" name="tel2" 
-                        value="{{form.tel2.value|default_if_none:""}}">
-                    </div>
-                </div> -->
 
 <div class="form-group">
     <label class="col-sm-2 control-label">
@@ -135,6 +129,7 @@ Numero maximo de archivos: 1
 
 
         <!-- The global progress bar -->
+        <br>
         <div id="progress" class="progress">
             <div class="progress-bar progress-bar-success"></div>
         </div>
@@ -147,15 +142,8 @@ Numero maximo de archivos: 1
           <span><h3>Archivo Adjunto:</h3></span>
      
      
- <div id="lista_archivos">
-
-
- </div>
+ <div id="lista_archivos"></div>
      
-
-     
-
-
 
         </div>
 
@@ -163,9 +151,8 @@ Numero maximo de archivos: 1
 </div>
 
 
-
                 <br>
-                <button onclick="enviar()" type="submit" name="guardar" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;Guardar Carta</button>
+                <button onclick="enviar()" type="submit" name="guardar" id="botonguardar" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;Guardar Carta</button>
                 <a href="javascript:history.back();">
                     <button class="btn btn-w-m btn-danger" type="submit"> <i class="fa fa-arrow-left"></i> Cancelar
                     </button>
@@ -180,11 +167,10 @@ Numero maximo de archivos: 1
 
 
 
+{% include 'modals.html' %}
+
 
 {% block extrascripts %}
-
-
-
 
 
 <!-- The jQuery UI widget factory, can be omitted if jQuery UI is already included -->
@@ -216,85 +202,93 @@ Numero maximo de archivos: 1
 
 <script>
 
-/*Enviar form*/
+/* ----------------------------------------- */
+/*Enviar form de carta */
 
 function enviar() {
 document.getElementById("mainform").submit();
 }
 
+
+
+/* ----------------------------------------- */
 /*Obtener archivos de carta*/
+
 var cartaid = "{{ obj_pk }}";
 var url = "/obtener-archivos-cartas/" + cartaid;
 
 function fetch() {
 
-$.getJSON(url, function(data) {
-    var items = [];
+    $.getJSON(url, function(data) {
+        var items = [];
 
-    if (data.length == 0) {
-        items.push("No has agregado un archivo para esta carta");
-        $(".form-ok").show();
-        $(".maxfiles").hide();
-        console.log(data.length);
-    }
+        if (data.length == 0) {
+            items.push("No has agregado un archivo para esta carta");
+            $(".form-ok").show();
+            $(".maxfiles").hide();
+            $("#progress").show();
+            console.log(data.length);
+        }
 
-    $.each(data, function(key, val) {
+        $.each(data, function(key, val) {
 
-        val.archivo1 = "/site_media/media/" + val.archivo;
-        val.pk1 = "/borrar-archivo-carta/" + val.pk
+            val.archivo1 = "/site_media/media/" + val.archivo;
+            val.pk1 = "/borrar-archivo-carta/" + val.pk
 
-        var pkfile = val.pk 
+            var pkfile = val.pk
 
-        items.push("<div class=row><i class='fa fa-file-o'></i><a target=_blank href='" + val.archivo1 + "'> " + val.archivo + "</a></div>  <div class=row> <br><a class='btn btn-w-m btn-danger' onclick='borrar("+ val.pk +")'><i class='fa fa-trash-o'></i> Borrar archivo</a> </div><hr>" );
+            items.push("<div class=row><i class='fa fa-file-o'></i><a target=_blank href='" + val.archivo1 + "'> " + val.archivo + "</a></div>  <div class=row> <br><a class='btn btn-w-m btn-danger' onclick='borrar(" + val.pk + ")'><i class='fa fa-trash-o'></i> Borrar archivo</a> </div><hr>");
 
+        });
+
+        if (data.length >= 1) {
+            $(".form-ok").hide();
+            $(".maxfiles").show();
+            $("#progress").hide();
+            console.log(data.length);
+
+        }
+
+        $('#lista_archivos').empty();
+        $("<div/>", {
+            "class": "my-new-list",
+            html: items.join("")
+        }).appendTo("#lista_archivos");
     });
-
-    if (data.length >= 1) {
-        $(".form-ok").hide();
-        $(".maxfiles").show();
-        console.log(data.length);
-
-    }
-
-    $('#lista_archivos').empty();
-    $("<div/>", {
-        "class": "my-new-list",
-        html: items.join("")
-    }).appendTo("#lista_archivos");
-});
 
 }
 
 fetch();
 
-
+/* ----------------------------------------- */
 /*Borrar archivos de carta*/
 function borrar(pkarchivo) {
-var urldelete = "/borrar-archivo-carta/" + pkarchivo;
-$.ajax({
-        url : urldelete,
-        type : "GET",
-        data : {
+    var urldelete = "/borrar-archivo-carta/" + pkarchivo;
+    $.ajax({
+        url: urldelete,
+        type: "GET",
+        data: {
             'pk': pkarchivo,
-            csrfmiddlewaretoken: '{{ csrf_token }}' 
+            csrfmiddlewaretoken: '{{ csrf_token }}'
         },
 
-        success: function(response){
-                                    var json = JSON.parse(response);
-                                    console.log(json);
-                                    $('#guardara').empty();
-                                    $('<div class="help-block alert alert-warning"></div>').text('Archivo borrado con exito.').appendTo('#guardara');
-                                    $(".form-ok").show();
-                                    $(".maxfiles").hide();
-                                    $(".progress").empty();
-                                    $("#lista_archivos").empty();
-                                    fetch();
-                                    
-                                 }
+        success: function(response) {
+            var json = JSON.parse(response);
+            console.log(json);
+            $('#guardara').empty();
+            $('<div class="help-block alert alert-warning"></div>').text('Archivo borrado con exito.').appendTo('#guardara');
+            $(".form-ok").show();
+            $(".maxfiles").hide();
+            $(".progress").empty();
+            $("#lista_archivos").empty();
+            fetch();
+
+        }
 
     });
 }
 
+/* ----------------------------------------- */
 /* ----------- Uploader va aqui -------------------*/
 
 /*jslint unparam: true */
@@ -336,7 +330,7 @@ $(function() {
                         //$('<p/>').text(file.url).appendTo('.files');
                         //$('<p/>').text(file.deleteUrl).appendTo('.files');
                         //$('#guardara').empty();
-                        
+
 
 
                         fetch();
@@ -346,7 +340,7 @@ $(function() {
                     });
 
                 },
-                fail: function(e, data){
+                fail: function(e, data) {
                     console.log(data.jqXHR.responseText);
                 },
                 progressall: function(e, data) {
@@ -355,23 +349,23 @@ $(function() {
                         'width',
                         progress + '%'
                     );
-                    $('#progress .progress-bar').text(progress +"%");
+                    $('#progress .progress-bar').text(progress + "%");
                 },
                 add: function(e, data) {
-        var uploadErrors = [];
-        var acceptFileTypes = /^image\/(gif|jpe?g|png)$/i;
-        if(data.originalFiles[0]['type'].length && !acceptFileTypes.test(data.originalFiles[0]['type'])) {
-            uploadErrors.push('Not an accepted file type');
-        }
-        if(data.originalFiles[0]['size'].length && data.originalFiles[0]['size'] > 5000000) {
-            uploadErrors.push('Filesize is too big');
-        }
-        if(uploadErrors.length > 0) {
-            alert(uploadErrors.join("\n"));
-        } else {
-            data.submit();
-        }
-},
+                    var uploadErrors = [];
+                    var acceptFileTypes = /^image\/(gif|jpe?g|png)$/i;
+                    if (data.originalFiles[0]['type'].length && !acceptFileTypes.test(data.originalFiles[0]['type'])) {
+                        uploadErrors.push('Not an accepted file type');
+                    }
+                    if (data.originalFiles[0]['size'].length && data.originalFiles[0]['size'] > 5000000) {
+                        uploadErrors.push('Filesize is too big');
+                    }
+                    if (uploadErrors.length > 0) {
+                        alert(uploadErrors.join("\n"));
+                    } else {
+                        data.submit();
+                    }
+                },
                 dropZone: $(this)
             });
         }).prop('disabled', !$.support.fileInput)
@@ -383,24 +377,175 @@ $(function() {
 
 <script>
 
+/* ----------------------------------------- */
+/* Obtener datos contacto */
+
+$(document).ready(function() {
+
+    var urlpkusuario = '/obtener-contactos-usuario/{{request.user.pk}}/';
+    contactosusuario(urlpkusuario);
+
+    console.log('documento cargado');
 
 
-$(document).ready(function() { 
-    var valueSelected = $('#id_contacto').val();
-    var urlcontacto = '/obtener-datos-contacto/' + valueSelected + '/';
-    datoscontacto(urlcontacto);
-});
+    //--
+    if ($("#id_contacto").val() === "" || $("#id_contacto").val() === null) {
 
-$('#id_contacto').on('change', function(e) {
-    var optionSelected = $("option:selected", this);
-    var valueSelected = this.value;
-    var urlcontacto = '/obtener-datos-contacto/' + valueSelected + '/';
+        //$("#id_contenido").prop("disabled", true);
+        $("#id_archivo").prop("disabled", true);
+        $("#botonguardar").prop("disabled", true);
+        $("#mensajecontacto").css("display", "block");
+        $('.info-contacto').empty();
+
+    } else {
+
+        //$("#id_contenido").prop("disabled", false);
+        //$("#id_contenido").removeProp("disabled");
+        $("#id_archivo").prop("disabled", false);
+        $("#botonguardar").prop("disabled", false);
+        $("#mensajecontacto").css("display", "none");
+    }
+    //--
+
+        if ( "{{form.contacto.value}}" !== "None" ) {
+            var valueSelected = '{{form.contacto.value}}';
+            var urlcontacto = '/obtener-datos-contacto/' + valueSelected + '/';
+
+            //$("#id_contenido").prop("disabled", false);
+            $("#id_archivo").prop("disabled", false);
+        $("#botonguardar").prop("disabled", false);
+        $("#mensajecontacto").css("display", "none");
+            datoscontacto(urlcontacto);
+
+        }
+        else {
+            var valueSelected = $('#id_contacto').val();
+            //$("#id_contenido").prop("disabled", true);
+
+
+        }
+
+        
 
     
-
-
-    datoscontacto(urlcontacto);
 });
+
+
+
+$('#id_contacto').on('change', function(e) {
+
+
+    if ($("#id_contacto").val() === "" || $("#id_contacto").val() === null) {
+
+        //$("#id_contenido").attr('disabled','disabled');
+        $("#id_archivo").prop("disabled", true);
+        $("#botonguardar").prop("disabled", true);
+        $("#mensajecontacto").css("display", "block");
+        $('.info-contacto').empty();
+
+    } else {
+        //$("#id_contenido").removeAttr('disabled');
+        //$("#id_contenido").removeProp("disabled");
+        $("#id_archivo").prop("disabled", false);
+        $("#botonguardar").prop("disabled", false);
+        $("#mensajecontacto").css("display", "none");
+
+        var optionSelected = $("option:selected", this);
+        var valueSelected = this.value;
+        var urlcontacto = '/obtener-datos-contacto/' + valueSelected + '/';
+
+
+    }
+
+
+if ( $("#id_contacto").val().length !== 0 ) {
+            var valueSelected = $("#id_contacto").val();
+            var urlcontacto = '/obtener-datos-contacto/' + valueSelected + '/';
+            //$("#id_contenido").prop("disabled", false);
+            //$("#id_contenido").removeAttr('disabled');
+            $("#id_archivo").prop("disabled", false);
+        $("#botonguardar").prop("disabled", false);
+        $("#mensajecontacto").css("display", "none");
+            datoscontacto(urlcontacto);
+
+        }
+        else {
+            var valueSelected = $('#id_contacto').val();
+            //$("#id_contenido").attr('disabled','disabled');
+                    //CKEDITOR.config.readOnly = true;
+
+
+        }
+
+
+
+    
+});
+
+
+/* ----------------------------------------- */
+/* Crear contacto modal */
+
+$('#contactoform').on('submit', function(event){
+
+    var urlpkusuario = '/obtener-contactos-usuario/{{request.user.pk}}/';
+
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    console.log("form enviado!");
+    crear_contacto();
+    contactosusuario(urlpkusuario);
+});
+
+function crear_contacto() {
+    console.log("funcion crear contacto!"); // sanity check
+    $.ajax({
+        url : "/contactos/agregar_ajax/", // the endpoint
+        type : "POST", // http method
+        data : { 
+        nombre : $('#id_nombre').val(),
+        email1 : $('#id_email1').val(),
+        tel1 : $('#id_tel1').val(),
+        tel2 : $('#id_tel2').val(),
+        direccion : $('#id_direccion').val(),
+        csrfmiddlewaretoken: '{{ csrf_token }}',
+
+        }, // data sent with the post request
+
+        // handle a successful response
+        success : function(json) {
+
+            $('#myModal2').modal('hide');
+            $(".modal-backdrop").remove();
+            $('#contactoform').trigger("reset");
+
+            $('#results').empty();
+            var htmlText = '';
+            htmlText += '<div class="help-block alert alert-success">';
+            htmlText += 'Contacto: <strong>' + json.nombre + '</strong> agregado con exito';
+            htmlText += '</div>';
+            $('#results').append(htmlText);
+            
+
+           // $('#post-text').val(''); // remove the value from the input
+            console.log(json); // log the returned json to the console
+            console.log("success"); // another sanity check
+        },
+
+        // handle a non-successful response
+        error : function(xhr,errmsg,err) {
+            $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+                " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+        }
+    });
+};
+
+
+
+/* ----------------------------------------- */
+/* Funcion obtener datos contacto */
+
 
 function datoscontacto(urlcontacto) {
 
@@ -408,6 +553,9 @@ function datoscontacto(urlcontacto) {
         $.getJSON(urlcontacto, function(data) {
 
             $('.info-contacto').empty();
+
+
+
             var htmlText = '';
 
                 htmlText += '<div class="div-conatiner">';
@@ -425,15 +573,63 @@ function datoscontacto(urlcontacto) {
         });
 
     };
+
+/* ----------------------------------------- */
+/* Funcion obtener contactos usuario */
+
+function contactosusuario(urlpkusuario) {
+
+
+
+        $.getJSON(urlpkusuario, function(data) {
+
+            $('#id_contacto').empty();
+
+            $("#id_contacto").prepend("<option disabled='disabled' selected value=''>----</option>");
+
+
+            if (data.length == 0) {
+            
+            $("#no-user").show();
+            //$(".maxfiles").hide();
+            console.log(data.length);
+        }
+        else{
+        $("#no-user").hide();
+    }
+
+        $.each(data, function(key, val) {
+
+         $('#id_contacto').append($('<option>', { 
+        value: val.pk,
+        text : val.nombre 
+    }));
+
+        });
+
+        $('#id_contacto').val('{{form.contacto.value}}');
+        $('#id_contacto option[value={{form.contacto.value}}]').val('{{form.contacto.value}}').attr('selected','selected');
+
+            console.log(data);
+        });
+
+    };
+
+
 </script>
 
 
 <script>
-$('#id_contacto').selectize();
+
+
+
 
 </script>
 
 {% endblock %}
+
+
+
 
 
 

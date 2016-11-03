@@ -26,6 +26,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
 from django.contrib.auth.models import User, Permission, Group
 
+@login_required
 def home(request):
 	return render(request, 'inicio.html', {'ent': True})
 
@@ -193,6 +194,7 @@ def editar_carta(request, pk):
 	obj_id = pk 
 	save = False
 	form = Usuario_cartas(instance=post)
+	contactform = form_agregar_contacto()
 	archivos = Perfil_carta_archivo.objects.filter(user=request.user)
 	num_archivos = archivos.count()
 	if request.method == 'POST':
@@ -211,7 +213,9 @@ def editar_carta(request, pk):
 			#return redirect('home')
 	else:
 			form = Usuario_cartas(instance=post)
-	return render(request, 'editar_carta.html', {'form': form, 'save':save, 'obj_pk':obj_id, 'archivos':archivos , 'num_archivos':num_archivos})
+			contactform = form_agregar_contacto()
+
+	return render(request, 'editar_carta.html', {'form': form, 'save':save, 'obj_pk':obj_id, 'archivos':archivos , 'num_archivos':num_archivos, 'contactform':contactform})
 
 
 # ---------------------------------------------------------------
@@ -261,7 +265,10 @@ class listar_cartas(ListView):
 def carta_detalle(request, pk):
 	archivos = Perfil_carta_archivo.objects.filter(carta=pk)
 	carta = get_object_or_404(Perfil_carta, pk = pk)
-	contacto = Contactos.objects.get(pk=carta.contacto.pk)
+	try:
+		contacto = Contactos.objects.get(pk=carta.contacto.pk)
+	except:
+		contacto = None
 	return render(request, 'detalles_carta.html', {'carta': carta, 'archivos':archivos, 'contacto':contacto})
 
 
@@ -567,3 +574,52 @@ def editar_contacto(request, pk):
 	else:
 			form = form_agregar_contacto(instance=post)
 	return render(request, 'editar_contacto.html', {'form': form})
+
+# ---------------------------------------------------------------
+# ---------------------------------------------------------------
+# Agregar contacto ajax
+def agregar_contacto_ajax(request):
+
+	if request.method == 'POST':
+		form = form_agregar_contacto(request.POST)
+		if form.is_valid():
+			post = form.save(commit=False)
+			post.user = request.user
+			post.terminado = True
+			post.save()
+		# nombre = request.POST.get('nombre')
+		# print nombre
+		# email1 = request.POST.get('email1')
+		# print email1
+		# tela = request.POST.get('tel1')
+		# print tela
+		# telb = request.POST.get('tel2')
+		# print telb
+		# direccion = request.POST.get('direccion')
+		# print direccion
+		# post = form_agregar_contacto(nombre=nombre, email1=email1, tel1=tela, tel2=telb, direccion=direccion, user=request.user)
+		# post.save()
+
+		contexto = {'estado':'exito', 'nombre': post.nombre}
+	else:
+		contexto = {'estado':'error', 'nombre':'ninguno'}
+
+	response = JSONResponse(contexto)
+	print response
+	response['Content-Disposition'] = 'inline; filename=files.json'
+	return response
+
+# ---------------------------------------------------------------
+# ---------------------------------------------------------------
+# Obtener contactos de usuario ajax
+
+def obtener_contactos_ajax(request, pk):
+	try:
+		contactos = list(Contactos.objects.filter(user=pk).values('nombre','pk'))
+	except:
+		contactos = None
+
+	response = JSONResponse(contactos)
+	print response
+	response['Content-Disposition'] = 'inline; filename=files.json'
+	return response
