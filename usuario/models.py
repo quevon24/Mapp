@@ -201,5 +201,5 @@ def crear_perfil(sender, instance, created, **kwargs):
 		subject = 'Verificar email'
 		from_email = settings.EMAIL_SALIDA
 		to_email = [instance.email]
-		message_email = "Verifica tu email! Da clic en el siguiente enlace: \ http://127.0.0.1:7400/usuario/activar/%s/%s" % (activacionrandom, instance.email)
+		message_email = "Verifica tu email! Da clic en el siguiente enlace: \ http://39f9f835.ngrok.io/usuario/activar/%s/%s" % (activacionrandom, instance.email)
 		send_mail(subject, message_email, from_email, to_email, fail_silently=True)
