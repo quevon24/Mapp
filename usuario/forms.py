@@ -22,7 +22,7 @@ class Usuario_cartas(forms.ModelForm):
     contenido = forms.CharField(widget=CKEditorWidget())
     class Meta:
         model = Perfil_carta
-        fields = ('contenido', 'email', 'tel1', 'tel2', 'file_ids', 'contacto')
+        fields = ('contenido', 'file_ids', 'contacto')
         widgets = {
         'user': forms.HiddenInput(),
         }

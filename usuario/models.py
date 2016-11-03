@@ -83,10 +83,6 @@ class Perfil_carta(models.Model):
  #   )
 	contacto = models.ForeignKey(Contactos, blank=True, null=True )
 
-
-	email = models.EmailField(null=True, blank=True)
-	tel1 = models.CharField(max_length=40, null=True, blank=True)
-	tel2 = models.CharField(max_length=40, null=True, blank=True)
 	terminado = models.BooleanField(default=False) # poner true cuando se guarda
 
 	def __unicode__(self):
