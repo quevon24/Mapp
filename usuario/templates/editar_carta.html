@@ -50,6 +50,8 @@
                     </label>
                     <div class="col-sm-6">
                     
+
+
                         {{form.contenido}}
                     </div>
                 </div>
@@ -389,7 +391,7 @@ $(document).ready(function() {
     //--
     if ($("#id_contacto").val() === "" || $("#id_contacto").val() === null) {
 
-        $("#id_contenido").prop("disabled", true);
+        //$("#id_contenido").prop("disabled", true);
         $("#id_archivo").prop("disabled", true);
         $("#botonguardar").prop("disabled", true);
         $("#mensajecontacto").css("display", "block");
@@ -397,7 +399,7 @@ $(document).ready(function() {
 
     } else {
 
-        $("#id_contenido").prop("disabled", false);
+        //$("#id_contenido").prop("disabled", false);
         //$("#id_contenido").removeProp("disabled");
         $("#id_archivo").prop("disabled", false);
         $("#botonguardar").prop("disabled", false);
@@ -409,7 +411,7 @@ $(document).ready(function() {
             var valueSelected = '{{form.contacto.value}}';
             var urlcontacto = '/obtener-datos-contacto/' + valueSelected + '/';
 
-            $("#id_contenido").prop("disabled", false);
+            //$("#id_contenido").prop("disabled", false);
             $("#id_archivo").prop("disabled", false);
         $("#botonguardar").prop("disabled", false);
         $("#mensajecontacto").css("display", "none");
@@ -418,7 +420,8 @@ $(document).ready(function() {
         }
         else {
             var valueSelected = $('#id_contacto').val();
-            console.log('documento cargado 2 if no');
+            //$("#id_contenido").prop("disabled", true);
+
 
         }
 
@@ -434,15 +437,15 @@ $('#id_contacto').on('change', function(e) {
 
     if ($("#id_contacto").val() === "" || $("#id_contacto").val() === null) {
 
-        $("#id_contenido").prop("disabled", true);
+        //$("#id_contenido").attr('disabled','disabled');
         $("#id_archivo").prop("disabled", true);
         $("#botonguardar").prop("disabled", true);
         $("#mensajecontacto").css("display", "block");
         $('.info-contacto').empty();
 
     } else {
-        //$("#id_contenido").prop("disabled", false);
-        $("#id_contenido").removeProp("disabled");
+        //$("#id_contenido").removeAttr('disabled');
+        //$("#id_contenido").removeProp("disabled");
         $("#id_archivo").prop("disabled", false);
         $("#botonguardar").prop("disabled", false);
         $("#mensajecontacto").css("display", "none");
@@ -459,7 +462,7 @@ if ( $("#id_contacto").val().length !== 0 ) {
             var valueSelected = $("#id_contacto").val();
             var urlcontacto = '/obtener-datos-contacto/' + valueSelected + '/';
             //$("#id_contenido").prop("disabled", false);
-            $("#id_contenido").removeProp("disabled");
+            //$("#id_contenido").removeAttr('disabled');
             $("#id_archivo").prop("disabled", false);
         $("#botonguardar").prop("disabled", false);
         $("#mensajecontacto").css("display", "none");
@@ -468,7 +471,8 @@ if ( $("#id_contacto").val().length !== 0 ) {
         }
         else {
             var valueSelected = $('#id_contacto').val();
-                    CKEDITOR.config.readOnly = true;
+            //$("#id_contenido").attr('disabled','disabled');
+                    //CKEDITOR.config.readOnly = true;
 
 
         }
@@ -581,7 +585,7 @@ function contactosusuario(urlpkusuario) {
 
             $('#id_contacto').empty();
 
-            $("#id_contacto").prepend("<option value='' >----</option>");
+            $("#id_contacto").prepend("<option disabled='disabled' selected value=''>----</option>");
 
 
             if (data.length == 0) {
