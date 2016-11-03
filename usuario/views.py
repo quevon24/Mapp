@@ -265,7 +265,10 @@ class listar_cartas(ListView):
 def carta_detalle(request, pk):
 	archivos = Perfil_carta_archivo.objects.filter(carta=pk)
 	carta = get_object_or_404(Perfil_carta, pk = pk)
-	contacto = Contactos.objects.get(pk=carta.contacto.pk)
+	try:
+		contacto = Contactos.objects.get(pk=carta.contacto.pk)
+	except:
+		contacto = None
 	return render(request, 'detalles_carta.html', {'carta': carta, 'archivos':archivos, 'contacto':contacto})
 
 
@@ -574,7 +577,7 @@ def editar_contacto(request, pk):
 
 # ---------------------------------------------------------------
 # ---------------------------------------------------------------
-# Editar contacto
+# Agregar contacto ajax
 def agregar_contacto_ajax(request):
 
 	if request.method == 'POST':
@@ -602,6 +605,21 @@ def agregar_contacto_ajax(request):
 		contexto = {'estado':'error', 'nombre':'ninguno'}
 
 	response = JSONResponse(contexto)
+	print response
+	response['Content-Disposition'] = 'inline; filename=files.json'
+	return response
+
+# ---------------------------------------------------------------
+# ---------------------------------------------------------------
+# Obtener contactos de usuario ajax
+
+def obtener_contactos_ajax(request, pk):
+	try:
+		contactos = list(Contactos.objects.filter(user=pk).values('nombre','pk'))
+	except:
+		contactos = None
+
+	response = JSONResponse(contactos)
 	print response
 	response['Content-Disposition'] = 'inline; filename=files.json'
 	return response

@@ -58,10 +58,19 @@
                         Contacto:
                     </label>
                     <div class="col-sm-6">
-                        {{form.contacto}}
+                     
+
+                        <select id="id_contacto" name="contacto" class="form-control"></select>
 
                         <div id="results">
 </div>
+
+<div id="no-user">
+<div class="alert alert-danger" id="mensajecontacto" style="display: block;">
+                                No has agregado contactos.
+                            </div>
+</div>
+
                     </div>
 
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal2">
@@ -118,6 +127,7 @@ Numero maximo de archivos: 1
 
 
         <!-- The global progress bar -->
+        <br>
         <div id="progress" class="progress">
             <div class="progress-bar progress-bar-success"></div>
         </div>
@@ -190,90 +200,93 @@ Numero maximo de archivos: 1
 
 <script>
 
-/*Enviar form*/
+/* ----------------------------------------- */
+/*Enviar form de carta */
 
 function enviar() {
 document.getElementById("mainform").submit();
 }
 
+
+
+/* ----------------------------------------- */
 /*Obtener archivos de carta*/
-
-
 
 var cartaid = "{{ obj_pk }}";
 var url = "/obtener-archivos-cartas/" + cartaid;
 
-
-
 function fetch() {
 
-$.getJSON(url, function(data) {
-    var items = [];
+    $.getJSON(url, function(data) {
+        var items = [];
 
-    if (data.length == 0) {
-        items.push("No has agregado un archivo para esta carta");
-        $(".form-ok").show();
-        $(".maxfiles").hide();
-        console.log(data.length);
-    }
+        if (data.length == 0) {
+            items.push("No has agregado un archivo para esta carta");
+            $(".form-ok").show();
+            $(".maxfiles").hide();
+            $("#progress").show();
+            console.log(data.length);
+        }
 
-    $.each(data, function(key, val) {
+        $.each(data, function(key, val) {
 
-        val.archivo1 = "/site_media/media/" + val.archivo;
-        val.pk1 = "/borrar-archivo-carta/" + val.pk
+            val.archivo1 = "/site_media/media/" + val.archivo;
+            val.pk1 = "/borrar-archivo-carta/" + val.pk
 
-        var pkfile = val.pk 
+            var pkfile = val.pk
 
-        items.push("<div class=row><i class='fa fa-file-o'></i><a target=_blank href='" + val.archivo1 + "'> " + val.archivo + "</a></div>  <div class=row> <br><a class='btn btn-w-m btn-danger' onclick='borrar("+ val.pk +")'><i class='fa fa-trash-o'></i> Borrar archivo</a> </div><hr>" );
+            items.push("<div class=row><i class='fa fa-file-o'></i><a target=_blank href='" + val.archivo1 + "'> " + val.archivo + "</a></div>  <div class=row> <br><a class='btn btn-w-m btn-danger' onclick='borrar(" + val.pk + ")'><i class='fa fa-trash-o'></i> Borrar archivo</a> </div><hr>");
 
+        });
+
+        if (data.length >= 1) {
+            $(".form-ok").hide();
+            $(".maxfiles").show();
+            $("#progress").hide();
+            console.log(data.length);
+
+        }
+
+        $('#lista_archivos').empty();
+        $("<div/>", {
+            "class": "my-new-list",
+            html: items.join("")
+        }).appendTo("#lista_archivos");
     });
-
-    if (data.length >= 1) {
-        $(".form-ok").hide();
-        $(".maxfiles").show();
-        console.log(data.length);
-
-    }
-
-    $('#lista_archivos').empty();
-    $("<div/>", {
-        "class": "my-new-list",
-        html: items.join("")
-    }).appendTo("#lista_archivos");
-});
 
 }
 
 fetch();
 
-
+/* ----------------------------------------- */
 /*Borrar archivos de carta*/
 function borrar(pkarchivo) {
-var urldelete = "/borrar-archivo-carta/" + pkarchivo;
-$.ajax({
-        url : urldelete,
-        type : "GET",
-        data : {
+    var urldelete = "/borrar-archivo-carta/" + pkarchivo;
+    $.ajax({
+        url: urldelete,
+        type: "GET",
+        data: {
             'pk': pkarchivo,
-            csrfmiddlewaretoken: '{{ csrf_token }}' 
+            csrfmiddlewaretoken: '{{ csrf_token }}'
         },
 
-        success: function(response){
-                                    var json = JSON.parse(response);
-                                    console.log(json);
-                                    $('#guardara').empty();
-                                    $('<div class="help-block alert alert-warning"></div>').text('Archivo borrado con exito.').appendTo('#guardara');
-                                    $(".form-ok").show();
-                                    $(".maxfiles").hide();
-                                    $(".progress").empty();
-                                    $("#lista_archivos").empty();
-                                    fetch();
-                                    
-                                 }
+        success: function(response) {
+            var json = JSON.parse(response);
+            console.log(json);
+            $('#guardara').empty();
+            $('<div class="help-block alert alert-warning"></div>').text('Archivo borrado con exito.').appendTo('#guardara');
+            $(".form-ok").show();
+            $(".maxfiles").hide();
+            $(".progress").empty();
+            $("#lista_archivos").empty();
+            fetch();
+
+        }
 
     });
 }
 
+/* ----------------------------------------- */
 /* ----------- Uploader va aqui -------------------*/
 
 /*jslint unparam: true */
@@ -315,7 +328,7 @@ $(function() {
                         //$('<p/>').text(file.url).appendTo('.files');
                         //$('<p/>').text(file.deleteUrl).appendTo('.files');
                         //$('#guardara').empty();
-                        
+
 
 
                         fetch();
@@ -325,7 +338,7 @@ $(function() {
                     });
 
                 },
-                fail: function(e, data){
+                fail: function(e, data) {
                     console.log(data.jqXHR.responseText);
                 },
                 progressall: function(e, data) {
@@ -334,23 +347,23 @@ $(function() {
                         'width',
                         progress + '%'
                     );
-                    $('#progress .progress-bar').text(progress +"%");
+                    $('#progress .progress-bar').text(progress + "%");
                 },
                 add: function(e, data) {
-        var uploadErrors = [];
-        var acceptFileTypes = /^image\/(gif|jpe?g|png)$/i;
-        if(data.originalFiles[0]['type'].length && !acceptFileTypes.test(data.originalFiles[0]['type'])) {
-            uploadErrors.push('Not an accepted file type');
-        }
-        if(data.originalFiles[0]['size'].length && data.originalFiles[0]['size'] > 5000000) {
-            uploadErrors.push('Filesize is too big');
-        }
-        if(uploadErrors.length > 0) {
-            alert(uploadErrors.join("\n"));
-        } else {
-            data.submit();
-        }
-},
+                    var uploadErrors = [];
+                    var acceptFileTypes = /^image\/(gif|jpe?g|png)$/i;
+                    if (data.originalFiles[0]['type'].length && !acceptFileTypes.test(data.originalFiles[0]['type'])) {
+                        uploadErrors.push('Not an accepted file type');
+                    }
+                    if (data.originalFiles[0]['size'].length && data.originalFiles[0]['size'] > 5000000) {
+                        uploadErrors.push('Filesize is too big');
+                    }
+                    if (uploadErrors.length > 0) {
+                        alert(uploadErrors.join("\n"));
+                    } else {
+                        data.submit();
+                    }
+                },
                 dropZone: $(this)
             });
         }).prop('disabled', !$.support.fileInput)
@@ -362,11 +375,19 @@ $(function() {
 
 <script>
 
-
+/* ----------------------------------------- */
+/* Obtener datos contacto */
 
 $(document).ready(function() {
 
-    if ($("#id_contacto").val() === "") {
+    var urlpkusuario = '/obtener-contactos-usuario/{{request.user.pk}}/';
+    contactosusuario(urlpkusuario);
+
+    console.log('documento cargado');
+
+
+    //--
+    if ($("#id_contacto").val() === "" || $("#id_contacto").val() === null) {
 
         $("#id_contenido").prop("disabled", true);
         $("#id_archivo").prop("disabled", true);
@@ -376,23 +397,42 @@ $(document).ready(function() {
 
     } else {
 
-        //$("#id_contenido").prop("disabled", false);
-        $("#id_contenido").removeProp("disabled");
+        $("#id_contenido").prop("disabled", false);
+        //$("#id_contenido").removeProp("disabled");
         $("#id_archivo").prop("disabled", false);
         $("#botonguardar").prop("disabled", false);
         $("#mensajecontacto").css("display", "none");
-
-        var valueSelected = $('#id_contacto').val();
-        var urlcontacto = '/obtener-datos-contacto/' + valueSelected + '/';
-        datoscontacto(urlcontacto);
-
     }
+    //--
+
+        if ( "{{form.contacto.value}}" !== "None" ) {
+            var valueSelected = '{{form.contacto.value}}';
+            var urlcontacto = '/obtener-datos-contacto/' + valueSelected + '/';
+
+            $("#id_contenido").prop("disabled", false);
+            $("#id_archivo").prop("disabled", false);
+        $("#botonguardar").prop("disabled", false);
+        $("#mensajecontacto").css("display", "none");
+            datoscontacto(urlcontacto);
+
+        }
+        else {
+            var valueSelected = $('#id_contacto').val();
+            console.log('documento cargado 2 if no');
+
+        }
+
+        
+
+    
 });
+
+
 
 $('#id_contacto').on('change', function(e) {
 
 
-    if ($("#id_contacto").val() === "") {
+    if ($("#id_contacto").val() === "" || $("#id_contacto").val() === null) {
 
         $("#id_contenido").prop("disabled", true);
         $("#id_archivo").prop("disabled", true);
@@ -415,19 +455,42 @@ $('#id_contacto').on('change', function(e) {
     }
 
 
+if ( $("#id_contacto").val().length !== 0 ) {
+            var valueSelected = $("#id_contacto").val();
+            var urlcontacto = '/obtener-datos-contacto/' + valueSelected + '/';
+            //$("#id_contenido").prop("disabled", false);
+            $("#id_contenido").removeProp("disabled");
+            $("#id_archivo").prop("disabled", false);
+        $("#botonguardar").prop("disabled", false);
+        $("#mensajecontacto").css("display", "none");
+            datoscontacto(urlcontacto);
+
+        }
+        else {
+            var valueSelected = $('#id_contacto').val();
+                    CKEDITOR.config.readOnly = true;
 
 
-    datoscontacto(urlcontacto);
+        }
+
+
+
+    
 });
 
 
-// nuevo
+/* ----------------------------------------- */
+/* Crear contacto modal */
 
 $('#contactoform').on('submit', function(event){
+
+    var urlpkusuario = '/obtener-contactos-usuario/{{request.user.pk}}/';
+
     event.preventDefault();
     event.stopImmediatePropagation();
     console.log("form enviado!");
     crear_contacto();
+    contactosusuario(urlpkusuario);
 });
 
 function crear_contacto() {
@@ -474,9 +537,10 @@ function crear_contacto() {
     });
 };
 
-// nuevo
 
 
+/* ----------------------------------------- */
+/* Funcion obtener datos contacto */
 
 
 function datoscontacto(urlcontacto) {
@@ -485,6 +549,9 @@ function datoscontacto(urlcontacto) {
         $.getJSON(urlcontacto, function(data) {
 
             $('.info-contacto').empty();
+
+
+
             var htmlText = '';
 
                 htmlText += '<div class="div-conatiner">';
@@ -502,11 +569,56 @@ function datoscontacto(urlcontacto) {
         });
 
     };
+
+/* ----------------------------------------- */
+/* Funcion obtener contactos usuario */
+
+function contactosusuario(urlpkusuario) {
+
+
+
+        $.getJSON(urlpkusuario, function(data) {
+
+            $('#id_contacto').empty();
+
+            $("#id_contacto").prepend("<option value='' >----</option>");
+
+
+            if (data.length == 0) {
+            
+            $("#no-user").show();
+            //$(".maxfiles").hide();
+            console.log(data.length);
+        }
+        else{
+        $("#no-user").hide();
+    }
+
+        $.each(data, function(key, val) {
+
+         $('#id_contacto').append($('<option>', { 
+        value: val.pk,
+        text : val.nombre 
+    }));
+
+        });
+
+        $('#id_contacto').val('{{form.contacto.value}}');
+        $('#id_contacto option[value={{form.contacto.value}}]').val('{{form.contacto.value}}').attr('selected','selected');
+
+            console.log(data);
+        });
+
+    };
+
+
 </script>
 
 
 <script>
-$('#id_contacto').selectize();
+
+
+
 
 </script>
 
