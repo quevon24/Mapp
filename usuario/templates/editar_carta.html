@@ -1,8 +1,12 @@
  {% extends "base.html" %}{% load static %} {% block title %} Editar carta {% endblock %} 
 {% load addcss %}
 {% load staticfiles %}
+
+
 <script type="text/javascript" src="{% static "ckeditor/ckeditor/ckeditor.js" %}"></script>
 <script type="text/javascript" src="{% static "ckeditor/ckeditor-init.js" %}"></script>
+
+
 
 
  {% block content %}
@@ -199,6 +203,8 @@ Numero maximo de archivos: 1
 
 <script type="text/javascript" src="{% static "selectize/selectize.min.js"%}"></script>
 
+<script src="{% static "js/jquery.validate.js" %}"></script>
+<script src="{% static "js/additional-methods.js" %}"></script>
 
 <script>
 
@@ -525,7 +531,9 @@ function crear_contacto() {
             htmlText += 'Contacto: <strong>' + json.nombre + '</strong> agregado con exito';
             htmlText += '</div>';
             $('#results').append(htmlText);
-            
+
+            var urlpkusuario = '/obtener-contactos-usuario/{{request.user.pk}}/';
+            contactosusuario(urlpkusuario);
 
            // $('#post-text').val(''); // remove the value from the input
             console.log(json); // log the returned json to the console
@@ -618,12 +626,40 @@ function contactosusuario(urlpkusuario) {
 
 </script>
 
-
 <script>
+// just for the demos, avoids form submit
+jQuery.validator.setDefaults({
+ ignore: [],
+});
 
 
+$(document).ready(function(){
 
+    $("#mainform").validate({
+        rules: {
+            contenido: {
+                required: true
+            },
+            contacto: {
+                required: true,
+            },
+            archivo: {
+                required: true
+            }
+        },
+        messages: {
+            contenido: { 
+                required: "Contenido obligatorio"
+            },
+            contacto: "Contacto obligatorio",
+            archivo: "Archivo obligatorio"
+        },
+submitHandler: function(form) {
 
+                    form.submit();
+                }
+    });
+});
 </script>
 
 {% endblock %}

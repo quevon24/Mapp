@@ -1,5 +1,5 @@
 /*!
- * jQuery Validation Plugin v1.15.1
+ * jQuery Validation Plugin v1.15.0
  *
  * http://jqueryvalidation.org/
  *
@@ -48,8 +48,8 @@ $.validator.addMethod( "accept", function( value, element, param ) {
 
 	// Split mime on commas in case we have multiple types we can accept
 	var typeParam = typeof param === "string" ? param.replace( /\s/g, "" ) : "image/*",
-		optionalValue = this.optional( element ),
-		i, file, regex;
+	optionalValue = this.optional( element ),
+	i, file, regex;
 
 	// Element is optional
 	if ( optionalValue ) {
@@ -61,10 +61,7 @@ $.validator.addMethod( "accept", function( value, element, param ) {
 		// Escape string to be used in the regex
 		// see: http://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex
 		// Escape also "/*" as "/.*" as a wildcard
-		typeParam = typeParam
-				.replace( /[\-\[\]\/\{\}\(\)\+\?\.\\\^\$\|]/g, "\\$&" )
-				.replace( /,/g, "|" )
-				.replace( /\/\*/g, "/.*" );
+		typeParam = typeParam.replace( /[\-\[\]\/\{\}\(\)\+\?\.\\\^\$\|]/g, "\\$&" ).replace( /,/g, "|" ).replace( "\/*", "/.*" );
 
 		// Check if the element has a FileList before checking each file
 		if ( element.files && element.files.length ) {
@@ -499,16 +496,6 @@ $.validator.addMethod( "iban", function( value, element ) {
 		cOperator = "",
 		countrycode, ibancheck, charAt, cChar, bbanpattern, bbancountrypatterns, ibanregexp, i, p;
 
-	// Check for IBAN code length.
-	// It contains:
-	// country code ISO 3166-1 - two letters,
-	// two check digits,
-	// Basic Bank Account Number (BBAN) - up to 30 chars
-	var minimalIBANlength = 5;
-	if ( iban.length < minimalIBANlength ) {
-		return false;
-	}
-
 	// Check the country code and find the country specific format
 	countrycode = iban.substring( 0, 2 );
 	bbancountrypatterns = {
@@ -715,7 +702,7 @@ $.validator.addMethod( "nifES", function( value ) {
 
 }, "Please specify a valid NIF number." );
 
-$.validator.addMethod( "notEqualTo", function( value, element, param ) {
+jQuery.validator.addMethod( "notEqualTo", function( value, element, param ) {
 	return this.optional( element ) || !$.validator.methods.equalTo.call( this, value, element, param );
 }, "Please enter a different value, values must not be the same." );
 
