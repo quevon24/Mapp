@@ -57,6 +57,8 @@
 
 
                         {{form.contenido}}
+
+                        {{form.contenido.errors}}
                     </div>
                 </div>
                 <div class="form-group">
@@ -140,6 +142,7 @@ Numero maximo de archivos: 1
         <div id="guardara"></div>
         <!-- The container for the uploaded files -->
         <div class="files"></div>
+
         <br>
 
         <div class="pm_attachments">
@@ -147,7 +150,7 @@ Numero maximo de archivos: 1
      
      
  <div id="lista_archivos"></div>
-     
+     <input type="hidden" name="val_nombre_archivo" id="val_nombre_archivo" value="">
 
         </div>
 
@@ -212,7 +215,45 @@ Numero maximo de archivos: 1
 /*Enviar form de carta */
 
 function enviar() {
+
+
+// Validar ckeditor
+    function val_ck() {
+    textbox_data = CKEDITOR.instances['id_contenido'].getData();
+
+        if (textbox_data == null || textbox_data == "") {
+                //alert("Vacio");
+                return false;
+            } else {
+                return true;
+            }
+    }
+
+// Validar archivo
+    function val_file() {
+        var x = document.getElementById("val_nombre_archivo").value;
+        if (x == null || x == "") {
+            //alert("Name must be filled out");
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+
+  
+if (val_ck() || val_file()) {
+
 document.getElementById("mainform").submit();
+
+} else
+
+{
+    alert("Escribe un contenido o sube un archivo");
+
+}
+
+
 }
 
 
@@ -243,7 +284,7 @@ function fetch() {
 
             var pkfile = val.pk
 
-            items.push("<div class=row><i class='fa fa-file-o'></i><a target=_blank href='" + val.archivo1 + "'> " + val.archivo + "</a></div>  <div class=row> <br><a class='btn btn-w-m btn-danger' onclick='borrar(" + val.pk + ")'><i class='fa fa-trash-o'></i> Borrar archivo</a> </div><hr>");
+            items.push("<input type='hidden' name='val_nombre_archivo' id='val_nombre_archivo' value='" + val.archivo +"''> <div class=row><i class='fa fa-file-o'></i><a target=_blank href='" + val.archivo1 + "'> " + val.archivo + "</a></div>  <div class=row> <br><a class='btn btn-w-m btn-danger' onclick='borrar(" + val.pk + ")'><i class='fa fa-trash-o'></i> Borrar archivo</a> </div><hr>");
 
         });
 
@@ -283,6 +324,7 @@ function borrar(pkarchivo) {
             console.log(json);
             $('#guardara').empty();
             $('<div class="help-block alert alert-warning"></div>').text('Archivo borrado con exito.').appendTo('#guardara');
+            $('<input type="hidden" name="val_nombre_archivo" id="val_nombre_archivo" value="">').appendTo('#lista_archivos');
             $(".form-ok").show();
             $(".maxfiles").hide();
             $(".progress").empty();
@@ -570,7 +612,7 @@ submitHandler: function(form) {
 
         // handle a non-successful response
         error : function(xhr,errmsg,err) {
-            
+
             $('#myModal2').modal('hide');
             $(".modal-backdrop").remove();
             $('#contactoform').trigger("reset");
@@ -664,89 +706,8 @@ function contactosusuario(urlpkusuario) {
 
 </script>
 
-<script>
-// just for the demos, avoids form submit
-jQuery.validator.setDefaults({
- ignore: [],
-});
-
-
-$(document).ready(function(){
-
-    $("#mainform").validate({
-        rules: {
-            contenido: {
-                required: true
-            },
-            contacto: {
-                required: true,
-            },
-            archivo: {
-                required: true
-            }
-        },
-        messages: {
-            contenido: { 
-                required: "Contenido obligatorio"
-            },
-            contacto: "Contacto obligatorio",
-            archivo: "Archivo obligatorio"
-        },
-submitHandler: function(form) {
-
-                    form.submit();
-                }
-    });
-});
-</script>
-
-
-
-<script>
-// just for the demos, avoids form submit
-jQuery.validator.setDefaults({
- ignore: [],
-});
-
-
-$(document).ready(function(){
-
-    $("#contactoform").validate({
-        rules: {
-            nombre: {
-                required: true,
-            },
-            email1: {
-                required: true,
-            },
-            tel1: {
-                required: true,
-            },
-            direccion: {
-                required: true,
-            }
-        },
-        messages: {
-            nombre: { 
-                required: "Nombre completo obligatorio"
-            },
-            email1: "E-mail obligatorio",
-            tel1: "Telefono/Celular obligatorio",
-            direccion: "Dirección obligatoria",
-        },
-submitHandler: function(form) {
-
-                    form.submit();
-                }
-    });
-});
-</script>
 
 {% endblock %}
-
-
-
-
 
 
 {% endblock %}

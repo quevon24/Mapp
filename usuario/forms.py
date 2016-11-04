@@ -19,7 +19,7 @@ class Perfilform(forms.ModelForm):
 
 class Usuario_cartas(forms.ModelForm):
     file_ids = forms.CharField(required=False,widget=forms.HiddenInput(attrs={'class' : 'id_file_ids'}))
-    contenido = forms.CharField(widget=CKEditorWidget())
+    contenido = forms.CharField(required=False, widget=CKEditorWidget())
     class Meta:
         model = Perfil_carta
         fields = ('contenido', 'file_ids', 'contacto')
