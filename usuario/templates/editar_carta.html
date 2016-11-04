@@ -492,19 +492,47 @@ if ( $("#id_contacto").val().length !== 0 ) {
 /* ----------------------------------------- */
 /* Crear contacto modal */
 
-$('#contactoform').on('submit', function(event){
+//$('#contactoform').on('submit', function(event){
 
     var urlpkusuario = '/obtener-contactos-usuario/{{request.user.pk}}/';
 
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    console.log("form enviado!");
+    //event.preventDefault();
+    //event.stopImmediatePropagation();
+    //console.log("form enviado!");
     crear_contacto();
     contactosusuario(urlpkusuario);
-});
+//});
 
 function crear_contacto() {
     console.log("funcion crear contacto!"); // sanity check
+
+$(document).ready(function() {
+
+$("#contactoform").validate({
+        rules: {
+            nombre: {
+                required: true,
+            },
+            email1: {
+                required: true,
+            },
+            tel1: {
+                required: true,
+            },
+            direccion: {
+                required: true,
+            }
+        },
+        messages: {
+            nombre: { 
+                required: "Nombre completo obligatorio"
+            },
+            email1: "E-mail obligatorio",
+            tel1: "Telefono/Celular obligatorio",
+            direccion: "Dirección obligatoria",
+        },
+submitHandler: function(form) {
+
     $.ajax({
         url : "/contactos/agregar_ajax/", // the endpoint
         type : "POST", // http method
@@ -542,11 +570,21 @@ function crear_contacto() {
 
         // handle a non-successful response
         error : function(xhr,errmsg,err) {
+            
+            $('#myModal2').modal('hide');
+            $(".modal-backdrop").remove();
+            $('#contactoform').trigger("reset");
+
             $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
                 " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
             console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
         }
     });
+return false;
+}
+    });
+});
+
 };
 
 
@@ -653,6 +691,48 @@ $(document).ready(function(){
             },
             contacto: "Contacto obligatorio",
             archivo: "Archivo obligatorio"
+        },
+submitHandler: function(form) {
+
+                    form.submit();
+                }
+    });
+});
+</script>
+
+
+
+<script>
+// just for the demos, avoids form submit
+jQuery.validator.setDefaults({
+ ignore: [],
+});
+
+
+$(document).ready(function(){
+
+    $("#contactoform").validate({
+        rules: {
+            nombre: {
+                required: true,
+            },
+            email1: {
+                required: true,
+            },
+            tel1: {
+                required: true,
+            },
+            direccion: {
+                required: true,
+            }
+        },
+        messages: {
+            nombre: { 
+                required: "Nombre completo obligatorio"
+            },
+            email1: "E-mail obligatorio",
+            tel1: "Telefono/Celular obligatorio",
+            direccion: "Dirección obligatoria",
         },
 submitHandler: function(form) {
 
