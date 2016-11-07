@@ -1,8 +1,12 @@
  {% extends "base.html" %}{% load static %} {% block title %} Editar carta {% endblock %} 
 {% load addcss %}
 {% load staticfiles %}
+
+
 <script type="text/javascript" src="{% static "ckeditor/ckeditor/ckeditor.js" %}"></script>
 <script type="text/javascript" src="{% static "ckeditor/ckeditor-init.js" %}"></script>
+
+
 
 
  {% block content %}
@@ -53,6 +57,8 @@
 
 
                         {{form.contenido}}
+
+                        {{form.contenido.errors}}
                     </div>
                 </div>
                 <div class="form-group">
@@ -136,6 +142,7 @@ Numero maximo de archivos: 1
         <div id="guardara"></div>
         <!-- The container for the uploaded files -->
         <div class="files"></div>
+
         <br>
 
         <div class="pm_attachments">
@@ -143,7 +150,7 @@ Numero maximo de archivos: 1
      
      
  <div id="lista_archivos"></div>
-     
+     <input type="hidden" name="val_nombre_archivo" id="val_nombre_archivo" value="">
 
         </div>
 
@@ -199,6 +206,8 @@ Numero maximo de archivos: 1
 
 <script type="text/javascript" src="{% static "selectize/selectize.min.js"%}"></script>
 
+<script src="{% static "js/jquery.validate.js" %}"></script>
+<script src="{% static "js/additional-methods.js" %}"></script>
 
 <script>
 
@@ -206,7 +215,45 @@ Numero maximo de archivos: 1
 /*Enviar form de carta */
 
 function enviar() {
+
+
+// Validar ckeditor
+    function val_ck() {
+    textbox_data = CKEDITOR.instances['id_contenido'].getData();
+
+        if (textbox_data == null || textbox_data == "") {
+                //alert("Vacio");
+                return false;
+            } else {
+                return true;
+            }
+    }
+
+// Validar archivo
+    function val_file() {
+        var x = document.getElementById("val_nombre_archivo").value;
+        if (x == null || x == "") {
+            //alert("Name must be filled out");
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+
+  
+if (val_ck() || val_file()) {
+
 document.getElementById("mainform").submit();
+
+} else
+
+{
+    alert("Escribe un contenido o sube un archivo");
+
+}
+
+
 }
 
 
@@ -237,7 +284,7 @@ function fetch() {
 
             var pkfile = val.pk
 
-            items.push("<div class=row><i class='fa fa-file-o'></i><a target=_blank href='" + val.archivo1 + "'> " + val.archivo + "</a></div>  <div class=row> <br><a class='btn btn-w-m btn-danger' onclick='borrar(" + val.pk + ")'><i class='fa fa-trash-o'></i> Borrar archivo</a> </div><hr>");
+            items.push("<input type='hidden' name='val_nombre_archivo' id='val_nombre_archivo' value='" + val.archivo +"''> <div class=row><i class='fa fa-file-o'></i><a target=_blank href='" + val.archivo1 + "'> " + val.archivo + "</a></div>  <div class=row> <br><a class='btn btn-w-m btn-danger' onclick='borrar(" + val.pk + ")'><i class='fa fa-trash-o'></i> Borrar archivo</a> </div><hr>");
 
         });
 
@@ -277,6 +324,7 @@ function borrar(pkarchivo) {
             console.log(json);
             $('#guardara').empty();
             $('<div class="help-block alert alert-warning"></div>').text('Archivo borrado con exito.').appendTo('#guardara');
+            $('<input type="hidden" name="val_nombre_archivo" id="val_nombre_archivo" value="">').appendTo('#lista_archivos');
             $(".form-ok").show();
             $(".maxfiles").hide();
             $(".progress").empty();
@@ -486,19 +534,47 @@ if ( $("#id_contacto").val().length !== 0 ) {
 /* ----------------------------------------- */
 /* Crear contacto modal */
 
-$('#contactoform').on('submit', function(event){
+//$('#contactoform').on('submit', function(event){
 
     var urlpkusuario = '/obtener-contactos-usuario/{{request.user.pk}}/';
 
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    console.log("form enviado!");
+    //event.preventDefault();
+    //event.stopImmediatePropagation();
+    //console.log("form enviado!");
     crear_contacto();
     contactosusuario(urlpkusuario);
-});
+//});
 
 function crear_contacto() {
     console.log("funcion crear contacto!"); // sanity check
+
+$(document).ready(function() {
+
+$("#contactoform").validate({
+        rules: {
+            nombre: {
+                required: true,
+            },
+            email1: {
+                required: true,
+            },
+            tel1: {
+                required: true,
+            },
+            direccion: {
+                required: true,
+            }
+        },
+        messages: {
+            nombre: { 
+                required: "Nombre completo obligatorio"
+            },
+            email1: "E-mail obligatorio",
+            tel1: "Telefono/Celular obligatorio",
+            direccion: "Dirección obligatoria",
+        },
+submitHandler: function(form) {
+
     $.ajax({
         url : "/contactos/agregar_ajax/", // the endpoint
         type : "POST", // http method
@@ -525,7 +601,9 @@ function crear_contacto() {
             htmlText += 'Contacto: <strong>' + json.nombre + '</strong> agregado con exito';
             htmlText += '</div>';
             $('#results').append(htmlText);
-            
+
+            var urlpkusuario = '/obtener-contactos-usuario/{{request.user.pk}}/';
+            contactosusuario(urlpkusuario);
 
            // $('#post-text').val(''); // remove the value from the input
             console.log(json); // log the returned json to the console
@@ -534,11 +612,21 @@ function crear_contacto() {
 
         // handle a non-successful response
         error : function(xhr,errmsg,err) {
+
+            $('#myModal2').modal('hide');
+            $(".modal-backdrop").remove();
+            $('#contactoform').trigger("reset");
+
             $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
                 " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
             console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
         }
     });
+return false;
+}
+    });
+});
+
 };
 
 
@@ -619,18 +707,7 @@ function contactosusuario(urlpkusuario) {
 </script>
 
 
-<script>
-
-
-
-
-</script>
-
 {% endblock %}
-
-
-
-
 
 
 {% endblock %}

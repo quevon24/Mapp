@@ -73,16 +73,7 @@ class Perfil_carta(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	fecha = models.DateTimeField(default=timezone.now)
 	contenido = models.TextField(max_length=1000, blank=True, null=True)
-	# contacto = ChainedForeignKey(
- #         Contactos, 
- #         chained_field="user",
- #         chained_model_field="user", 
- #         show_all=False, 
- #         auto_choose=True,
- #         blank=True, null=True
- #   )
 	contacto = models.ForeignKey(Contactos, blank=True, null=True )
-
 	terminado = models.BooleanField(default=False) # poner true cuando se guarda
 
 	def __unicode__(self):
