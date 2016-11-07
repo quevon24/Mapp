@@ -21,6 +21,7 @@ urlpatterns = [
     url(r'', include ('usuario.urls')),
     url(r'', include ('administrar.urls')),
     url(r'^upload/', include('fileupload.urls')),
+    url(r'', include ('paquetes.urls')),
 ]
 
 from django.conf import settings

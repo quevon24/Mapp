@@ -51,6 +51,36 @@ body#loginpage {
 }
 
 
+
+
+.box-1 {
+    padding: 50px;
+    background-color: #91abc3;
+    border: solid 1px #777777;
+}
+
+.box-1:hover{
+  background-color: #5291cc;
+}
+
+.box-2 {
+    padding: 50px;
+    background-color: #e2b0ae;
+    border: solid 1px #777777;
+}
+
+.box-2:hover{
+  background-color: #ca817e;
+}
+
+.paq-title {
+    text-align: center;
+    font-size: 30px;
+    text-transform: uppercase;
+}
+
+
+
 /* Theme colors */
 
 body {
@@ -310,6 +340,24 @@ legend {
     text-align: right;
 }
 
+.dl-horizontal1 dd {
+    margin-left: 180px;
+}
+
+.dl-horizontal1 dt {
+    float: left;
+    width: 160px;
+    overflow: hidden;
+    clear: left;
+    text-align: right;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+.icon-m {
+    font-size: 38px;
+}
 
 /* DETALLES CARTA*/
 
@@ -318,4 +366,26 @@ legend {
     padding: 19px;
     margin-top: 10px;
     margin-bottom: 10px;
+}
+
+/* Contacto */
+
+.contactid {
+    font-size: 30px;
+    width: 100px;
+    height: 100px;
+    border-radius: 100%;
+    background: #FF5722;
+    line-height: 100px;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.contactidstyle {
+    color: #ffffff;
+}
+
+
+.button-container {
+    text-align: center;
 }

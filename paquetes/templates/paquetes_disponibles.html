@@ -1,0 +1,127 @@
+{% extends "base.html" %} {% block title %} Bienvenido {% endblock %} {% block content %}
+
+<div class="container landing-page">
+<div class="row">
+<div class="col-md-12 text-center marginb1">
+<h3>Completaste tu perfil exitosamente!, tenemos los siguientes paquetes para ti:</h3>
+</div>
+</div>
+
+<div class="row">
+            <div class="col-lg-4 wow zoomIn animated" style="visibility: visible;">
+                <ul class="pricing-plan list-unstyled">
+                    <li class="pricing-title">
+                       Paquete 1
+                    </li>
+                    <li class="pricing-desc">
+                       Gratuito. Las 5 primeras cartas son gratuitas.
+                    </li>
+                    <li class="pricing-price">
+                        <span>$0</span> 
+                    </li>
+                    <li>
+                        Costo carta adicional $50.00
+                    </li>
+                    <li>
+                        1 Modificación incluida al año, modificaciones adicionales mismo año $30
+                    </li>
+                
+                    <li>
+                    	   <form class="m-t" role="form" method='post' enctype='multipart/form-data'>
+        {% csrf_token %}
+         <input type="hidden" name="paquete" value="1" />
+                <button type="submit" class="btn btn-primary btn-xs" onclick="this.disabled=true;this.value='Enviando espere...';this.form.submit();"><span class="glyphicon glyphicon-refresh"></span>Contratar</button>
+            </form>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="col-lg-4 wow zoomIn animated" style="visibility: visible;">
+                <ul class="pricing-plan list-unstyled selected">
+                   <li class="pricing-title">
+                       Paquete 2
+                    </li>
+                    <li class="pricing-desc">
+                       5 cartas y 3 mensajes de voz incluidos.
+                    </li>
+                    <li class="pricing-price">
+                        <span>$150</span> 
+                    </li>
+                    <li>
+                        Costo carta adicional $50.00
+                    </li>
+                    <li>
+                        1 Modificación carta incluida al año, modificaciones adicionales mismo año $30
+                    </li>
+
+                     <li>
+                        Costo mensaje voz adicional $80.00
+                    </li>
+					<li>
+                        1 Modificación mensaje voz incluida al año, modificaciones adicionales mismo año $50
+                    </li>
+
+                
+                    <li>
+                    	   <form class="m-t" role="form" method='post' enctype='multipart/form-data'>
+        {% csrf_token %}
+         <input type="hidden" name="paquete" value="2" />
+                <button type="submit" class="btn btn-primary btn-xs" onclick="this.disabled=true;this.value='Enviando espere...';this.form.submit();"><span class="glyphicon glyphicon-refresh"></span>Contratar</button>
+            </form>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="col-lg-4 wow zoomIn animated" style="visibility: visible;">
+                <ul class="pricing-plan list-unstyled">
+              <li class="pricing-title">
+                       Paquete 3
+                    </li>
+                    <li class="pricing-desc">
+                        5 cartas, 3 mensajes de voz y 2 videos incluidos.
+                    </li>
+                    <li class="pricing-price">
+                        <span>$300</span> 
+                    </li>
+                    <li>
+                        Costo carta adicional $50.00
+                    </li>
+                    <li>
+                        1 Modificación carta incluida al año, modificaciones adicionales mismo año $30
+                    </li>
+
+                     <li>
+                        Costo mensaje voz adicional $80.00
+                    </li>
+					<li>
+                        1 Modificación mensaje voz incluida al año, modificaciones adicionales mismo año $50
+                    </li>
+
+ <li>
+                        Costo video adicional $100.00
+                    </li>
+					<li>
+                        1 Modificación video incluida al año, modificaciones adicionales mismo año $80
+                    </li>
+
+                    <li>
+                       Envio de video en USB vía paquetería $250
+                    </li>
+                
+                    <li>
+                    	   <form class="m-t" role="form" method='post' enctype='multipart/form-data'>
+        {% csrf_token %}
+         <input type="hidden" name="paquete" value="3" />
+                <button type="submit" class="btn btn-primary btn-xs" onclick="this.disabled=true;this.value='Enviando espere...';this.form.submit();"><span class="glyphicon glyphicon-refresh"></span>Contratar</button>
+            </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+
+</div>
+
+{% endblock %}
+
+ 

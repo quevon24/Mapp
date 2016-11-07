@@ -51,6 +51,36 @@ body#loginpage {
 }
 
 
+
+
+.box-1 {
+    padding: 50px;
+    background-color: #91abc3;
+    border: solid 1px #777777;
+}
+
+.box-1:hover{
+  background-color: #5291cc;
+}
+
+.box-2 {
+    padding: 50px;
+    background-color: #e2b0ae;
+    border: solid 1px #777777;
+}
+
+.box-2:hover{
+  background-color: #ca817e;
+}
+
+.paq-title {
+    text-align: center;
+    font-size: 30px;
+    text-transform: uppercase;
+}
+
+
+
 /* Theme colors */
 
 body {

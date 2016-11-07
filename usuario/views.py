@@ -26,6 +26,8 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
 from django.contrib.auth.models import User, Permission, Group
 
+from paquetes.models import MembresiaUsuario
+
 @login_required
 def home(request):
 	return render(request, 'inicio.html', {'ent': True})
@@ -414,8 +416,10 @@ def video_detalle(request, pk):
 def configuraciones_usuario(request):
 	usuario = User.objects.get(pk=request.user.id)
 	perfil = Perfil.objects.get(user=request.user.id)
+	membresia = MembresiaUsuario.objects.get(user=usuario)
+	print membresia.paquete.nombre
 
-	return render(request, 'configuracion_usuario.html', {'usuario':usuario, 'perfil':perfil})
+	return render(request, 'configuracion_usuario.html', {'usuario':usuario, 'perfil':perfil, 'membresia':membresia})
 
 # ---------------------------------------------------------------
 # ---------------------------------------------------------------
