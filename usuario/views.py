@@ -451,6 +451,10 @@ class PictureCreateView_audio(CreateView):
 		return HttpResponse(content=data, status=400, content_type='application/json')
 
 
+
+
+
+
 # ---------------------------------------------------------------
 # ---------------------------------------------------------------
 # Usuario subir video , settings.VARIABLE
