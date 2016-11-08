@@ -1,7 +1,11 @@
+conekta==2.2
 Django==1.10.2
 django-ckeditor==5.1.1
 django-formtools==1.0
 django-selectize==1.2
 django-smart-selects==1.2.6
+httplib2==0.9.2
+nose==1.3.7
 Pillow==3.4.2
 pkg-resources==0.0.0
+simplejson==3.10.0

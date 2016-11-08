@@ -8,7 +8,6 @@
 
 
 
-
  {% block content %}
 <link href="{% static "selectize/css/selectize.default.css" %}" rel="stylesheet">
 <script type="text/javascript" src="{% static "selectize/jquery.min.js"%}"></script>
@@ -108,7 +107,7 @@
 
 <div class="maxfiles">
 Numero maximo de archivos: 1
-<br> Borra un archivo para habilitar esta opcion
+<br> Borra un archivo para habilitar esta opción
 </div>
 
 <div class="form-ok">
@@ -212,46 +211,42 @@ Numero maximo de archivos: 1
 <script>
 
 /* ----------------------------------------- */
-/*Enviar form de carta */
-
+/*Enviar form de carta y validar */
 function enviar() {
 
+ // Validar ckeditor
+ function val_ck() {
+  textbox_data = CKEDITOR.instances['id_contenido'].getData();
 
-// Validar ckeditor
-    function val_ck() {
-    textbox_data = CKEDITOR.instances['id_contenido'].getData();
+  if (textbox_data == null || textbox_data == "") {
+   //alert("Vacio");
+   return false;
+  } else {
+   return true;
+  }
+ }
 
-        if (textbox_data == null || textbox_data == "") {
-                //alert("Vacio");
-                return false;
-            } else {
-                return true;
-            }
-    }
+ // Validar archivo
+ function val_file() {
+  var x = document.getElementById("val_nombre_archivo").value;
+  if (x == null || x == "") {
+   //alert("Name must be filled out");
+   return false;
+  } else {
+   return true;
+  }
+ }
 
-// Validar archivo
-    function val_file() {
-        var x = document.getElementById("val_nombre_archivo").value;
-        if (x == null || x == "") {
-            //alert("Name must be filled out");
-            return false;
-        }
-        else {
-            return true;
-        }
-    }
+ if (val_ck() || val_file()) {
 
-  
-if (val_ck() || val_file()) {
+  document.getElementById("mainform").submit();
 
-document.getElementById("mainform").submit();
+ } else
 
-} else
+ {
+  alert("Escribe un contenido o sube un archivo");
 
-{
-    alert("Escribe un contenido o sube un archivo");
-
-}
+ }
 
 
 }
@@ -266,42 +261,42 @@ var url = "/obtener-archivos-cartas/" + cartaid;
 
 function fetch() {
 
-    $.getJSON(url, function(data) {
-        var items = [];
+ $.getJSON(url, function(data) {
+  var items = [];
 
-        if (data.length == 0) {
-            items.push("No has agregado un archivo para esta carta");
-            $(".form-ok").show();
-            $(".maxfiles").hide();
-            $("#progress").show();
-            console.log(data.length);
-        }
+  if (data.length == 0) {
+   items.push("No has agregado un archivo para esta carta");
+   $(".form-ok").show();
+   $(".maxfiles").hide();
+   $("#progress").show();
+   console.log(data.length);
+  }
 
-        $.each(data, function(key, val) {
+  $.each(data, function(key, val) {
 
-            val.archivo1 = "/site_media/media/" + val.archivo;
-            val.pk1 = "/borrar-archivo-carta/" + val.pk
+   val.archivo1 = "/site_media/media/" + val.archivo;
+   val.pk1 = "/borrar-archivo-carta/" + val.pk
 
-            var pkfile = val.pk
+   var pkfile = val.pk
 
-            items.push("<input type='hidden' name='val_nombre_archivo' id='val_nombre_archivo' value='" + val.archivo +"''> <div class=row><i class='fa fa-file-o'></i><a target=_blank href='" + val.archivo1 + "'> " + val.archivo + "</a></div>  <div class=row> <br><a class='btn btn-w-m btn-danger' onclick='borrar(" + val.pk + ")'><i class='fa fa-trash-o'></i> Borrar archivo</a> </div><hr>");
+   items.push("<input type='hidden' name='val_nombre_archivo' id='val_nombre_archivo' value='" + val.archivo + "''> <div class=row><i class='fa fa-file-o'></i><a target=_blank href='" + val.archivo1 + "'> " + val.archivo + "</a></div>  <div class=row> <br><a class='btn btn-w-m btn-danger' onclick='borrar(" + val.pk + ")'><i class='fa fa-trash-o'></i> Borrar archivo</a> </div><hr>");
 
-        });
+  });
 
-        if (data.length >= 1) {
-            $(".form-ok").hide();
-            $(".maxfiles").show();
-            $("#progress").hide();
-            console.log(data.length);
+  if (data.length >= 1) {
+   $(".form-ok").hide();
+   $(".maxfiles").show();
+   $("#progress").hide();
+   console.log(data.length);
 
-        }
+  }
 
-        $('#lista_archivos').empty();
-        $("<div/>", {
-            "class": "my-new-list",
-            html: items.join("")
-        }).appendTo("#lista_archivos");
-    });
+  $('#lista_archivos').empty();
+  $("<div/>", {
+   "class": "my-new-list",
+   html: items.join("")
+  }).appendTo("#lista_archivos");
+ });
 
 }
 
@@ -310,322 +305,284 @@ fetch();
 /* ----------------------------------------- */
 /*Borrar archivos de carta*/
 function borrar(pkarchivo) {
-    var urldelete = "/borrar-archivo-carta/" + pkarchivo;
-    $.ajax({
-        url: urldelete,
-        type: "GET",
-        data: {
-            'pk': pkarchivo,
-            csrfmiddlewaretoken: '{{ csrf_token }}'
-        },
+ var urldelete = "/borrar-archivo-carta/" + pkarchivo;
+ $.ajax({
+  url: urldelete,
+  type: "GET",
+  data: {
+   'pk': pkarchivo,
+   csrfmiddlewaretoken: '{{ csrf_token }}'
+  },
 
-        success: function(response) {
-            var json = JSON.parse(response);
-            console.log(json);
-            $('#guardara').empty();
-            $('<div class="help-block alert alert-warning"></div>').text('Archivo borrado con exito.').appendTo('#guardara');
-            $('<input type="hidden" name="val_nombre_archivo" id="val_nombre_archivo" value="">').appendTo('#lista_archivos');
-            $(".form-ok").show();
-            $(".maxfiles").hide();
-            $(".progress").empty();
-            $("#lista_archivos").empty();
-            fetch();
+  success: function(response) {
+   var json = JSON.parse(response);
+   console.log(json);
+   $('#guardara').empty();
+   $('<div class="help-block alert alert-warning"></div>').text('Archivo borrado con exito.').appendTo('#guardara');
+   $('<input type="hidden" name="val_nombre_archivo" id="val_nombre_archivo" value="">').appendTo('#lista_archivos');
+   $(".form-ok").show();
+   $(".maxfiles").hide();
+   $(".progress").empty();
+   $("#lista_archivos").empty();
+   fetch();
 
-        }
+  }
 
-    });
+ });
 }
 
-/* ----------------------------------------- */
+/* ----------------------------------------------- */
 /* ----------- Uploader va aqui -------------------*/
 
 /*jslint unparam: true */
 /*global window, $ */
 function csrfSafeMethod(method) {
-    // these HTTP methods do not require CSRF protection
-    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+ // these HTTP methods do not require CSRF protection
+ return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
 }
 var upload_ids = [];
 
 $(function() {
-    'use strict';
-    // Change this to the location of your server-side upload handler:
-    var url = '/mensaje/subir-carta/';
-    var csrftoken = $.cookie('csrftoken');
+ 'use strict';
+ // Change this to the location of your server-side upload handler:
+ var url = '/mensaje/subir-carta/';
+ var csrftoken = $.cookie('csrftoken');
 
-    $('.fileupload').each(function() {
-            $(this).fileupload({
-                maxNumberOfFiles: 1,
+ $('.fileupload').each(function() {
+   $(this).fileupload({
+    maxNumberOfFiles: 1,
 
-                url: url,
-                crossDomain: false,
-                beforeSend: function(xhr, settings) {
-                    if (!csrfSafeMethod(settings.type)) {
-                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                    }
-                },
-                dataType: 'json',
-                acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
-                maxFileSize: 5000000, // 5 MB
-                done: function(e, data) {
-                    //console.log('Upload complete');
-                    $.each(data.result.files, function(index, file) {
-                        upload_ids.push(file.id);
-                        console.log(file.id);
-                        console.log(upload_ids.join(','));
-                        $('.id_file_ids').val(upload_ids.join(','));
-                        //$('<p/>').text(file.name).appendTo('.files');
-                        //$('<p/>').text(file.url).appendTo('.files');
-                        //$('<p/>').text(file.deleteUrl).appendTo('.files');
-                        //$('#guardara').empty();
+    url: url,
+    crossDomain: false,
+    beforeSend: function(xhr, settings) {
+     if (!csrfSafeMethod(settings.type)) {
+      xhr.setRequestHeader("X-CSRFToken", csrftoken);
+     }
+    },
+    dataType: 'json',
+    acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+    maxFileSize: 5000000, // 5 MB
+    done: function(e, data) {
+     //console.log('Upload complete');
+     $.each(data.result.files, function(index, file) {
+      upload_ids.push(file.id);
+      console.log(file.id);
+      console.log(upload_ids.join(','));
+      $('.id_file_ids').val(upload_ids.join(','));
 
+      fetch();
+      $('<div class="help-block alert alert-success"></div>').text('Archivo subido con exito.').appendTo('#guardara');
 
+     });
 
-                        fetch();
-                        $('<div class="help-block alert alert-success"></div>').text('Archivo subido con exito.').appendTo('#guardara');
-
-
-                    });
-
-                },
-                fail: function(e, data) {
-                    console.log(data.jqXHR.responseText);
-                },
-                progressall: function(e, data) {
-                    var progress = parseInt(data.loaded / data.total * 100, 10);
-                    $('#progress .progress-bar').css(
-                        'width',
-                        progress + '%'
-                    );
-                    $('#progress .progress-bar').text(progress + "%");
-                },
-                add: function(e, data) {
-                    var uploadErrors = [];
-                    var acceptFileTypes = /^image\/(gif|jpe?g|png)$/i;
-                    if (data.originalFiles[0]['type'].length && !acceptFileTypes.test(data.originalFiles[0]['type'])) {
-                        uploadErrors.push('Not an accepted file type');
-                    }
-                    if (data.originalFiles[0]['size'].length && data.originalFiles[0]['size'] > 5000000) {
-                        uploadErrors.push('Filesize is too big');
-                    }
-                    if (uploadErrors.length > 0) {
-                        alert(uploadErrors.join("\n"));
-                    } else {
-                        data.submit();
-                    }
-                },
-                dropZone: $(this)
-            });
-        }).prop('disabled', !$.support.fileInput)
-        .parent().addClass($.support.fileInput ? undefined : 'disabled');
+    },
+    fail: function(e, data) {
+     console.log(data.jqXHR.responseText);
+    },
+    progressall: function(e, data) {
+     var progress = parseInt(data.loaded / data.total * 100, 10);
+     $('#progress .progress-bar').css(
+      'width',
+      progress + '%'
+     );
+     $('#progress .progress-bar').text(progress + "%");
+    },
+    add: function(e, data) {
+     var uploadErrors = [];
+     var acceptFileTypes = /^image\/(gif|jpe?g|png)$/i;
+     if (data.originalFiles[0]['type'].length && !acceptFileTypes.test(data.originalFiles[0]['type'])) {
+      uploadErrors.push('Not an accepted file type');
+     }
+     if (data.originalFiles[0]['size'].length && data.originalFiles[0]['size'] > 5000000) {
+      uploadErrors.push('Filesize is too big');
+     }
+     if (uploadErrors.length > 0) {
+      alert(uploadErrors.join("\n"));
+     } else {
+      data.submit();
+     }
+    },
+    dropZone: $(this)
+   });
+  }).prop('disabled', !$.support.fileInput)
+  .parent().addClass($.support.fileInput ? undefined : 'disabled');
 });
+
 </script>
 
 
 
 <script>
-
+/* ----------------------------------------- */
 /* ----------------------------------------- */
 /* Obtener datos contacto */
 
 $(document).ready(function() {
 
-    var urlpkusuario = '/obtener-contactos-usuario/{{request.user.pk}}/';
-    contactosusuario(urlpkusuario);
+ var urlpkusuario = '/obtener-contactos-usuario/{{request.user.pk}}/';
+ contactosusuario(urlpkusuario);
 
-    console.log('documento cargado');
+ console.log('documento cargado');
 
+ if ($("#id_contacto").val() === "" || $("#id_contacto").val() === null) {
 
-    //--
-    if ($("#id_contacto").val() === "" || $("#id_contacto").val() === null) {
+  $("#id_archivo").prop("disabled", true);
+  $("#botonguardar").prop("disabled", true);
+  $("#mensajecontacto").css("display", "block");
+  $('.info-contacto').empty();
 
-        //$("#id_contenido").prop("disabled", true);
-        $("#id_archivo").prop("disabled", true);
-        $("#botonguardar").prop("disabled", true);
-        $("#mensajecontacto").css("display", "block");
-        $('.info-contacto').empty();
+ } else {
 
-    } else {
+  $("#id_archivo").prop("disabled", false);
+  $("#botonguardar").prop("disabled", false);
+  $("#mensajecontacto").css("display", "none");
+ }
 
-        //$("#id_contenido").prop("disabled", false);
-        //$("#id_contenido").removeProp("disabled");
-        $("#id_archivo").prop("disabled", false);
-        $("#botonguardar").prop("disabled", false);
-        $("#mensajecontacto").css("display", "none");
-    }
-    //--
+ if ("{{form.contacto.value}}" !== "None") {
+  var valueSelected = '{{form.contacto.value}}';
+  var urlcontacto = '/obtener-datos-contacto/' + valueSelected + '/';
 
-        if ( "{{form.contacto.value}}" !== "None" ) {
-            var valueSelected = '{{form.contacto.value}}';
-            var urlcontacto = '/obtener-datos-contacto/' + valueSelected + '/';
+  $("#id_archivo").prop("disabled", false);
+  $("#botonguardar").prop("disabled", false);
+  $("#mensajecontacto").css("display", "none");
+  datoscontacto(urlcontacto);
 
-            //$("#id_contenido").prop("disabled", false);
-            $("#id_archivo").prop("disabled", false);
-        $("#botonguardar").prop("disabled", false);
-        $("#mensajecontacto").css("display", "none");
-            datoscontacto(urlcontacto);
+ } else {
+  var valueSelected = $('#id_contacto').val();
 
-        }
-        else {
-            var valueSelected = $('#id_contacto').val();
-            //$("#id_contenido").prop("disabled", true);
+ }
 
 
-        }
-
-        
-
-    
 });
 
-
+// Obtener datos contacto cuando se cambia seleccion
 
 $('#id_contacto').on('change', function(e) {
 
+ if ($("#id_contacto").val() === "" || $("#id_contacto").val() === null) {
 
-    if ($("#id_contacto").val() === "" || $("#id_contacto").val() === null) {
+  $("#id_archivo").prop("disabled", true);
+  $("#botonguardar").prop("disabled", true);
+  $("#mensajecontacto").css("display", "block");
+  $('.info-contacto').empty();
 
-        //$("#id_contenido").attr('disabled','disabled');
-        $("#id_archivo").prop("disabled", true);
-        $("#botonguardar").prop("disabled", true);
-        $("#mensajecontacto").css("display", "block");
-        $('.info-contacto').empty();
+ } else {
 
-    } else {
-        //$("#id_contenido").removeAttr('disabled');
-        //$("#id_contenido").removeProp("disabled");
-        $("#id_archivo").prop("disabled", false);
-        $("#botonguardar").prop("disabled", false);
-        $("#mensajecontacto").css("display", "none");
+  $("#id_archivo").prop("disabled", false);
+  $("#botonguardar").prop("disabled", false);
+  $("#mensajecontacto").css("display", "none");
 
-        var optionSelected = $("option:selected", this);
-        var valueSelected = this.value;
-        var urlcontacto = '/obtener-datos-contacto/' + valueSelected + '/';
+  var optionSelected = $("option:selected", this);
+  var valueSelected = this.value;
+  var urlcontacto = '/obtener-datos-contacto/' + valueSelected + '/';
 
+ }
 
-    }
+ if ($("#id_contacto").val().length !== 0) {
+  var valueSelected = $("#id_contacto").val();
+  var urlcontacto = '/obtener-datos-contacto/' + valueSelected + '/';
 
+  $("#id_archivo").prop("disabled", false);
+  $("#botonguardar").prop("disabled", false);
+  $("#mensajecontacto").css("display", "none");
+  datoscontacto(urlcontacto);
 
-if ( $("#id_contacto").val().length !== 0 ) {
-            var valueSelected = $("#id_contacto").val();
-            var urlcontacto = '/obtener-datos-contacto/' + valueSelected + '/';
-            //$("#id_contenido").prop("disabled", false);
-            //$("#id_contenido").removeAttr('disabled');
-            $("#id_archivo").prop("disabled", false);
-        $("#botonguardar").prop("disabled", false);
-        $("#mensajecontacto").css("display", "none");
-            datoscontacto(urlcontacto);
-
-        }
-        else {
-            var valueSelected = $('#id_contacto').val();
-            //$("#id_contenido").attr('disabled','disabled');
-                    //CKEDITOR.config.readOnly = true;
+ } else {
+  var valueSelected = $('#id_contacto').val();
+ }
 
 
-        }
-
-
-
-    
 });
 
-
+/* ----------------------------------------- */
 /* ----------------------------------------- */
 /* Crear contacto modal */
 
-//$('#contactoform').on('submit', function(event){
-
     var urlpkusuario = '/obtener-contactos-usuario/{{request.user.pk}}/';
-
-    //event.preventDefault();
-    //event.stopImmediatePropagation();
-    //console.log("form enviado!");
     crear_contacto();
     contactosusuario(urlpkusuario);
-//});
+
 
 function crear_contacto() {
-    console.log("funcion crear contacto!"); // sanity check
+ console.log("funcion crear contacto!");
 
-$(document).ready(function() {
+ $(document).ready(function() {
 
-$("#contactoform").validate({
-        rules: {
-            nombre: {
-                required: true,
-            },
-            email1: {
-                required: true,
-            },
-            tel1: {
-                required: true,
-            },
-            direccion: {
-                required: true,
-            }
-        },
-        messages: {
-            nombre: { 
-                required: "Nombre completo obligatorio"
-            },
-            email1: "E-mail obligatorio",
-            tel1: "Telefono/Celular obligatorio",
-            direccion: "Dirección obligatoria",
-        },
-submitHandler: function(form) {
+  $("#contactoform").validate({
+   rules: {
+    nombre: {
+     required: true,
+    },
+    email1: {
+     required: true,
+    },
+    tel1: {
+     required: true,
+    },
+    direccion: {
+     required: true,
+    }
+   },
+   messages: {
+    nombre: {
+     required: "Nombre completo obligatorio"
+    },
+    email1: "E-mail obligatorio",
+    tel1: "Telefono/Celular obligatorio",
+    direccion: "Dirección obligatoria",
+   },
+   submitHandler: function(form) {
 
     $.ajax({
-        url : "/contactos/agregar_ajax/", // the endpoint
-        type : "POST", // http method
-        data : { 
-        nombre : $('#id_nombre').val(),
-        email1 : $('#id_email1').val(),
-        tel1 : $('#id_tel1').val(),
-        tel2 : $('#id_tel2').val(),
-        direccion : $('#id_direccion').val(),
-        csrfmiddlewaretoken: '{{ csrf_token }}',
+     url: "/contactos/agregar_ajax/", // the endpoint
+     type: "POST", // http method
+     data: {
+      nombre: $('#id_nombre').val(),
+      email1: $('#id_email1').val(),
+      tel1: $('#id_tel1').val(),
+      tel2: $('#id_tel2').val(),
+      direccion: $('#id_direccion').val(),
+      csrfmiddlewaretoken: '{{ csrf_token }}',
 
-        }, // data sent with the post request
+     }, // data sent with the post request
 
-        // handle a successful response
-        success : function(json) {
+     // handle a successful response
+     success: function(json) {
 
-            $('#myModal2').modal('hide');
-            $(".modal-backdrop").remove();
-            $('#contactoform').trigger("reset");
+      $('#myModal2').modal('hide');
+      $(".modal-backdrop").remove();
+      $('#contactoform').trigger("reset");
 
-            $('#results').empty();
-            var htmlText = '';
-            htmlText += '<div class="help-block alert alert-success">';
-            htmlText += 'Contacto: <strong>' + json.nombre + '</strong> agregado con exito';
-            htmlText += '</div>';
-            $('#results').append(htmlText);
+      $('#results').empty();
+      var htmlText = '';
+      htmlText += '<div class="help-block alert alert-success">';
+      htmlText += 'Contacto: <strong>' + json.nombre + '</strong> agregado con exito';
+      htmlText += '</div>';
+      $('#results').append(htmlText);
 
-            var urlpkusuario = '/obtener-contactos-usuario/{{request.user.pk}}/';
-            contactosusuario(urlpkusuario);
+      var urlpkusuario = '/obtener-contactos-usuario/{{request.user.pk}}/';
+      contactosusuario(urlpkusuario);
 
-           // $('#post-text').val(''); // remove the value from the input
-            console.log(json); // log the returned json to the console
-            console.log("success"); // another sanity check
-        },
+      console.log(json); // log the returned json to the console
+      console.log("success"); // another sanity check
+     },
 
-        // handle a non-successful response
-        error : function(xhr,errmsg,err) {
+     // handle a non-successful response
+     error: function(xhr, errmsg, err) {
 
-            $('#myModal2').modal('hide');
-            $(".modal-backdrop").remove();
-            $('#contactoform').trigger("reset");
+      $('#myModal2').modal('hide');
+      $(".modal-backdrop").remove();
+      $('#contactoform').trigger("reset");
 
-            $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
-                " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
-            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
-        }
+      $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: " + errmsg +
+       " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+      console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+     }
     });
-return false;
-}
-    });
-});
+    return false;
+   }
+  });
+ });
 
 };
 
@@ -637,71 +594,63 @@ return false;
 
 function datoscontacto(urlcontacto) {
 
+ $.getJSON(urlcontacto, function(data) {
 
-        $.getJSON(urlcontacto, function(data) {
+  $('.info-contacto').empty();
 
-            $('.info-contacto').empty();
+  var htmlText = '';
 
+  htmlText += '<div class="div-conatiner">';
+  htmlText += '<p class="p-name"> Nombre: ' + data.nombre + '</p>';
+  htmlText += '<p class="p-loc"> Tel1: ' + data.tel1 + '</p>';
+  htmlText += '<p class="p-desc"> Tel2: ' + data.tel2 + '</p>';
+  htmlText += '<p class="p-created"> Email: ' + data.email1 + '</p>';
+  htmlText += '<p class="p-uname"> Direccion: ' + data.direccion + '</p>';
+  htmlText += '</div>';
 
+  $('.info-contacto').append(htmlText);
 
-            var htmlText = '';
+  console.log(data);
+ });
 
-                htmlText += '<div class="div-conatiner">';
-                htmlText += '<p class="p-name"> Nombre: ' + data.nombre + '</p>';
-                htmlText += '<p class="p-loc"> Tel1: ' + data.tel1 + '</p>';
-                htmlText += '<p class="p-desc"> Tel2: ' + data.tel2 + '</p>';
-                htmlText += '<p class="p-created"> Email: ' + data.email1 + '</p>';
-                htmlText += '<p class="p-uname"> Direccion: ' + data.direccion + '</p>';
-                htmlText += '</div>';
-            
-
-            $('.info-contacto').append(htmlText);
-
-            console.log(data);
-        });
-
-    };
+};
 
 /* ----------------------------------------- */
 /* Funcion obtener contactos usuario */
 
 function contactosusuario(urlpkusuario) {
 
+ $.getJSON(urlpkusuario, function(data) {
 
+  $('#id_contacto').empty();
 
-        $.getJSON(urlpkusuario, function(data) {
+  $("#id_contacto").prepend("<option disabled='disabled' selected value=''>----</option>");
 
-            $('#id_contacto').empty();
+  if (data.length == 0) {
 
-            $("#id_contacto").prepend("<option disabled='disabled' selected value=''>----</option>");
+   $("#no-user").show();
+   //$(".maxfiles").hide();
+   console.log(data.length);
+  } else {
+   $("#no-user").hide();
+  }
 
+  $.each(data, function(key, val) {
 
-            if (data.length == 0) {
-            
-            $("#no-user").show();
-            //$(".maxfiles").hide();
-            console.log(data.length);
-        }
-        else{
-        $("#no-user").hide();
-    }
+   $('#id_contacto').append($('<option>', {
+    value: val.pk,
+    text: val.nombre
+   }));
 
-        $.each(data, function(key, val) {
+  });
 
-         $('#id_contacto').append($('<option>', { 
-        value: val.pk,
-        text : val.nombre 
-    }));
+  $('#id_contacto').val('{{form.contacto.value}}');
+  $('#id_contacto option[value={{form.contacto.value}}]').val('{{form.contacto.value}}').attr('selected', 'selected');
 
-        });
+  console.log(data);
+ });
 
-        $('#id_contacto').val('{{form.contacto.value}}');
-        $('#id_contacto option[value={{form.contacto.value}}]').val('{{form.contacto.value}}').attr('selected','selected');
-
-            console.log(data);
-        });
-
-    };
+};
 
 
 </script>

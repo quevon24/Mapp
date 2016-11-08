@@ -415,9 +415,16 @@ def video_detalle(request, pk):
 @login_required
 def configuraciones_usuario(request):
 	usuario = User.objects.get(pk=request.user.id)
-	perfil = Perfil.objects.get(user=request.user.id)
-	membresia = MembresiaUsuario.objects.get(user=usuario)
-	print membresia.paquete.nombre
+	try:
+		perfil = Perfil.objects.get(user=request.user.id)
+	except Perfil.DoesNotExist:
+		crear_perfil = Perfil.objects.create(user=request.user)
+		perfil = Perfil.objects.get(user=request.user.id)
+	try:
+		membresia = MembresiaUsuario.objects.get(user=usuario)
+	except:
+		membresia = None
+	#print membresia.paquete.nombre
 
 	return render(request, 'configuracion_usuario.html', {'usuario':usuario, 'perfil':perfil, 'membresia':membresia})
 
