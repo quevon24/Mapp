@@ -422,8 +422,15 @@ class listar_audio(ListView):
 @login_required
 @group_required('Administrador', 'Pendiente')
 def audio_detalle(request, pk):
+
+
+	archivos = Perfil_audio_archivo.objects.filter(audio=pk)
 	audio = get_object_or_404(Perfil_audio, pk = pk)
-	return render(request, 'detalles_audio.html', {'audio': audio})
+	try:
+		contacto = Contactos.objects.get(pk=carta.contacto.pk)
+	except:
+		contacto = None
+	return render(request, 'detalles_audio.html', {'audio': audio, 'archivos':archivos, 'contacto':contacto})
 
 
 

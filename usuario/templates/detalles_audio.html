@@ -39,13 +39,22 @@
                 <dt>Descripción:</dt>
                 <dd>{{audio.descripcion}}</dd>
 				<dt>Archivo:</dt>
-				<dd><a href="javascript:window.open('{{ MEDIA_URL }}{{audio.archivo.url}}','Audio','width=600,height=400')">{{audio.archivo}}</a></dd>
+				<dd>
+                <a href="javascript:window.open('{{ MEDIA_URL }}{{audio.archivo.url}}','Audio','width=600,height=400')">{{audio.archivo}}</a>
+                {% if archivos %}
+                {% for archivo in archivos %}
+                <a href="{{archivo.archivo.url}}">{{archivo.archivo}}</a>
+                {% endfor %}
+                {% else %}
+                ------------
+                {% endif %}
+                </dd>
 				<dt>Email:</dt>
-				<dd>{{contacto.email}}</dd>
+				<dd>{{audio.contacto.email1}}</dd>
 				<dt>Tel 1:</dt>
-				<dd>{{contacto.tel1}}</dd>
+				<dd>{{audio.contacto.tel1}}</dd>
 				<dt>Tel 2:</dt>
-				<dd>{{contacto.tel2}}</dd>
+				<dd>{{audio.contacto.tel2}}</dd>
 
 
 			</dl>
