@@ -1,36 +1,84 @@
  {% extends "base.html" %}{% load static %} {% block title %} Lista de mensajes de audio {% endblock %} {% block content %}
 
-
-
-
-{% if object_list %}
-   <h2 class="text-center" style="padding-top: 10px; padding-bottom:10px;">Mis mensajes de audio</h2>
- <table border="1" cellpadding="0" cellspacing="0" style="" class="table table-bordered">
-	<tbody>
-	<thead>
-		<tr>
-			
-			<td><b>Fecha</b></td>
-			<td><b>Email</b></td>
-			<td><b>Telefono 1</b></td>
-			<td><b>Detalles</b></td>
-		</tr>
-	</thead>
-
- 	{% for audio in object_list %}
-		<tr>
-			<td>{{audio.fecha}}</td>
-			<td>{{audio.email}}</td>
-			<td>{{audio.tel1}}</td>
-			<td><a href="{% url 'detalles_audio' audio.pk %}"><button class="btn btn-warning btn-w-m" type="button"><i class="fa fa-pencil"></i> Ver información</button> </a></td>
-		</tr>
-	{% endfor %}
-
-	{% else %}
-<h3>No has agregado mensajes de audio</h3>
-{% endif %}
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-md-10">
+        <h2>Cartas</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="#">Lista</a>
+            </li>
+            <li class="active">
+                <strong>Lista de cartas</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-md-2">
+    </div>
+</div>
+<br>
+<div class="wrapper wrapper-content animated fadeInRight white-bg">
+    <div class="row">
+        <div class="col-md-12">
+            {% if object_list %}
+            <h2 class="text-center" style="padding-top: 10px; padding-bottom:10px;">Mis mensajes de audio</h2>
+            <table border="1" cellpadding="0" cellspacing="0" style="" class="table table-bordered">
+                <tbody>
+                    <thead>
+                        <tr>
+                            <td><b>Fecha</b></td>
+                            <td><b>Email</b></td>
+                            <td><b>Telefono 1</b></td>
+                            <td><b>Detalles</b></td>
+                        </tr>
+                    </thead>
+                    {% for audio in object_list %}
+                    <tr>
+                        <td>{{audio.fecha}}</td>
+                        <td>{{audio.contacto.email1}}</td>
+                        <td>{{audio.contacto.tel1}}</td>
+                        <td>
+                            <a href="{% url 'detalles_audio' audio.pk %}">
+                                <button class="btn btn-warning btn-w-m" type="button"><i class="fa fa-pencil"></i> Ver información</button>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %} {% else %}
+                    <h3>No has agregado mensajes de audio </h3> {% endif %}
+                </tbody>
+            </table>
+            <div class="paginationbox">
+                <ul class="pagination">
+                    {% if page_obj.has_previous %}
+                    <li>
+                        <span>
+                                <a href="?page=1"> << Primera pagina</a>
+                            </span>
+                    </li>
+                    <li>
+                        <span><a href="?page={{ page_obj.previous_page_number }}">Anterior</a></span>
+                    </li>
+                    {% endif %}
+                    <li class="">
+                        <span>Pagina {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.</span>
+                    </li>
+                    {% if page_obj.has_next %}
+                    <li>
+                        <span><a href="?page={{ page_obj.next_page_number }}">Siguiente</a></span>
+                    </li>
+                    <li>
+                        <span>
+                                <a href="?page={{ page_obj.paginator.num_pages }}">Ultima pagina >></a>
+                            </span>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 
 
 {% endblock %}
+

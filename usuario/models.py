@@ -62,6 +62,9 @@ class Perfil(models.Model):
 	class Meta:
 		verbose_name_plural = "Perfiles"
 
+# ---------------------------------------------
+# ------------------ Carta --------------------
+
 def validar_carta(value):
   import os
   ext = os.path.splitext(value.name)[1]
@@ -104,7 +107,8 @@ class Perfil_carta_archivo(models.Model):
 		self.archivo.delete(False)
 		super(Perfil_carta_archivo, self).delete(*args, **kwargs)
 
-
+# ---------------------------------------------
+# ------------------ Audio --------------------
 
 def validar_audio(value):
   import os
@@ -114,12 +118,10 @@ def validar_audio(value):
 	raise ValidationError(u'Archivo no soportado!')
 
 class Perfil_audio(models.Model):
+	descripcion = models.CharField(max_length=500, blank=True, null=True)
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	fecha = models.DateTimeField(default=timezone.now)
-	archivo = models.FileField(upload_to = user_directoryfile_path, null=True, blank=True, validators=[validar_audio])
-	email = models.EmailField(null=True, blank=True)
-	tel1 = models.CharField(max_length=40)
-	tel2 = models.CharField(max_length=40)
+	contacto = models.ForeignKey(Contactos, blank=True, null=True )
 	terminado = models.BooleanField(default=False) # poner true cuando se guarda
 
 	def __unicode__(self):
@@ -127,6 +129,31 @@ class Perfil_audio(models.Model):
 
 	class Meta:
 		verbose_name_plural = "Audios"
+
+class Perfil_audio_archivo(models.Model):
+	user = models.ForeignKey(User, models.SET_NULL, blank=True, null=True,)
+	audio = models.ForeignKey(Perfil_audio, blank=True, null=True)
+	slug = models.SlugField(max_length=500, blank=True, null=True)
+	archivo = models.FileField(upload_to = user_directoryfile_path, null=True, blank=True)
+
+	def __unicode__(self):
+		return self.archivo.name
+
+	@models.permalink
+	def get_absolute_url(self):
+		return ('editar_audio', )
+
+	def save(self, *args, **kwargs):
+		self.slug = self.archivo.name
+		super(Perfil_audio_archivo, self).save(*args, **kwargs)
+
+	def delete(self, *args, **kwargs):
+		#"""delete -- Remove to leave file."""
+		self.archivo.delete(False)
+		super(Perfil_audio_archivo, self).delete(*args, **kwargs)
+
+# ---------------------------------------------
+# ------------------ Video --------------------
 
 def validar_video(value):
   import os

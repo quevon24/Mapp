@@ -71,6 +71,7 @@ def actualizar_cuenta(request):
 # ---------------------------------------------------------------
 # Usuario crear carta
 
+@login_required
 def crear_carta(request):
 	nueva = Perfil_carta.objects.create(user=request.user)
 	return HttpResponseRedirect(reverse('editar_carta', args=(nueva.id,)))
@@ -274,9 +275,56 @@ def carta_detalle(request, pk):
 	return render(request, 'detalles_carta.html', {'carta': carta, 'archivos':archivos, 'contacto':contacto})
 
 
+
+
 # ---------------------------------------------------------------
 # ---------------------------------------------------------------
-# Usuario subir audio , settings.VARIABLE
+# Usuario crear audio nuevo
+
+@login_required
+def crear_audio(request):
+	nueva = Perfil_audio.objects.create(user=request.user)
+	return HttpResponseRedirect(reverse('editar_audio', args=(nueva.id,)))
+
+# ---------------------------------------------------------------
+# ---------------------------------------------------------------
+# Usuario editar/nuevo audio
+
+@login_required
+def editar_audio(request, pk):
+	post = get_object_or_404(Perfil_audio, pk=pk)
+	obj_id = pk 
+	save = False
+	form = Usuario_audios(instance=post)
+	contactform = form_agregar_contacto()
+	archivos = Perfil_audio_archivo.objects.filter(user=request.user)
+	num_archivos = archivos.count()
+	if request.method == 'POST':
+		form = Usuario_audios(request.POST, request.FILES, instance=post)
+		if form.is_valid():
+			post = form.save(commit=False)
+			# post.contenido = form.cleaned_data['contenido']
+			# post.email = form.cleaned_data['email']
+			# post.tel1 = form.cleaned_data['tel1']
+			# post.tel2 = form.cleaned_data['tel2']
+			post.terminado = True
+			post.user = request.user
+			post.save()
+			save = True
+			print save
+			#return redirect('home')
+	else:
+			form = Usuario_audios(instance=post)
+			contactform = form_agregar_contacto()
+
+	return render(request, 'editar_audio.html', {'form': form, 'save':save, 'obj_pk':obj_id, 'archivos':archivos , 'num_archivos':num_archivos, 'contactform':contactform})
+
+
+
+# ---------------------------------------------------------------
+# ---------------------------------------------------------------
+# Usuario subir audio
+
 @login_required
 def upload_audio(request):
 	save = False
@@ -285,10 +333,10 @@ def upload_audio(request):
 		form = Usuario_audios(request.POST, request.FILES)
 		if form.is_valid():
 			post = form.save(commit=False)
-			post.archivo = form.cleaned_data['archivo']
-			post.email = form.cleaned_data['email']
-			post.tel1 = form.cleaned_data['tel1']
-			post.tel2 = form.cleaned_data['tel2']
+			# post.archivo = form.cleaned_data['archivo']
+			# post.email = form.cleaned_data['email']
+			# post.tel1 = form.cleaned_data['tel1']
+			# post.tel2 = form.cleaned_data['tel2']
 			post.user = request.user
 			post.terminado = True
 			post.save()
@@ -298,6 +346,36 @@ def upload_audio(request):
 
 	return render(request, 'subir_audio.html', {'form': form, 'save':save})
 
+# ---------------------------------------------------------------
+# ---------------------------------------------------------------
+# Usuario obtener archivos audio
+
+@login_required
+def obtener_archivos_audio(request, audioid):
+	try:
+		archivos = Perfil_audio_archivo.objects.filter(audio=audioid).values('pk' ,'user','audio','archivo')
+		lista_archivos = list(archivos)
+	except:
+		archivos = None
+		lista_archivos = list(archivos)
+	else:
+		response = JSONResponse(lista_archivos)
+		print response
+		response['Content-Disposition'] = 'inline; filename=files.json'
+		return response
+
+# ---------------------------------------------------------------
+# ---------------------------------------------------------------
+# Usuario borrar archivo audio
+
+@login_required
+def borrar_archivo_audio(request, pk):
+	archivo = Perfil_audio_archivo.objects.get(pk=pk)
+	archivo.delete()
+	print 'archivo borrado'
+	response = JSONResponse(True, mimetype=response_mimetype(request))
+	response['Content-Disposition'] = 'inline; filename=files.json'
+	return response
 
 # ---------------------------------------------------------------
 # ---------------------------------------------------------------
@@ -313,9 +391,13 @@ class listar_audio(ListView):
 	def dispatch(self, *args, **kwargs):
 		return super(listar_audio, self).dispatch(*args, **kwargs)
 
+	def get_queryset(self):
+		new_context = Perfil_audio.objects.filter(user=self.request.user.id)
+		return new_context
+
 	def get_context_data(self, **kwargs):
 		context = super(ListView, self).get_context_data(**kwargs) 
-		alist = Perfil_audio.objects.filter(user=self.request.user)
+		alist = Perfil_audio.objects.filter(user=self.request.user.id)
 		paginator = Paginator(alist, self.paginate_by)
 
 		page = self.request.GET.get('page')
@@ -328,7 +410,10 @@ class listar_audio(ListView):
 			file = paginator.page(paginator.num_pages)
 
 		context['alist'] = file
+
 		return context
+
+
 
 # ---------------------------------------------------------------
 # ---------------------------------------------------------------
@@ -339,6 +424,32 @@ class listar_audio(ListView):
 def audio_detalle(request, pk):
 	audio = get_object_or_404(Perfil_audio, pk = pk)
 	return render(request, 'detalles_audio.html', {'audio': audio})
+
+
+
+# ---------------------------------------------------------------
+# ---------------------------------------------------------------
+# Usuario subir archivo audio
+
+class PictureCreateView_audio(CreateView):
+	model = Perfil_audio_archivo
+	fields = "__all__"
+	#template_name = "perfil_carta_archivo_.html"
+
+	def form_valid(self, form):
+		self.object = form.save()
+		files = [serialize(self.object)]
+		data = {'files': files}
+		response = JSONResponse(data, mimetype=response_mimetype(self.request))
+		print response
+		response['Content-Disposition'] = 'inline; filename=files.json'
+		return response
+
+	def form_invalid(self, form):
+		data = json.dumps(form.errors)
+		print data
+		return HttpResponse(content=data, status=400, content_type='application/json')
+
 
 # ---------------------------------------------------------------
 # ---------------------------------------------------------------

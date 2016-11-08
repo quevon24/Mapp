@@ -1,0 +1,661 @@
+ {% extends "base.html" %}{% load static %} {% block title %} Editar audio {% endblock %} 
+{% load addcss %}
+{% load staticfiles %}
+
+
+<script type="text/javascript" src="{% static "ckeditor/ckeditor/ckeditor.js" %}"></script>
+<script type="text/javascript" src="{% static "ckeditor/ckeditor-init.js" %}"></script>
+
+
+
+ {% block content %}
+<link href="{% static "selectize/css/selectize.default.css" %}" rel="stylesheet">
+<script type="text/javascript" src="{% static "selectize/jquery.min.js"%}"></script>
+
+
+
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-md-10">
+        <h2>Editar audio</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="#">Audio</a>
+            </li>
+            <li class="active">
+                <strong>Editar audio</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-md-2">
+    </div>
+</div>
+<br>
+<div class="wrapper wrapper-content animated fadeInRight white-bg">
+    <div class="row">
+        <div class="col-md-12">
+            {% if save == True %}
+            <div class="alert alert-success">
+                Audio editado correctamente. <a class="alert-link" href="{% url 'lista_audio' %}"> Ver audios</a>.
+            </div>
+            {% endif %} {% if form.archivo.errors %} {{ form.archivo.errors.as_text }} {% endif %}
+            <p></p>
+
+            <div class="alert alert-danger" id="mensajecontacto">
+                                Para guardar un mensaje de audio necesitas seleccionar o agregar un contacto.
+                            </div>
+
+            <form method="post" id="mainform" enctype="multipart/form-data" class="form-horizontal">{% csrf_token %}
+            {{ form.media }}
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        Descripción:
+                    </label>
+                    <div class="col-sm-6">
+                    
+
+
+                        {{form.descripcion|addcss:"form-control"}}
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        Contacto:
+                    </label>
+                    <div class="col-sm-6">
+                     
+
+                        <select id="id_contacto" name="contacto" class="form-control"></select>
+
+                        <div id="results">
+</div>
+
+<div id="no-user">
+<div class="alert alert-danger" id="mensajecontacto" style="display: block;">
+                                No has agregado contactos.
+                            </div>
+</div>
+
+                    </div>
+
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal2">
+                                Agregar contacto
+                            </button>
+
+                </div>
+
+                 <div class="form-group">
+                    <label class="col-sm-2 control-label">
+                        Datos de Contacto:
+                    </label>
+                    <div class="col-sm-6">
+                        <div class="info-contacto">
+
+</div>
+
+                    </div>
+
+                </div>
+
+<div class="form-group">
+    <label class="col-sm-2 control-label">
+        Archivo:
+    </label>
+    <div class="col-sm-6">
+
+<div class="maxfiles">
+Numero maximo de archivos: 1
+<br> Borra un archivo para habilitar esta opción
+</div>
+
+<div class="form-ok">
+        <form name="fileform" id='formulario' method='POST' enctype='multipart/form-data'>
+            {% csrf_token %}
+            <ul>
+            </ul>
+            <span class="btn btn-success fileinput-button">
+        <i class="glyphicon glyphicon-plus"></i>
+        <span>Seleccionar Archivos...</span>
+            <!-- The file input field used as target for the file upload widget -->
+            <input class="fileupload" type="file" name="archivo" id="id_archivo">
+
+             <input type="hidden" name="user" id="id_user" value="{{ request.user.pk }}">
+             <input type="hidden" name="carta" id="id_carta" value="{{ obj_pk }}">
+
+            </span>
+            
+<!--             <p>
+                <input type='submit' name="savefile" value='Guardar' class="btn btn-w-m btn-primary" />
+            </p> -->
+        </form>
+</div>
+
+
+        <!-- The global progress bar -->
+        <br>
+        <div id="progress" class="progress">
+            <div class="progress-bar progress-bar-success"></div>
+        </div>
+        <div id="guardara"></div>
+        <!-- The container for the uploaded files -->
+        <div class="files"></div>
+
+        <br>
+
+        <div class="pm_attachments">
+          <span><h3>Archivo Adjunto:</h3></span>
+     
+     
+ <div id="lista_archivos"></div>
+     <input type="hidden" name="val_nombre_archivo" id="val_nombre_archivo" value="">
+
+        </div>
+
+    </div>
+</div>
+
+
+                <br>
+                <button onclick="enviar()" type="submit" name="guardar" id="botonguardar" class="btn btn-primary"><i class="fa fa-save"></i>&nbsp;Guardar Audio</button>
+                <a href="javascript:history.back();">
+                    <button class="btn btn-w-m btn-danger" type="submit"> <i class="fa fa-arrow-left"></i> Cancelar
+                    </button>
+                </a>
+            </form>
+<p></p>
+
+
+        </div>
+    </div>
+</div>
+
+
+
+{% include 'modals.html' %}
+
+
+{% block extrascripts %}
+
+
+<!-- The jQuery UI widget factory, can be omitted if jQuery UI is already included -->
+<script src="{% static "js/vendor/jquery.ui.widget.js" %}"></script>
+<!-- The Load Image plugin is included for the preview images and image resizing functionality -->
+<script src="{% static "js/load-image.min.js" %}"></script>
+<!-- The Canvas to Blob plugin is included for image resizing functionality -->
+<script src="{% static "js/canvas-to-blob.min.js" %}"></script>
+<!-- Bootstrap JS is not required, but included for the responsive demo navigation -->
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
+<script src="{% static "js/jquery.iframe-transport.js" %}"></script>
+<!-- The basic File Upload plugin -->
+<script src="{% static "js/jquery.fileupload.js" %}"></script>
+<!-- The File Upload processing plugin -->
+<script src="{% static "js/jquery.fileupload-process.js" %}"></script>
+<!-- The File Upload image preview & resize plugin -->
+<script src="{% static "js/jquery.fileupload-image.js" %}"></script>
+<!-- The File Upload audio preview plugin -->
+<script src="{% static "js/jquery.fileupload-audio.js" %}"></script>
+<!-- The File Upload video preview plugin -->
+<script src="{% static "js/jquery.fileupload-video.js" %}"></script>
+<!-- The File Upload validation plugin -->
+<script src="{% static "js/jquery.fileupload-validate.js" %}"></script>
+<script src="{% static "js/jquery.cookie.js" %}"></script>
+
+<script type="text/javascript" src="{% static "selectize/selectize.min.js"%}"></script>
+
+<script src="{% static "js/jquery.validate.js" %}"></script>
+<script src="{% static "js/additional-methods.js" %}"></script>
+
+<script>
+
+/* ----------------------------------------- */
+/*Enviar form de carta y validar */
+function enviar() {
+
+ // Validar ckeditor
+ function val_ck() {
+  textbox_data = CKEDITOR.instances['id_contenido'].getData();
+
+  if (textbox_data == null || textbox_data == "") {
+   //alert("Vacio");
+   return false;
+  } else {
+   return true;
+  }
+ }
+
+ // Validar archivo
+ function val_file() {
+  var x = document.getElementById("val_nombre_archivo").value;
+  if (x == null || x == "") {
+   //alert("Name must be filled out");
+   return false;
+  } else {
+   return true;
+  }
+ }
+
+ if (val_file()) {
+
+  document.getElementById("mainform").submit();
+
+ } else
+
+ {
+  alert("Escribe un contenido o sube un archivo");
+
+ }
+
+
+}
+
+
+
+/* ----------------------------------------- */
+/*Obtener archivos de audio*/
+
+var cartaid = "{{ obj_pk }}";
+var url = "/obtener-archivos-audio/" + cartaid;
+
+function fetch() {
+
+ $.getJSON(url, function(data) {
+  var items = [];
+
+  if (data.length == 0) {
+   items.push("No has agregado un archivo para este mensaje de audio");
+   $(".form-ok").show();
+   $(".maxfiles").hide();
+   $("#progress").show();
+   console.log(data.length);
+  }
+
+  $.each(data, function(key, val) {
+
+   val.archivo1 = "/site_media/media/" + val.archivo;
+   val.pk1 = "/borrar-archivo-audio/" + val.pk
+
+   var pkfile = val.pk
+
+   items.push("<input type='hidden' name='val_nombre_archivo' id='val_nombre_archivo' value='" + val.archivo + "''> <div class=row><i class='fa fa-file-o'></i><a target=_blank href='" + val.archivo1 + "'> " + val.archivo + "</a></div>  <div class=row> <br><a class='btn btn-w-m btn-danger' onclick='borrar(" + val.pk + ")'><i class='fa fa-trash-o'></i> Borrar archivo</a> </div><hr>");
+
+  });
+
+  if (data.length >= 1) {
+   $(".form-ok").hide();
+   $(".maxfiles").show();
+   $("#progress").hide();
+   console.log(data.length);
+
+  }
+
+  $('#lista_archivos').empty();
+  $("<div/>", {
+   "class": "my-new-list",
+   html: items.join("")
+  }).appendTo("#lista_archivos");
+ });
+
+}
+
+fetch();
+
+/* ----------------------------------------- */
+/*Borrar archivos de carta*/
+function borrar(pkarchivo) {
+ var urldelete = "/borrar-archivo-audio/" + pkarchivo;
+ $.ajax({
+  url: urldelete,
+  type: "GET",
+  data: {
+   'pk': pkarchivo,
+   csrfmiddlewaretoken: '{{ csrf_token }}'
+  },
+
+  success: function(response) {
+   var json = JSON.parse(response);
+   console.log(json);
+   $('#guardara').empty();
+   $('<div class="help-block alert alert-warning"></div>').text('Archivo borrado con exito.').appendTo('#guardara');
+   $('<input type="hidden" name="val_nombre_archivo" id="val_nombre_archivo" value="">').appendTo('#lista_archivos');
+   $(".form-ok").show();
+   $(".maxfiles").hide();
+   $(".progress").empty();
+   $("#lista_archivos").empty();
+   fetch();
+
+  }
+
+ });
+}
+
+/* ----------------------------------------------- */
+/* ----------- Uploader va aqui -------------------*/
+
+/*jslint unparam: true */
+/*global window, $ */
+function csrfSafeMethod(method) {
+ // these HTTP methods do not require CSRF protection
+ return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+var upload_ids = [];
+
+$(function() {
+ 'use strict';
+ // Change this to the location of your server-side upload handler:
+ var url = '/mensaje/subir-audio/';
+ var csrftoken = $.cookie('csrftoken');
+
+ $('.fileupload').each(function() {
+   $(this).fileupload({
+    maxNumberOfFiles: 1,
+
+    url: url,
+    crossDomain: false,
+    beforeSend: function(xhr, settings) {
+     if (!csrfSafeMethod(settings.type)) {
+      xhr.setRequestHeader("X-CSRFToken", csrftoken);
+     }
+    },
+    dataType: 'json',
+    acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+    maxFileSize: 5000000, // 5 MB
+    done: function(e, data) {
+     //console.log('Upload complete');
+     $.each(data.result.files, function(index, file) {
+      upload_ids.push(file.id);
+      console.log(file.id);
+      console.log(upload_ids.join(','));
+      $('.id_file_ids').val(upload_ids.join(','));
+
+      fetch();
+      $('<div class="help-block alert alert-success"></div>').text('Archivo subido con exito.').appendTo('#guardara');
+
+     });
+
+    },
+    fail: function(e, data) {
+     console.log(data.jqXHR.responseText);
+    },
+    progressall: function(e, data) {
+     var progress = parseInt(data.loaded / data.total * 100, 10);
+     $('#progress .progress-bar').css(
+      'width',
+      progress + '%'
+     );
+     $('#progress .progress-bar').text(progress + "%");
+    },
+    add: function(e, data) {
+     var uploadErrors = [];
+     var acceptFileTypes = /^image\/(gif|jpe?g|png)$/i;
+     if (data.originalFiles[0]['type'].length && !acceptFileTypes.test(data.originalFiles[0]['type'])) {
+      uploadErrors.push('Not an accepted file type');
+     }
+     if (data.originalFiles[0]['size'].length && data.originalFiles[0]['size'] > 5000000) {
+      uploadErrors.push('Filesize is too big');
+     }
+     if (uploadErrors.length > 0) {
+      alert(uploadErrors.join("\n"));
+     } else {
+      data.submit();
+     }
+    },
+    dropZone: $(this)
+   });
+  }).prop('disabled', !$.support.fileInput)
+  .parent().addClass($.support.fileInput ? undefined : 'disabled');
+});
+
+</script>
+
+
+
+<script>
+/* ----------------------------------------- */
+/* ----------------------------------------- */
+/* Obtener datos contacto */
+
+$(document).ready(function() {
+
+ var urlpkusuario = '/obtener-contactos-usuario/{{request.user.pk}}/';
+ contactosusuario(urlpkusuario);
+
+ console.log('documento cargado');
+
+ if ($("#id_contacto").val() === "" || $("#id_contacto").val() === null) {
+
+  $("#id_archivo").prop("disabled", true);
+  $("#botonguardar").prop("disabled", true);
+  $("#mensajecontacto").css("display", "block");
+  $('.info-contacto').empty();
+
+ } else {
+
+  $("#id_archivo").prop("disabled", false);
+  $("#botonguardar").prop("disabled", false);
+  $("#mensajecontacto").css("display", "none");
+ }
+
+ if ("{{form.contacto.value}}" !== "None") {
+  var valueSelected = '{{form.contacto.value}}';
+  var urlcontacto = '/obtener-datos-contacto/' + valueSelected + '/';
+
+  $("#id_archivo").prop("disabled", false);
+  $("#botonguardar").prop("disabled", false);
+  $("#mensajecontacto").css("display", "none");
+  datoscontacto(urlcontacto);
+
+ } else {
+  var valueSelected = $('#id_contacto').val();
+
+ }
+
+
+});
+
+// Obtener datos contacto cuando se cambia seleccion
+
+$('#id_contacto').on('change', function(e) {
+
+ if ($("#id_contacto").val() === "" || $("#id_contacto").val() === null) {
+
+  $("#id_archivo").prop("disabled", true);
+  $("#botonguardar").prop("disabled", true);
+  $("#mensajecontacto").css("display", "block");
+  $('.info-contacto').empty();
+
+ } else {
+
+  $("#id_archivo").prop("disabled", false);
+  $("#botonguardar").prop("disabled", false);
+  $("#mensajecontacto").css("display", "none");
+
+  var optionSelected = $("option:selected", this);
+  var valueSelected = this.value;
+  var urlcontacto = '/obtener-datos-contacto/' + valueSelected + '/';
+
+ }
+
+ if ($("#id_contacto").val().length !== 0) {
+  var valueSelected = $("#id_contacto").val();
+  var urlcontacto = '/obtener-datos-contacto/' + valueSelected + '/';
+
+  $("#id_archivo").prop("disabled", false);
+  $("#botonguardar").prop("disabled", false);
+  $("#mensajecontacto").css("display", "none");
+  datoscontacto(urlcontacto);
+
+ } else {
+  var valueSelected = $('#id_contacto').val();
+ }
+
+
+});
+
+/* ----------------------------------------- */
+/* ----------------------------------------- */
+/* Crear contacto modal */
+
+    var urlpkusuario = '/obtener-contactos-usuario/{{request.user.pk}}/';
+    crear_contacto();
+    contactosusuario(urlpkusuario);
+
+
+function crear_contacto() {
+ console.log("funcion crear contacto!");
+
+ $(document).ready(function() {
+
+  $("#contactoform").validate({
+   rules: {
+    nombre: {
+     required: true,
+    },
+    email1: {
+     required: true,
+    },
+    tel1: {
+     required: true,
+    },
+    direccion: {
+     required: true,
+    }
+   },
+   messages: {
+    nombre: {
+     required: "Nombre completo obligatorio"
+    },
+    email1: "E-mail obligatorio",
+    tel1: "Telefono/Celular obligatorio",
+    direccion: "Dirección obligatoria",
+   },
+   submitHandler: function(form) {
+
+    $.ajax({
+     url: "/contactos/agregar_ajax/", // the endpoint
+     type: "POST", // http method
+     data: {
+      nombre: $('#id_nombre').val(),
+      email1: $('#id_email1').val(),
+      tel1: $('#id_tel1').val(),
+      tel2: $('#id_tel2').val(),
+      direccion: $('#id_direccion').val(),
+      csrfmiddlewaretoken: '{{ csrf_token }}',
+
+     }, // data sent with the post request
+
+     // handle a successful response
+     success: function(json) {
+
+      $('#myModal2').modal('hide');
+      $(".modal-backdrop").remove();
+      $('#contactoform').trigger("reset");
+
+      $('#results').empty();
+      var htmlText = '';
+      htmlText += '<div class="help-block alert alert-success">';
+      htmlText += 'Contacto: <strong>' + json.nombre + '</strong> agregado con exito';
+      htmlText += '</div>';
+      $('#results').append(htmlText);
+
+      var urlpkusuario = '/obtener-contactos-usuario/{{request.user.pk}}/';
+      contactosusuario(urlpkusuario);
+
+      console.log(json); // log the returned json to the console
+      console.log("success"); // another sanity check
+     },
+
+     // handle a non-successful response
+     error: function(xhr, errmsg, err) {
+
+      $('#myModal2').modal('hide');
+      $(".modal-backdrop").remove();
+      $('#contactoform').trigger("reset");
+
+      $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: " + errmsg +
+       " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+      console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+     }
+    });
+    return false;
+   }
+  });
+ });
+
+};
+
+
+
+/* ----------------------------------------- */
+/* Funcion obtener datos contacto */
+
+
+function datoscontacto(urlcontacto) {
+
+ $.getJSON(urlcontacto, function(data) {
+
+  $('.info-contacto').empty();
+
+  var htmlText = '';
+
+  htmlText += '<div class="div-conatiner">';
+  htmlText += '<p class="p-name"> Nombre: ' + data.nombre + '</p>';
+  htmlText += '<p class="p-loc"> Tel1: ' + data.tel1 + '</p>';
+  htmlText += '<p class="p-desc"> Tel2: ' + data.tel2 + '</p>';
+  htmlText += '<p class="p-created"> Email: ' + data.email1 + '</p>';
+  htmlText += '<p class="p-uname"> Direccion: ' + data.direccion + '</p>';
+  htmlText += '</div>';
+
+  $('.info-contacto').append(htmlText);
+
+  console.log(data);
+ });
+
+};
+
+/* ----------------------------------------- */
+/* Funcion obtener contactos usuario */
+
+function contactosusuario(urlpkusuario) {
+
+ $.getJSON(urlpkusuario, function(data) {
+
+  $('#id_contacto').empty();
+
+  $("#id_contacto").prepend("<option disabled='disabled' selected value=''>----</option>");
+
+  if (data.length == 0) {
+
+   $("#no-user").show();
+   //$(".maxfiles").hide();
+   console.log(data.length);
+  } else {
+   $("#no-user").hide();
+  }
+
+  $.each(data, function(key, val) {
+
+   $('#id_contacto').append($('<option>', {
+    value: val.pk,
+    text: val.nombre
+   }));
+
+  });
+
+  $('#id_contacto').val('{{form.contacto.value}}');
+  $('#id_contacto option[value={{form.contacto.value}}]').val('{{form.contacto.value}}').attr('selected', 'selected');
+
+  console.log(data);
+ });
+
+};
+
+
+</script>
+
+
+{% endblock %}
+
+
+{% endblock %}

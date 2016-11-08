@@ -4,7 +4,7 @@ from django.views.generic import CreateView, DeleteView, ListView
 
 import administrar.views
 from usuario import views
-from usuario.views import listar_cartas, listar_audio, listar_video, PictureCreateView, PictureDeleteView1, listar_contactos
+from usuario.views import listar_cartas, listar_audio, listar_video, PictureCreateView, PictureDeleteView1, listar_contactos, PictureCreateView_audio
 
 
 urlpatterns = [
@@ -35,9 +35,13 @@ urlpatterns = [
     url(r'^borrar-archivo-carta/(?P<pk>\d+)/$', views.borrar_archivo_carta, name='borrar_archivo_carta'),
     url(r'^obtener-archivos-cartas/(?P<cartaid>[0-9]+)/$', views.obtener_archivos_cartas, name='obtener_archivos_cartas'),
 
-    url(r'^mensaje/agregar_audio/$', views.upload_audio, name='subir_audio'),
-    url(r'^mensaje/lista_audio/$', listar_audio.as_view(), name='lista_audio'),
-    url(r'^mensaje/detalle_audio/(?P<pk>[0-9]+)/$', views.audio_detalle, name='detalles_audio'),
+    url(r'^mensaje/agregar-audio/$', views.crear_audio, name='subir_audio'),
+    url(r'^mensaje/lista-audio/$', listar_audio.as_view(), name='lista_audio'),
+    url(r'^mensaje/detalle-audio/(?P<pk>[0-9]+)/$', views.audio_detalle, name='detalles_audio'),
+    url(r'^mensaje/editar-audio/(?P<pk>[0-9]+)/$', views.editar_audio, name='editar_audio'),
+    url(r'^mensaje/subir-audio/$', PictureCreateView_audio.as_view(), name='upload_audio'),
+    url(r'^borrar-archivo-audio/(?P<pk>\d+)/$', views.borrar_archivo_audio, name='borrar_archivo_audio'),
+    url(r'^obtener-archivos-audio/(?P<audioid>[0-9]+)/$', views.obtener_archivos_audio, name='obtener_archivos_audio'),
 
     url(r'^mensaje/agregar_video/$', views.upload_video, name='subir_video'),
     url(r'^mensaje/lista_video/$', listar_video.as_view(), name='lista_video'),
