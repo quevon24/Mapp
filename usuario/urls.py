@@ -4,7 +4,7 @@ from django.views.generic import CreateView, DeleteView, ListView
 
 import administrar.views
 from usuario import views
-from usuario.views import listar_cartas, listar_audio, listar_video, PictureCreateView, PictureDeleteView1, listar_contactos, PictureCreateView_audio
+from usuario.views import listar_cartas, listar_audio, listar_video, PictureCreateView, PictureDeleteView1, listar_contactos, PictureCreateView_audio, PictureCreateView_video
 
 
 urlpatterns = [
@@ -27,6 +27,8 @@ urlpatterns = [
         name='password_reset_complete'),
     #url(r'^umedia/', include('user_media.urls')),
     #url(r'^usuario/actualizar_foto/$', views.upload_pic, name='subir_foto'),
+
+    # Cartas
     url(r'^mensaje/agregar-carta/$', views.crear_carta, name='crear_carta'),
     url(r'^mensaje/lista-cartas/$', listar_cartas.as_view(), name='lista_cartas'),
     url(r'^mensaje/detalle-carta/(?P<pk>[0-9]+)/$', views.carta_detalle, name='detalles_carta'),
@@ -35,6 +37,7 @@ urlpatterns = [
     url(r'^borrar-archivo-carta/(?P<pk>\d+)/$', views.borrar_archivo_carta, name='borrar_archivo_carta'),
     url(r'^obtener-archivos-cartas/(?P<cartaid>[0-9]+)/$', views.obtener_archivos_cartas, name='obtener_archivos_cartas'),
 
+    # Audio
     url(r'^mensaje/agregar-audio/$', views.crear_audio, name='subir_audio'),
     url(r'^mensaje/lista-audio/$', listar_audio.as_view(), name='lista_audio'),
     url(r'^mensaje/detalle-audio/(?P<pk>[0-9]+)/$', views.audio_detalle, name='detalles_audio'),
@@ -43,12 +46,19 @@ urlpatterns = [
     url(r'^borrar-archivo-audio/(?P<pk>\d+)/$', views.borrar_archivo_audio, name='borrar_archivo_audio'),
     url(r'^obtener-archivos-audio/(?P<audioid>[0-9]+)/$', views.obtener_archivos_audio, name='obtener_archivos_audio'),
 
-    url(r'^mensaje/agregar_video/$', views.upload_video, name='subir_video'),
-    url(r'^mensaje/lista_video/$', listar_video.as_view(), name='lista_video'),
-    url(r'^mensaje/detalle_video/(?P<pk>[0-9]+)/$', views.video_detalle, name='detalles_video'),
+    # Video
+    url(r'^mensaje/agregar-video/$', views.crear_video, name='subir_video'),
+    url(r'^mensaje/lista-video/$', listar_video.as_view(), name='lista_video'),
+    url(r'^mensaje/detalle-video/(?P<pk>[0-9]+)/$', views.video_detalle, name='detalles_video'),
+    url(r'^mensaje/editar-video/(?P<pk>[0-9]+)/$', views.editar_video, name='editar_video'),
+    url(r'^mensaje/subir-video/$', PictureCreateView_video.as_view(), name='upload_video'),
+    url(r'^borrar-archivo-video/(?P<pk>\d+)/$', views.borrar_archivo_video, name='borrar_archivo_video'),
+    url(r'^obtener-archivos-video/(?P<videoid>[0-9]+)/$', views.obtener_archivos_video, name='obtener_archivos_video'),
 
+    # Usuario
     url(r'^usuario/configuracion/$', views.configuraciones_usuario, name='configuraciones_usuario'),
 
+    # Activacion
     #url(r'^perfil/(?P<username>\w+)/fotos/$', views.ver_imagenes_usuario, name='ver_imagenes_usuario'),
     url(r'^usuario/activar/(?P<codigo>\w+)/(?P<email>\w+|[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4})/', administrar.views.activarcuenta, name='activacion'),
 

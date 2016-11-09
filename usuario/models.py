@@ -163,14 +163,10 @@ def validar_video(value):
 	raise ValidationError(u'Archivo no soportado!')
 
 class Perfil_video(models.Model):
+	descripcion = models.CharField(max_length=500, blank=True, null=True)
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	fecha = models.DateTimeField(default=timezone.now)
-	archivo = models.FileField(upload_to = user_directoryfile_path, null=True, blank=True, validators=[validar_video])
-	nombre = models.CharField(max_length=100, null=True, blank=True)
-	email = models.EmailField(null=True, blank=True)
-	tel1 = models.CharField(max_length=40)
-	tel2 = models.CharField(max_length=40)
-	direccion = models.CharField(max_length=200)
+	contacto = models.ForeignKey(Contactos, blank=True, null=True)
 	formato_options = (
 		(1, 'Digital'),
 		(2, 'USB'),
@@ -185,6 +181,32 @@ class Perfil_video(models.Model):
 
 	class Meta:
 		verbose_name_plural = "Videos"
+
+
+class Perfil_video_archivo(models.Model):
+	user = models.ForeignKey(User, models.SET_NULL, blank=True, null=True,)
+	video = models.ForeignKey(Perfil_video, blank=True, null=True)
+	slug = models.SlugField(max_length=500, blank=True, null=True)
+	archivo = models.FileField(upload_to = user_directoryfile_path, null=True, blank=True)
+
+	def __unicode__(self):
+		return self.archivo.name
+
+	@models.permalink
+	def get_absolute_url(self):
+		return ('editar_video', )
+
+	def save(self, *args, **kwargs):
+		self.slug = self.archivo.name
+		super(Perfil_video_archivo, self).save(*args, **kwargs)
+
+	def delete(self, *args, **kwargs):
+		#"""delete -- Remove to leave file."""
+		self.archivo.delete(False)
+		super(Perfil_video_archivo, self).delete(*args, **kwargs)
+
+# ---------------------------------------------
+# ------------------ Cuenta --------------------
 
 class Activar_cuenta(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)

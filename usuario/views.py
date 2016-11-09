@@ -422,12 +422,10 @@ class listar_audio(ListView):
 @login_required
 @group_required('Administrador', 'Pendiente')
 def audio_detalle(request, pk):
-
-
 	archivos = Perfil_audio_archivo.objects.filter(audio=pk)
 	audio = get_object_or_404(Perfil_audio, pk = pk)
 	try:
-		contacto = Contactos.objects.get(pk=carta.contacto.pk)
+		contacto = Contactos.objects.get(pk=audio.contacto.pk)
 	except:
 		contacto = None
 	return render(request, 'detalles_audio.html', {'audio': audio, 'archivos':archivos, 'contacto':contacto})
@@ -459,6 +457,47 @@ class PictureCreateView_audio(CreateView):
 
 
 
+# ---------------------------------------------------------------
+# ---------------------------------------------------------------
+# Usuario crear video nuevo
+
+@login_required
+def crear_video(request):
+	nueva = Perfil_video.objects.create(user=request.user)
+	return HttpResponseRedirect(reverse('editar_video', args=(nueva.id,)))
+
+# ---------------------------------------------------------------
+# ---------------------------------------------------------------
+# Usuario editar/nuevo audio
+
+@login_required
+def editar_video(request, pk):
+	post = get_object_or_404(Perfil_video, pk=pk)
+	obj_id = pk 
+	save = False
+	form = Usuario_videos(instance=post)
+	contactform = form_agregar_contacto()
+	archivos = Perfil_video_archivo.objects.filter(user=request.user)
+	num_archivos = archivos.count()
+	if request.method == 'POST':
+		form = Usuario_videos(request.POST, request.FILES, instance=post)
+		if form.is_valid():
+			post = form.save(commit=False)
+			# post.contenido = form.cleaned_data['contenido']
+			# post.email = form.cleaned_data['email']
+			# post.tel1 = form.cleaned_data['tel1']
+			# post.tel2 = form.cleaned_data['tel2']
+			post.terminado = True
+			post.user = request.user
+			post.save()
+			save = True
+			print save
+			#return redirect('home')
+	else:
+			form = Usuario_videos(instance=post)
+			contactform = form_agregar_contacto()
+
+	return render(request, 'editar_video.html', {'form': form, 'save':save, 'obj_pk':obj_id, 'archivos':archivos , 'num_archivos':num_archivos, 'contactform':contactform})
 
 
 
@@ -489,10 +528,43 @@ def upload_video(request):
 
 	return render(request, 'subir_video.html', {'form': form, 'save':save})
 
+
+# ---------------------------------------------------------------
+# ---------------------------------------------------------------
+# Usuario obtener archivos video
+
+@login_required
+def obtener_archivos_video(request, videoid):
+	try:
+		archivos = Perfil_video_archivo.objects.filter(video=videoid).values('pk' ,'user','video','archivo')
+		lista_archivos = list(archivos)
+	except:
+		archivos = None
+		lista_archivos = list(archivos)
+	else:
+		response = JSONResponse(lista_archivos)
+		print response
+		response['Content-Disposition'] = 'inline; filename=files.json'
+		return response
+
+
+
+# ---------------------------------------------------------------
+# ---------------------------------------------------------------
+# Usuario borrar archivo video
+
+@login_required
+def borrar_archivo_video(request, pk):
+	archivo = Perfil_video_archivo.objects.get(pk=pk)
+	archivo.delete()
+	print 'archivo borrado'
+	response = JSONResponse(True, mimetype=response_mimetype(request))
+	response['Content-Disposition'] = 'inline; filename=files.json'
+	return response
+
 # ---------------------------------------------------------------
 # ---------------------------------------------------------------
 # Listar mensajes video
-
 class listar_video(ListView):
 	model = Perfil_video
 	template_name = 'lista_video.html'
@@ -503,9 +575,13 @@ class listar_video(ListView):
 	def dispatch(self, *args, **kwargs):
 		return super(listar_video, self).dispatch(*args, **kwargs)
 
+	def get_queryset(self):
+		new_context = Perfil_video.objects.filter(user=self.request.user.id)
+		return new_context
+
 	def get_context_data(self, **kwargs):
 		context = super(ListView, self).get_context_data(**kwargs) 
-		vlist = Perfil_audio.objects.filter(user=self.request.user)
+		vlist = Perfil_video.objects.filter(user=self.request.user.id)
 		paginator = Paginator(vlist, self.paginate_by)
 
 		page = self.request.GET.get('page')
@@ -518,7 +594,9 @@ class listar_video(ListView):
 			file = paginator.page(paginator.num_pages)
 
 		context['vlist'] = file
+
 		return context
+
 
 # ---------------------------------------------------------------
 # ---------------------------------------------------------------
@@ -527,8 +605,36 @@ class listar_video(ListView):
 @login_required
 @group_required('Administrador', 'Pendiente')
 def video_detalle(request, pk):
+	archivos = Perfil_video_archivo.objects.filter(video=pk)
 	video = get_object_or_404(Perfil_video, pk = pk)
-	return render(request, 'detalles_video.html', {'video': video})
+	try:
+		contacto = Contactos.objects.get(pk=video.contacto.pk)
+	except:
+		contacto = None
+	return render(request, 'detalles_video.html', {'video': video, 'archivos':archivos, 'contacto':contacto})
+
+# ---------------------------------------------------------------
+# ---------------------------------------------------------------
+# Usuario subir archivo video
+
+class PictureCreateView_video(CreateView):
+	model = Perfil_video_archivo
+	fields = "__all__"
+	#template_name = "perfil_carta_archivo_.html"
+
+	def form_valid(self, form):
+		self.object = form.save()
+		files = [serialize(self.object)]
+		data = {'files': files}
+		response = JSONResponse(data, mimetype=response_mimetype(self.request))
+		print response
+		response['Content-Disposition'] = 'inline; filename=files.json'
+		return response
+
+	def form_invalid(self, form):
+		data = json.dumps(form.errors)
+		print data
+		return HttpResponse(content=data, status=400, content_type='application/json')
 
 # ---------------------------------------------------------------
 # ---------------------------------------------------------------
