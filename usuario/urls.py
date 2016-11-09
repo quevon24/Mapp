@@ -38,7 +38,7 @@ urlpatterns = [
     url(r'^obtener-archivos-cartas/(?P<cartaid>[0-9]+)/$', views.obtener_archivos_cartas, name='obtener_archivos_cartas'),
 
     # Audio
-    url(r'^mensaje/agregar-audio/$', views.crear_audio, name='subir_audio'),
+    url(r'^mensaje/agregar-audio/$', views.crear_audio, name='crear_audio'),
     url(r'^mensaje/lista-audio/$', listar_audio.as_view(), name='lista_audio'),
     url(r'^mensaje/detalle-audio/(?P<pk>[0-9]+)/$', views.audio_detalle, name='detalles_audio'),
     url(r'^mensaje/editar-audio/(?P<pk>[0-9]+)/$', views.editar_audio, name='editar_audio'),
@@ -47,7 +47,7 @@ urlpatterns = [
     url(r'^obtener-archivos-audio/(?P<audioid>[0-9]+)/$', views.obtener_archivos_audio, name='obtener_archivos_audio'),
 
     # Video
-    url(r'^mensaje/agregar-video/$', views.crear_video, name='subir_video'),
+    url(r'^mensaje/agregar-video/$', views.crear_video, name='crear_video'),
     url(r'^mensaje/lista-video/$', listar_video.as_view(), name='lista_video'),
     url(r'^mensaje/detalle-video/(?P<pk>[0-9]+)/$', views.video_detalle, name='detalles_video'),
     url(r'^mensaje/editar-video/(?P<pk>[0-9]+)/$', views.editar_video, name='editar_video'),

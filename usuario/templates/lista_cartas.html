@@ -19,6 +19,11 @@
 <div class="wrapper wrapper-content animated fadeInRight white-bg">
     <div class="row">
         <div class="col-md-12">
+
+<a class="btn btn-success btn-facebook" href="{% url 'crear_carta' %}"> <i class="fa fa-plus"></i>
+                                Agregar nueva carta
+                            </a>
+<hr>
             {% if object_list %}
             <h2 class="text-center" style="padding-top: 10px; padding-bottom:10px;">Mis cartas</h2>
             <table border="1" cellpadding="0" cellspacing="0" style="" class="table table-bordered">
@@ -34,8 +39,8 @@
                     {% for carta in object_list %}
                     <tr>
                         <td>{{carta.fecha}}</td>
-                        <td>{{carta.contacto.email1}}</td>
-                        <td>{{carta.contacto.tel1}}</td>
+                        <td>{{carta.contacto.email1|default:"----"}}</td>
+                        <td>{{carta.contacto.tel1|default:"----"}}</td>
                         <td>
                             <a href="{% url 'detalles_carta' carta.pk %}">
                                 <button class="btn btn-warning btn-w-m" type="button"><i class="fa fa-pencil"></i> Ver información</button>

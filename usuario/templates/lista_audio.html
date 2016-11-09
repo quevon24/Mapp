@@ -19,6 +19,11 @@
 <div class="wrapper wrapper-content animated fadeInRight white-bg">
     <div class="row">
         <div class="col-md-12">
+
+<a class="btn btn-success btn-facebook" href="{% url 'crear_audio' %}"> <i class="fa fa-plus"></i>
+                                Agregar nuevo audio
+                            </a>
+
             {% if object_list %}
             <h2 class="text-center" style="padding-top: 10px; padding-bottom:10px;">Mis mensajes de audio</h2>
             <table border="1" cellpadding="0" cellspacing="0" style="" class="table table-bordered">
@@ -34,8 +39,8 @@
                     {% for audio in object_list %}
                     <tr>
                         <td>{{audio.fecha}}</td>
-                        <td>{{audio.contacto.email1}}</td>
-                        <td>{{audio.contacto.tel1}}</td>
+                        <td>{{audio.contacto.email1|default:"----"}}</td>
+                        <td>{{audio.contacto.tel1|default:"----"}}</td>
                         <td>
                             <a href="{% url 'detalles_audio' audio.pk %}">
                                 <button class="btn btn-warning btn-w-m" type="button"><i class="fa fa-pencil"></i> Ver información</button>
