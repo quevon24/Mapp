@@ -12,6 +12,7 @@ from django.views.generic import ListView, DeleteView, CreateView
 from django.core.urlresolvers import reverse
 from django.utils import timezone
 import json
+from django.http import Http404  
 
 # Paginacion
 from django.core.paginator import Paginator
@@ -152,10 +153,17 @@ class PictureDeleteView1(DeleteView):
 
 def borrar_archivo_carta(request, pk):
 	archivo = Perfil_carta_archivo.objects.get(pk=pk)
-	archivo.delete()
-	print 'archivo borrado'
-	response = JSONResponse(True, mimetype=response_mimetype(request))
-	response['Content-Disposition'] = 'inline; filename=files.json'
+
+	if archivo.user == request.user:
+		archivo.delete()
+		print 'archivo borrado'
+		response = JSONResponse(True, mimetype=response_mimetype(request))
+		response['Content-Disposition'] = 'inline; filename=files.json'
+	else:
+		print 'permiso denegado'
+		response = JSONResponse({'status':'No tienes permiso para borrar este archivo'})
+		response['Content-Disposition'] = 'inline; filename=files.json'
+
 	return response
 
 
@@ -169,26 +177,29 @@ def editar_carta(request, pk):
 	archivos = Perfil_carta_archivo.objects.filter(user=request.user)
 	num_archivos = archivos.count()
 
-	if post.terminado != True:
-		if request.method == 'POST':
-			form = Usuario_cartas(request.POST, request.FILES, instance=post)
-			if form.is_valid():
-				post = form.save(commit=False)
-				post.fecha = timezone.now()
-				post.terminado = True
-				post.user = request.user
-				post.save()
-				save = True
-				print save
-				return redirect('/mensaje/lista-cartas/?status=1&id=%s' % (post.pk))
+	if post.user == request.user:
+		if post.terminado != True:
+			if request.method == 'POST':
+				form = Usuario_cartas(request.POST, request.FILES, instance=post)
+				if form.is_valid():
+					post = form.save(commit=False)
+					post.fecha = timezone.now()
+					post.terminado = True
+					post.user = request.user
+					post.save()
+					save = True
+					print save
+					return redirect('/mensaje/lista-cartas/?status=1&id=%s' % (post.pk))
+			else:
+					form = Usuario_cartas(instance=post)
+					contactform = form_agregar_contacto()
+					return render(request, 'editar_carta.html', {'form': form, 'save':save, 'obj_pk':obj_id, 'archivos':archivos , 'num_archivos':num_archivos, 'contactform':contactform})
+
 		else:
-				form = Usuario_cartas(instance=post)
-				contactform = form_agregar_contacto()
-				return render(request, 'editar_carta.html', {'form': form, 'save':save, 'obj_pk':obj_id, 'archivos':archivos , 'num_archivos':num_archivos, 'contactform':contactform})
 
+			return redirect('pagar_edicion_carta')
 	else:
-
-		return redirect('pagar_edicion_carta')
+		return redirect('prohibido')
 
 
 
@@ -278,26 +289,30 @@ def editar_audio(request, pk):
 	archivos = Perfil_audio_archivo.objects.filter(user=request.user)
 	num_archivos = archivos.count()
 
-	if post.terminado != True:
-		if request.method == 'POST':
-			form = Usuario_audios(request.POST, request.FILES, instance=post)
-			if form.is_valid():
-				post = form.save(commit=False)
-				post.fecha = timezone.now()
-				post.terminado = True
-				post.user = request.user
-				post.save()
-				save = True
-				print save
-				return redirect('/mensaje/lista-audio/?status=1&id=%s' % (post.pk))
+	if post.user == request.user:
+		if post.terminado != True:
+			if request.method == 'POST':
+				form = Usuario_audios(request.POST, request.FILES, instance=post)
+				if form.is_valid():
+					post = form.save(commit=False)
+					post.fecha = timezone.now()
+					post.terminado = True
+					post.user = request.user
+					post.save()
+					save = True
+					print save
+					return redirect('/mensaje/lista-audio/?status=1&id=%s' % (post.pk))
+			else:
+					form = Usuario_audios(instance=post)
+					contactform = form_agregar_contacto()
+					return render(request, 'editar_audio.html', {'form': form, 'save':save, 'obj_pk':obj_id, 'archivos':archivos , 'num_archivos':num_archivos, 'contactform':contactform})
+		
 		else:
-				form = Usuario_audios(instance=post)
-				contactform = form_agregar_contacto()
-				return render(request, 'editar_audio.html', {'form': form, 'save':save, 'obj_pk':obj_id, 'archivos':archivos , 'num_archivos':num_archivos, 'contactform':contactform})
-	
-	else:
 
-		return redirect('pagar_edicion_carta')
+			return redirect('pagar_edicion_carta')
+
+	else:
+		return redirect('prohibido')
 
 
 
@@ -327,10 +342,17 @@ def obtener_archivos_audio(request, audioid):
 @login_required
 def borrar_archivo_audio(request, pk):
 	archivo = Perfil_audio_archivo.objects.get(pk=pk)
-	archivo.delete()
-	print 'archivo borrado'
-	response = JSONResponse(True, mimetype=response_mimetype(request))
-	response['Content-Disposition'] = 'inline; filename=files.json'
+
+	if archivo.user == request.user:
+		archivo.delete()
+		print 'Archivo borrado'
+		response = JSONResponse(True, mimetype=response_mimetype(request))
+		response['Content-Disposition'] = 'inline; filename=files.json'
+	else:
+		print 'Permiso denegado'
+		response = JSONResponse({'status':'No tienes permiso para borrar este archivo'})
+		response['Content-Disposition'] = 'inline; filename=files.json'
+
 	return response
 
 # ---------------------------------------------------------------
@@ -436,26 +458,29 @@ def editar_video(request, pk):
 	archivos = Perfil_video_archivo.objects.filter(user=request.user)
 	num_archivos = archivos.count()
 
-	if post.terminado != True:
-		if request.method == 'POST':
-			form = Usuario_videos(request.POST, request.FILES, instance=post)
-			if form.is_valid():
-				post = form.save(commit=False)
-				post.fecha = timezone.now()
-				post.terminado = True
-				post.user = request.user
-				post.save()
-				save = True
-				print save
-				return redirect('/mensaje/lista-video/?status=1&id=%s' % (post.pk))
+	if post.user == request.user:
+		if post.terminado != True:
+			if request.method == 'POST':
+				form = Usuario_videos(request.POST, request.FILES, instance=post)
+				if form.is_valid():
+					post = form.save(commit=False)
+					post.fecha = timezone.now()
+					post.terminado = True
+					post.user = request.user
+					post.save()
+					save = True
+					print save
+					return redirect('/mensaje/lista-video/?status=1&id=%s' % (post.pk))
+			else:
+					form = Usuario_videos(instance=post)
+					contactform = form_agregar_contacto()
+					return render(request, 'editar_video.html', {'form': form, 'save':save, 'obj_pk':obj_id, 'archivos':archivos , 'num_archivos':num_archivos, 'contactform':contactform})
+
 		else:
-				form = Usuario_videos(instance=post)
-				contactform = form_agregar_contacto()
-				return render(request, 'editar_video.html', {'form': form, 'save':save, 'obj_pk':obj_id, 'archivos':archivos , 'num_archivos':num_archivos, 'contactform':contactform})
 
+			return redirect('pagar_edicion_carta')
 	else:
-
-		return redirect('pagar_edicion_carta')
+		return redirect('prohibido')
 
 
 
@@ -486,10 +511,17 @@ def obtener_archivos_video(request, videoid):
 @login_required
 def borrar_archivo_video(request, pk):
 	archivo = Perfil_video_archivo.objects.get(pk=pk)
-	archivo.delete()
-	print 'archivo borrado'
-	response = JSONResponse(True, mimetype=response_mimetype(request))
-	response['Content-Disposition'] = 'inline; filename=files.json'
+
+	if archivo.user == request.user:
+		archivo.delete()
+		print 'Archivo borrado'
+		response = JSONResponse(True, mimetype=response_mimetype(request))
+		response['Content-Disposition'] = 'inline; filename=files.json'
+	else:
+		print 'Permiso denegado'
+		response = JSONResponse({'status':'No tienes permiso para borrar este archivo'})
+		response['Content-Disposition'] = 'inline; filename=files.json'
+
 	return response
 
 # ---------------------------------------------------------------
