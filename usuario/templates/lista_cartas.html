@@ -19,6 +19,17 @@
 <div class="wrapper wrapper-content animated fadeInRight white-bg">
     <div class="row">
         <div class="col-md-12">
+{% if request.GET.status == "1" %}
+
+<div class="alert alert-success alert-dismissable">
+                                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                                Carta editada con exito. <a class="alert-link" href="{% url 'detalles_carta' request.GET.id %}">Ver detalles</a>.
+                            </div>
+
+{% endif %}
+
+
+<br>
 
 <a class="btn btn-success btn-facebook" href="{% url 'crear_carta' %}"> <i class="fa fa-plus"></i>
                                 Agregar nueva carta

@@ -10,6 +10,7 @@ from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidde
 from django.conf import settings
 from django.views.generic import ListView, DeleteView, CreateView
 from django.core.urlresolvers import reverse
+from django.utils import timezone
 import json
 
 # Paginacion
@@ -100,39 +101,6 @@ class PictureCreateView(CreateView):
 		print data
 		return HttpResponse(content=data, status=400, content_type='application/json')
 
-@login_required
-def upload_carta(request):
-	save = False
-	form = Usuario_cartas()
-	if request.method == 'POST':
-		form = Usuario_cartas(request.POST)
-		if form.is_valid():
-			post = form.save(commit=False)
-			post.contenido = form.cleaned_data['contenido']
-			post.email = form.cleaned_data['email']
-			post.tel1 = form.cleaned_data['tel1']
-			post.tel2 = form.cleaned_data['tel2']
-			post.terminado = True
-			post.user = request.user
-			post.save()
-			save = True
-			print save
-			#return redirect('home')
-	else:
-			form = Usuario_cartas()
-
-	if 'savefile' in request.POST:
-		#objs = dict(request.POST.iterlists()) #pass submit form fields in a dict
-		
-		#namefield = objs['name'] #get name section from form
-		#namefield=namefield[0].encode('utf8') #encode to utf8 to avoid errors in latin characters
-		form = Usuario_cartas(request.POST) 
-		if form.is_valid():
-			form.carta = 0
-			form.save()
-
-	return render(request, 'subir_carta.html', {'form': form, 'save':save}, locals())
-
 
 # ---------------------------------------------------------------
 # ---------------------------------------------------------------
@@ -200,26 +168,36 @@ def editar_carta(request, pk):
 	contactform = form_agregar_contacto()
 	archivos = Perfil_carta_archivo.objects.filter(user=request.user)
 	num_archivos = archivos.count()
-	if request.method == 'POST':
-		form = Usuario_cartas(request.POST, request.FILES, instance=post)
-		if form.is_valid():
-			post = form.save(commit=False)
-			# post.contenido = form.cleaned_data['contenido']
-			# post.email = form.cleaned_data['email']
-			# post.tel1 = form.cleaned_data['tel1']
-			# post.tel2 = form.cleaned_data['tel2']
-			post.terminado = True
-			post.user = request.user
-			post.save()
-			save = True
-			print save
-			#return redirect('home')
+
+	if post.terminado != True:
+		if request.method == 'POST':
+			form = Usuario_cartas(request.POST, request.FILES, instance=post)
+			if form.is_valid():
+				post = form.save(commit=False)
+				post.fecha = timezone.now()
+				post.terminado = True
+				post.user = request.user
+				post.save()
+				save = True
+				print save
+				return redirect('/mensaje/lista-cartas/?status=1&id=%s' % (post.pk))
+		else:
+				form = Usuario_cartas(instance=post)
+				contactform = form_agregar_contacto()
+				return render(request, 'editar_carta.html', {'form': form, 'save':save, 'obj_pk':obj_id, 'archivos':archivos , 'num_archivos':num_archivos, 'contactform':contactform})
+
 	else:
-			form = Usuario_cartas(instance=post)
-			contactform = form_agregar_contacto()
 
-	return render(request, 'editar_carta.html', {'form': form, 'save':save, 'obj_pk':obj_id, 'archivos':archivos , 'num_archivos':num_archivos, 'contactform':contactform})
+		return redirect('pagar_edicion_carta')
 
+
+
+# ---------------------------------------------------------------
+# ---------------------------------------------------------------
+# Pagar edicion carta
+
+def pagar_edicion_carta(request):
+	return render(request, 'pagar_editar_carta.html', {'ent': True})
 
 # ---------------------------------------------------------------
 # ---------------------------------------------------------------
@@ -299,52 +277,30 @@ def editar_audio(request, pk):
 	contactform = form_agregar_contacto()
 	archivos = Perfil_audio_archivo.objects.filter(user=request.user)
 	num_archivos = archivos.count()
-	if request.method == 'POST':
-		form = Usuario_audios(request.POST, request.FILES, instance=post)
-		if form.is_valid():
-			post = form.save(commit=False)
-			# post.contenido = form.cleaned_data['contenido']
-			# post.email = form.cleaned_data['email']
-			# post.tel1 = form.cleaned_data['tel1']
-			# post.tel2 = form.cleaned_data['tel2']
-			post.terminado = True
-			post.user = request.user
-			post.save()
-			save = True
-			print save
-			#return redirect('home')
+
+	if post.terminado != True:
+		if request.method == 'POST':
+			form = Usuario_audios(request.POST, request.FILES, instance=post)
+			if form.is_valid():
+				post = form.save(commit=False)
+				post.fecha = timezone.now()
+				post.terminado = True
+				post.user = request.user
+				post.save()
+				save = True
+				print save
+				return redirect('/mensaje/lista-audio/?status=1&id=%s' % (post.pk))
+		else:
+				form = Usuario_audios(instance=post)
+				contactform = form_agregar_contacto()
+				return render(request, 'editar_audio.html', {'form': form, 'save':save, 'obj_pk':obj_id, 'archivos':archivos , 'num_archivos':num_archivos, 'contactform':contactform})
+	
 	else:
-			form = Usuario_audios(instance=post)
-			contactform = form_agregar_contacto()
 
-	return render(request, 'editar_audio.html', {'form': form, 'save':save, 'obj_pk':obj_id, 'archivos':archivos , 'num_archivos':num_archivos, 'contactform':contactform})
+		return redirect('pagar_edicion_carta')
 
 
 
-# ---------------------------------------------------------------
-# ---------------------------------------------------------------
-# Usuario subir audio
-
-@login_required
-def upload_audio(request):
-	save = False
-	form = Usuario_audios()
-	if request.method == 'POST':
-		form = Usuario_audios(request.POST, request.FILES)
-		if form.is_valid():
-			post = form.save(commit=False)
-			# post.archivo = form.cleaned_data['archivo']
-			# post.email = form.cleaned_data['email']
-			# post.tel1 = form.cleaned_data['tel1']
-			# post.tel2 = form.cleaned_data['tel2']
-			post.user = request.user
-			post.terminado = True
-			post.save()
-			save = True
-			print save
-			#return redirect('home')
-
-	return render(request, 'subir_audio.html', {'form': form, 'save':save})
 
 # ---------------------------------------------------------------
 # ---------------------------------------------------------------
@@ -479,54 +435,28 @@ def editar_video(request, pk):
 	contactform = form_agregar_contacto()
 	archivos = Perfil_video_archivo.objects.filter(user=request.user)
 	num_archivos = archivos.count()
-	if request.method == 'POST':
-		form = Usuario_videos(request.POST, request.FILES, instance=post)
-		if form.is_valid():
-			post = form.save(commit=False)
-			# post.contenido = form.cleaned_data['contenido']
-			# post.email = form.cleaned_data['email']
-			# post.tel1 = form.cleaned_data['tel1']
-			# post.tel2 = form.cleaned_data['tel2']
-			post.terminado = True
-			post.user = request.user
-			post.save()
-			save = True
-			print save
-			#return redirect('home')
+
+	if post.terminado != True:
+		if request.method == 'POST':
+			form = Usuario_videos(request.POST, request.FILES, instance=post)
+			if form.is_valid():
+				post = form.save(commit=False)
+				post.fecha = timezone.now()
+				post.terminado = True
+				post.user = request.user
+				post.save()
+				save = True
+				print save
+				return redirect('/mensaje/lista-video/?status=1&id=%s' % (post.pk))
+		else:
+				form = Usuario_videos(instance=post)
+				contactform = form_agregar_contacto()
+				return render(request, 'editar_video.html', {'form': form, 'save':save, 'obj_pk':obj_id, 'archivos':archivos , 'num_archivos':num_archivos, 'contactform':contactform})
+
 	else:
-			form = Usuario_videos(instance=post)
-			contactform = form_agregar_contacto()
 
-	return render(request, 'editar_video.html', {'form': form, 'save':save, 'obj_pk':obj_id, 'archivos':archivos , 'num_archivos':num_archivos, 'contactform':contactform})
+		return redirect('pagar_edicion_carta')
 
-
-
-# ---------------------------------------------------------------
-# ---------------------------------------------------------------
-# Usuario subir video , settings.VARIABLE
-@login_required
-def upload_video(request):
-	save = False
-	form = Usuario_videos()
-	if request.method == 'POST':
-		form = Usuario_videos(request.POST, request.FILES)
-		if form.is_valid():
-			post = form.save(commit=False)
-			post.archivo = form.cleaned_data['archivo']
-			post.nombre = form.cleaned_data['nombre']
-			post.email = form.cleaned_data['email']
-			post.tel1 = form.cleaned_data['tel1']
-			post.tel2 = form.cleaned_data['tel2']
-			post.direccion = form.cleaned_data['direccion']
-			post.formato = form.cleaned_data['formato']
-			post.user = request.user
-			post.terminado = True
-			post.save()
-			save = True
-			print save
-			#return redirect('home')
-
-	return render(request, 'subir_video.html', {'form': form, 'save':save})
 
 
 # ---------------------------------------------------------------

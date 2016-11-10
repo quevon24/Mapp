@@ -43,15 +43,15 @@
 				{% endif %}
 				</dd>
 				<dt>Contenido:</dt>
-				<dd class="htmlbox">{% autoescape off %} {{carta.contenido}} {% endautoescape %}</dd>
+				<dd class="htmlbox">{% autoescape off %} {{carta.contenido|default:"----"}} {% endautoescape %}</dd>
                 <dt>Nombre:</dt>
-                <dd>{{carta.contacto.nombre}}</dd>
+                <dd>{{carta.contacto.nombre|default:"----"}}</dd>
 				<dt>Email:</dt>
-				<dd>{{contacto.email1}}</dd>
+				<dd>{{contacto.email1|default:"----"}}</dd>
 				<dt>Tel 1:</dt>
-				<dd>{{contacto.tel1}}</dd>
+				<dd>{{contacto.tel1|default:"----"}}</dd>
 				<dt>Tel 2:</dt>
-				<dd>{{contacto.tel2}}</dd>
+				<dd>{{contacto.tel2|default:"----"}}</dd>
 
 
 			</dl>

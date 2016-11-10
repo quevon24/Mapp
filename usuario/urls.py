@@ -36,6 +36,7 @@ urlpatterns = [
     url(r'^mensaje/subir-carta/$', PictureCreateView.as_view(), name='upload_carta'),
     url(r'^borrar-archivo-carta/(?P<pk>\d+)/$', views.borrar_archivo_carta, name='borrar_archivo_carta'),
     url(r'^obtener-archivos-cartas/(?P<cartaid>[0-9]+)/$', views.obtener_archivos_cartas, name='obtener_archivos_cartas'),
+    url(r'^mensaje/pago-editar-carta/$', views.pagar_edicion_carta, name='pagar_edicion_carta'),
 
     # Audio
     url(r'^mensaje/agregar-audio/$', views.crear_audio, name='crear_audio'),

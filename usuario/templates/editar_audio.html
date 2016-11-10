@@ -317,7 +317,13 @@ function borrar(pkarchivo) {
    var json = JSON.parse(response);
    console.log(json);
    $('#guardara').empty();
-   $('<div class="help-block alert alert-warning"></div>').text('Archivo borrado con exito.').appendTo('#guardara');
+
+   var htmlText = '';
+      htmlText += '<br><div class="alert alert-warning alert-dismissable"> <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>';
+      htmlText += 'Archivo borrado con exito.';
+      htmlText += '</div>';
+      $('#guardara').append(htmlText);
+
    $('<input type="hidden" name="val_nombre_archivo" id="val_nombre_archivo" value="">').appendTo('#lista_archivos');
    $(".form-ok").show();
    $(".maxfiles").hide();
@@ -370,7 +376,12 @@ $(function() {
       $('.id_file_ids').val(upload_ids.join(','));
 
       fetch();
-      $('<div class="help-block alert alert-success"></div>').text('Archivo subido con exito.').appendTo('#guardara');
+
+      var htmlText = '';
+      htmlText += '<br><div class="alert alert-success alert-dismissable"> <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>';
+      htmlText += 'Archivo subido con exito.';
+      htmlText += '</div>';
+      $('#guardara').append(htmlText);
 
      });
 
@@ -554,7 +565,7 @@ function crear_contacto() {
 
       $('#results').empty();
       var htmlText = '';
-      htmlText += '<div class="help-block alert alert-success">';
+      htmlText += '<div class="help-block alert alert-success alert-dismissable"> <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>';
       htmlText += 'Contacto: <strong>' + json.nombre + '</strong> agregado con exito';
       htmlText += '</div>';
       $('#results').append(htmlText);
