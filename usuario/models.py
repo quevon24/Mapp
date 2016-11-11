@@ -11,7 +11,7 @@ from django.utils import timezone
 from django.core import validators
 from django.core.exceptions import ValidationError
 from smart_selects.db_fields import ChainedForeignKey 
-
+from django.template.loader import render_to_string, get_template
 
 #generar clave activacion
 import uuid
@@ -234,8 +234,14 @@ def crear_perfil(sender, instance, created, **kwargs):
 		activacionrandom = activacionrandom.replace("-","")
 		activacionrandom = activacionrandom[0:30]
 		Activar_cuenta.objects.create(user=instance, clave=activacionrandom, email=instance.email)
-		subject = 'Verificar email'
+		subject = 'MENSAJES - Activación de cuenta'
 		from_email = settings.EMAIL_SALIDA
 		to_email = [instance.email]
-		message_email = "Verifica tu email! Da clic en el siguiente enlace: \ http://3ce476da.ngrok.io/usuario/activar/%s/%s" % (activacionrandom, instance.email)
-		send_mail(subject, message_email, from_email, to_email, fail_silently=True)
+		contexto = {'activacion':activacionrandom, 'email':instance.email, 'url':settings.URL_ACTIVAR}
+		message = get_template('email/email_activacion.html').render(contexto)
+		msg = EmailMessage(subject, message, to=to_email, from_email=from_email)
+		msg.content_subtype = 'html'
+		msg.send()
+		print 'Correo de activacion enviado'
+		#message_email = "Verifica tu email! Da clic en el siguiente enlace: \ http://3ce476da.ngrok.io/usuario/activar/%s/%s" % (activacionrandom, instance.email)
+		#send_mail(subject, message_email, from_email, to_email, fail_silently=True)
