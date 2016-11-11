@@ -35,7 +35,7 @@ def serialize(instance, file_attr='archivo'):
         'url': obj.url,
         'name': order_name(obj.name),
         'id': instance.id,
-        'type': mimetypes.guess_type(obj.path)[0] or 'image/png' or 'image/jpeg' or 'image/jpeg',
+        'type': mimetypes.guess_type(obj.path)[0] or 'image/png' or 'image/jpeg' or 'image/jpeg' or 'application/msword',
         'thumbnailUrl': obj.url,
         'size': size,
         'deleteUrl': reverse('upload-delete', args=[instance.pk]),

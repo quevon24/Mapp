@@ -124,7 +124,7 @@ Numero maximo de archivos: 1
              <input type="hidden" name="audio" id="id_audio" value="{{ obj_pk }}">
 
             </span>
-            
+            <br><br><p>Formato permitido: mp3. Tamaño maximo: 5 Mb.</p>
 <!--             <p>
                 <input type='submit' name="savefile" value='Guardar' class="btn btn-w-m btn-primary" />
             </p> -->
@@ -365,8 +365,7 @@ $(function() {
      }
     },
     dataType: 'json',
-    acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
-    maxFileSize: 5000000, // 5 MB
+
     done: function(e, data) {
      //console.log('Upload complete');
      $.each(data.result.files, function(index, file) {
@@ -399,12 +398,14 @@ $(function() {
     },
     add: function(e, data) {
      var uploadErrors = [];
-     var acceptFileTypes = /^image\/(gif|jpe?g|png)$/i;
+     var acceptFileTypes = /^audio\/(mp3|mpeg3|x-mpeg-3)$|^video\/(mpeg|x-mpeg)$/i;
+
+
      if (data.originalFiles[0]['type'].length && !acceptFileTypes.test(data.originalFiles[0]['type'])) {
-      uploadErrors.push('Not an accepted file type');
+      uploadErrors.push('Tipo de archivo no aceptado. Formato permitido: mp3.');
      }
-     if (data.originalFiles[0]['size'].length && data.originalFiles[0]['size'] > 5000000) {
-      uploadErrors.push('Filesize is too big');
+     if (data.originalFiles[0]['size'] > (5*1024*1024)) { // 2MB
+      uploadErrors.push('Tamaño de archivo superado. Tamaño maximo: 5 Mb.');
      }
      if (uploadErrors.length > 0) {
       alert(uploadErrors.join("\n"));
