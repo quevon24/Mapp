@@ -35,7 +35,7 @@ class Contactos(models.Model):
 	nombre = models.CharField(max_length=100, null=True, blank=True)
 	email1 = models.EmailField(null=True, blank=True)
 	tel1 = models.CharField(max_length=40)
-	tel2 = models.CharField(max_length=40)
+	tel2 = models.CharField(max_length=40, blank=True, null=True)
 	direccion = models.CharField(max_length=200)
 
 	def __unicode__(self):

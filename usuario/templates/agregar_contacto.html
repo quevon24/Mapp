@@ -31,7 +31,7 @@
                                 Llena los datos a continuación para agregar un nuevo contacto.
                             </div>
 
-<form method="post" enctype="multipart/form-data" class="form-horizontal">
+<form method="post" enctype="multipart/form-data" class="form-horizontal" id="add-contact">
 {% csrf_token %}
                 <div class="form-group">
                     <label class="col-sm-2 control-label">
@@ -55,7 +55,7 @@
 
                  <div class="form-group">
                     <label class="col-sm-2 control-label">
-                        Telefono 1:
+                        Teléfono 1:
                     </label>
                     <div class="col-sm-6">
                     
@@ -65,7 +65,7 @@
 
                  <div class="form-group">
                     <label class="col-sm-2 control-label">
-                        Telefono 2:
+                        Teléfono 2:
                     </label>
                     <div class="col-sm-6">
                     
@@ -103,5 +103,47 @@
 </div>
 </div>
 </div>
+
+{% endblock %}
+
+{% block extrascripts %}
+
+<script src="{% static "js/jquery.validate.js" %}"></script>
+<script src="{% static "js/additional-methods.js" %}"></script>
+
+<script>
+// just for the demos, avoids form submit
+jQuery.validator.setDefaults({
+ ignore: [],
+});
+jQuery(document).ready(function(){
+    $("#add-contact").validate({
+        rules: {
+            nombre: {
+                required: true,
+            },
+            email1: {
+                required: true,
+            },
+            tel1: {
+                required: true,
+            },
+            direccion: {
+                required: true,
+            }
+        },
+        messages: {
+            nombre: "Nombre obligatorio",
+            email1: "Correo electronico obligatorio",
+            tel1: "Numero de teléfono obligatorio",
+            direccion: "Dirección completa obligatoria"
+        },
+submitHandler: function(form) {
+                    form.submit();
+                }
+    });
+});
+</script>
+
 
 {% endblock %}

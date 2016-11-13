@@ -1,5 +1,5 @@
 {% extends "base.html" %} {% block title %} Editar perfil {% endblock %} {% block content %}
-
+{% load addcss %}
 
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -43,9 +43,9 @@
 </div>
 <!-- Telefono-->
 <div class="form-group">
-  <label class="col-md-4 control-label" for="textinput">Telefono</label>  
+  <label class="col-md-4 control-label" for="textinput">Teléfono</label>  
   <div class="col-md-4">
-  <input id="id_telefono" name="telefono" type="text" value="{{ profile_form.telefono.value|default_if_none:"" }}" placeholder="Telefono" class="form-control input-md">
+  <input id="id_telefono" name="telefono" type="text" value="{{ profile_form.telefono.value|default_if_none:"" }}" placeholder="Teléfono" class="form-control input-md">
   </div>
 </div>
 <!-- celular-->
@@ -59,7 +59,7 @@
 <div class="form-group">
   <label class="col-md-4 control-label" for="selectbasic">Sexo</label>
   <div class="col-md-4">
-    {{profile_form.sexo}}
+    {{profile_form.sexo|addcss:"form-control"}}
   </div>
 </div>
 <!-- Dirección -->
