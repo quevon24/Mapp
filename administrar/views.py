@@ -17,63 +17,69 @@ from usuario.models import Perfil, Activar_cuenta
 # Error 404
 
 def handler404(request):
-    response = render_to_response('404.html', {},
-                                  context_instance=RequestContext(request))
-    response.status_code = 404
-    return response
+	response = render_to_response('404.html', {},
+								  context_instance=RequestContext(request))
+	response.status_code = 404
+	return response
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.
 # Error 500
 
 def handler500(request):
-    response = render_to_response('500.html', {},
-                                  context_instance=RequestContext(request))
-    response.status_code = 500
-    return response
+	response = render_to_response('500.html', {},
+								  context_instance=RequestContext(request))
+	response.status_code = 500
+	return response
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Grupos, checar si pertenece a grupo
 
 def group_required(*group_names):
-    def check(user):
-        if user.groups.filter(name__in=group_names).exists() | user.is_superuser:
-            return True
-        else:
-            return False
-    return user_passes_test(check, login_url='/prohibido/')
+	def check(user):
+		if user.groups.filter(name__in=group_names).exists() | user.is_superuser:
+			return True
+		else:
+			return False
+	return user_passes_test(check, login_url='/prohibido/')
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.
 # Acceso prohibido si no pertenece a grupo
 
 @login_required
 def prohibido(request):
-    current_user = request.user
-    us = post = get_object_or_404(User, username=current_user)
-    return render(request, '403.html', {'user':us})
+	current_user = request.user
+	us = post = get_object_or_404(User, username=current_user)
+	return render(request, '403.html', {'user':us})
 
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.
 # Registrarse
 
 def registrar(request):
-        context = RequestContext(request)
-        registered = False
-        if request.method == 'POST':
-                uform = Registrar(data = request.POST)
-                if uform.is_valid():
-                        user = uform.save()
-                        # form brings back a plain text string, not an encrypted password
-                        pw = user.password
-                        # thus we need to use set password to encrypt the password string
-                        user.set_password(pw)
-                        user.save()
-                        registered = True
-                else:
-                        print uform.errors
-        else:
-                uform = Registrar()
+		context = RequestContext(request)
+		registered = False
 
-        return render(request, 'registrar.html', {'uform': uform, 'registered': registered }, context)
+		if request.method == 'POST':
+				uform = Registrar(data = request.POST)
+				if uform.is_valid():
+						user = uform.save()
+						# form brings back a plain text string, not an encrypted password
+						pw = user.password
+						# thus we need to use set password to encrypt the password string
+						user.set_password(pw)
+						user.save()
+						registered = True
+				else:
+						print uform.errors
+						#if User.objects.filter(username=uform.data['username']).exists():
+						#	raise uform.ValidationError(u'Username "%s" is already in use.' % uform.data['username'])
+		else:
+				uform = Registrar()
+
+
+				
+
+		return render(request, 'registrar.html', {'uform': uform, 'registered': registered }, context)
 
 
 
@@ -81,24 +87,24 @@ def registrar(request):
 # Activar cuenta, verificar email
 
 def activarcuenta(request, codigo, email):
-    try:
-        activar = Activar_cuenta.objects.get(clave=codigo, email=email)
-        try:
-            usuario = Perfil.objects.get(user=activar.user)
-            usuario1 = User.objects.get(username=activar.user)
-        except Perfil.DoesNotExist:
-            activar = None
-            usuario = None
-            usuario1 = None
-            exito = False
-    except Activar_cuenta.DoesNotExist:
-        activar = None
-        usuario = None
-        usuario1 = None
-        exito = False
+	try:
+		activar = Activar_cuenta.objects.get(clave=codigo, email=email)
+		try:
+			usuario = Perfil.objects.get(user=activar.user)
+			usuario1 = User.objects.get(username=activar.user)
+		except Perfil.DoesNotExist:
+			activar = None
+			usuario = None
+			usuario1 = None
+			exito = False
+	except Activar_cuenta.DoesNotExist:
+		activar = None
+		usuario = None
+		usuario1 = None
+		exito = False
 
-    
-    else:
+	
+	else:
 		usuario.email_verif =True
 		activar.uso = True
 		usuario.save()
@@ -111,4 +117,4 @@ def activarcuenta(request, codigo, email):
 			g.user_set.add(usuario1)
 		exito = True
 
-    return render(request, 'activacion.html', {'usuario': usuario, 'usuario1':usuario1, 'activar':activar, 'exito':exito})
+	return render(request, 'activacion.html', {'usuario': usuario, 'usuario1':usuario1, 'activar':activar, 'exito':exito})
